@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Resumo — Build a professional CV for free. No sign-up required to start." />
+  <title>Resumo — Free Online CV Builder</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest" defer></script>
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- {% block extra_head %}{% endblock %} -->
+</head>
+<body>
+
+  <!-- ============================================================
+       DJANGO: {% extends "base.html" %} {% block content %}
+       ============================================================ -->
+
+  <!-- ============================================================
+       NAVBAR
+       Django: Consider extracting to {% include "partials/navbar.html" %}
+       ============================================================ -->
+  <header class="navbar" role="banner">
+    <div class="container navbar__inner">
+
+      <!-- Logo -->
+      <a href="/" class="navbar__logo" aria-label="Resumo home">
+        <span class="logo-icon" aria-hidden="true">
+          <i data-lucide="file-text"></i>
+        </span>
+        <span class="logo-text">Resumo</span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="navbar__links" aria-label="Main navigation">
+        <a href="#how-it-works" class="nav-link">How it works</a>
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#templates" class="nav-link">Templates</a>
+      </nav>
+
+      <!-- CTA Buttons -->
+      <div class="navbar__actions">
+        <!-- Django: {% if user.is_authenticated %} show dashboard link {% else %} show login/signup {% endif %} -->
+        <a href="/login" class="btn btn--ghost" aria-label="Log in to your account">Log in</a>
+        <a href="/signup" class="btn btn--accent" aria-label="Sign up for free">Sign up</a>
+      </div>
+
+      <!-- Hamburger (mobile) -->
+      <button
+        class="navbar__hamburger"
+        id="hamburger-btn"
+        aria-label="Toggle navigation menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <i data-lucide="menu" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu" aria-hidden="true" role="dialog" aria-label="Mobile navigation">
+      <nav class="mobile-menu__links" aria-label="Mobile navigation links">
+        <a href="#how-it-works" class="mobile-link">How it works</a>
+        <a href="#features" class="mobile-link">Features</a>
+        <a href="#templates" class="mobile-link">Templates</a>
+        <hr class="mobile-divider" />
+        <a href="/login" class="btn btn--ghost btn--full">Log in</a>
+        <a href="/signup" class="btn btn--accent btn--full">Sign up free</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       MAIN CONTENT
+       ============================================================ -->
+  <main id="main-content">
+
+    <!-- ============================================================
+         SECTION 1: HERO
+         Django: {% block hero %}{% endblock %}
+         ============================================================ -->
+    <section class="hero" aria-labelledby="hero-headline">
+      <div class="container hero__inner">
+
+        <div class="hero__content">
+          <!-- Badge -->
+          <div class="hero__badge" aria-label="Free tool badge">
+            <i data-lucide="sparkles" aria-hidden="true"></i>
+            <span>100% free — no credit card needed</span>
+          </div>
+
+          <!-- Headline -->
+          <h1 class="hero__headline" id="hero-headline">
+            Your CV, done right.<br />
+            <span class="text-accent">In minutes.</span>
+          </h1>
+
+          <!-- Subline -->
+          <p class="hero__subline">
+            Resumo helps you build a clean, professional CV that stands out —
+            no design skills required, no hidden fees, ever.
+          </p>
+
+          <!-- CTA -->
+          <div class="hero__cta-group">
+            <a href="/builder" class="btn btn--accent btn--lg" aria-label="Start building your CV for free">
+              <i data-lucide="pencil" aria-hidden="true"></i>
+              Create your CV — it's free
+            </a>
+            <a href="#how-it-works" class="btn btn--ghost btn--lg">
+              See how it works
+            </a>
+          </div>
+
+          <!-- Social proof -->
+          <p class="hero__social-proof">
+            <i data-lucide="users" aria-hidden="true"></i>
+            Trusted by <strong>12,000+</strong> job seekers worldwide
+          </p>
+        </div>
+
+        <!-- Hero Image -->
+        <div class="hero__image-wrap" aria-hidden="true">
+          <!-- IMAGE: Hero mockup — see Image Placement Guide -->
+          <div class="img-placeholder img-placeholder--hero" role="img" aria-label="Screenshot of the Resumo CV editor interface">
+            <i data-lucide="monitor" aria-hidden="true"></i>
+            <span>CV Editor UI Mockup</span>
+            <small>1200 × 800 px</small>
+          </div>
+          <!-- END IMAGE -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 2: HOW IT WORKS
+         Django: {% block how_it_works %}{% endblock %}
+         ============================================================ -->
+    <section class="how-it-works" id="how-it-works" aria-labelledby="how-heading">
+      <div class="container">
+
+        <div class="section-header">
+          <h2 class="section-title" id="how-heading">How it works</h2>
+          <p class="section-subtitle">Three steps from blank page to polished CV.</p>
+        </div>
+
+        <ol class="steps" role="list">
+
+          <li class="step-card">
+            <div class="step-number" aria-hidden="true">01</div>
+            <div class="step-icon" aria-hidden="true">
+              <i data-lucide="layout-template"></i>
+            </div>
+            <h3 class="step-title">Pick a template</h3>
+            <p class="step-desc">Choose from clean, recruiter-tested layouts designed for readability.</p>
+          </li>
+
+          <li class="step-card">
+            <div class="step-number" aria-hidden="true">02</div>
+            <div class="step-icon" aria-hidden="true">
+              <i data-lucide="edit-3"></i>
+            </div>
+            <h3 class="step-title">Fill in your details</h3>
+            <p class="step-desc">Type directly into guided fields — experience, skills, education, and more.</p>
+          </li>
+
+          <li class="step-card">
+            <div class="step-number" aria-hidden="true">03</div>
+            <div class="step-icon" aria-hidden="true">
+              <i data-lucide="download"></i>
+            </div>
+            <h3 class="step-title">Download as PDF</h3>
+            <p class="step-desc">Export a pixel-perfect PDF, ready to send to employers.</p>
+          </li>
+
+        </ol>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 3: FEATURES
+         Django: {% block features %}{% endblock %}
+         ============================================================ -->
+    <section class="features" id="features" aria-labelledby="features-heading">
+      <div class="container">
+
+        <div class="section-header">
+          <h2 class="section-title" id="features-heading">What Resumo does</h2>
+          <p class="section-subtitle">Straightforward tools that actually help you get hired.</p>
+        </div>
+
+        <ul class="features-grid" role="list">
+
+          <li class="feature-card">
+            <div class="feature-icon" aria-hidden="true">
+              <i data-lucide="file-text"></i>
+            </div>
+            <h3 class="feature-title">Live preview</h3>
+            <p class="feature-desc">See your CV update in real time as you type — no guessing how it'll look.</p>
+          </li>
+
+          <li class="feature-card">
+            <div class="feature-icon" aria-hidden="true">
+              <i data-lucide="palette"></i>
+            </div>
+            <h3 class="feature-title">Multiple templates</h3>
+            <p class="feature-desc">Switch between layouts instantly without losing your content.</p>
+          </li>
+
+          <li class="feature-card">
+            <div class="feature-icon" aria-hidden="true">
+              <i data-lucide="download-cloud"></i>
+            </div>
+            <h3 class="feature-title">PDF export</h3>
+            <p class="feature-desc">One-click export to a clean, ATS-friendly PDF document.</p>
+          </li>
+
+          <li class="feature-card">
+            <div class="feature-icon" aria-hidden="true">
+              <i data-lucide="save"></i>
+            </div>
+            <h3 class="feature-title">Auto-save</h3>
+            <p class="feature-desc">Your progress is saved automatically — pick up where you left off.</p>
+          </li>
+
+          <li class="feature-card">
+            <div class="feature-icon" aria-hidden="true">
+              <i data-lucide="smartphone"></i>
+            </div>
+            <h3 class="feature-title">Works on any device</h3>
+            <p class="feature-desc">Edit your CV on desktop, tablet, or phone — fully responsive.</p>
+          </li>
+
+          <li class="feature-card">
+            <div class="feature-icon" aria-hidden="true">
+              <i data-lucide="lock"></i>
+            </div>
+            <h3 class="feature-title">Private by default</h3>
+            <p class="feature-desc">Your data stays yours. We don't sell or share your information.</p>
+          </li>
+
+        </ul>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 4: CV TEMPLATES PREVIEW
+         Django: {% block templates %}{% endblock %}
+         ============================================================ -->
+    <section class="templates" id="templates" aria-labelledby="templates-heading">
+      <div class="container">
+
+        <div class="section-header">
+          <h2 class="section-title" id="templates-heading">Ready-made templates</h2>
+          <p class="section-subtitle">Designed to impress — just add your details.</p>
+        </div>
+
+        <ul class="templates-grid" role="list">
+
+          <li class="template-card">
+            <!-- IMAGE: CV template thumbnail — see Image Placement Guide -->
+            <div class="img-placeholder img-placeholder--template" role="img" aria-label="Classic CV template thumbnail">
+              <i data-lucide="file-text" aria-hidden="true"></i>
+              <span>Classic</span>
+              <small>300 × 420 px</small>
+            </div>
+            <!-- END IMAGE -->
+            <div class="template-card__label">
+              <span class="template-name">Classic</span>
+              <span class="template-tag">Clean &amp; timeless</span>
+            </div>
+          </li>
+
+          <li class="template-card">
+            <!-- IMAGE: CV template thumbnail — see Image Placement Guide -->
+            <div class="img-placeholder img-placeholder--template" role="img" aria-label="Modern CV template thumbnail">
+              <i data-lucide="layout" aria-hidden="true"></i>
+              <span>Modern</span>
+              <small>300 × 420 px</small>
+            </div>
+            <!-- END IMAGE -->
+            <div class="template-card__label">
+              <span class="template-name">Modern</span>
+              <span class="template-tag">Bold &amp; structured</span>
+            </div>
+          </li>
+
+          <li class="template-card">
+            <!-- IMAGE: CV template thumbnail — see Image Placement Guide -->
+            <div class="img-placeholder img-placeholder--template" role="img" aria-label="Minimal CV template thumbnail">
+              <i data-lucide="minus-square" aria-hidden="true"></i>
+              <span>Minimal</span>
+              <small>300 × 420 px</small>
+            </div>
+            <!-- END IMAGE -->
+            <div class="template-card__label">
+              <span class="template-name">Minimal</span>
+              <span class="template-tag">Simple &amp; elegant</span>
+            </div>
+          </li>
+
+        </ul>
+
+        <div class="templates__cta">
+          <a href="/builder" class="btn btn--accent btn--lg">
+            <i data-lucide="pencil" aria-hidden="true"></i>
+            Start with any template — free
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 5: CTA BANNER (bonus section)
+         Django: {% block cta_banner %}{% endblock %}
+         ============================================================ -->
+    <section class="cta-banner" aria-labelledby="cta-banner-heading">
+      <div class="container cta-banner__inner">
+        <h2 class="cta-banner__title" id="cta-banner-heading">
+          Ready to build your CV?
+        </h2>
+        <p class="cta-banner__sub">No account needed to start. Sign up only when you want to save.</p>
+        <a href="/builder" class="btn btn--white btn--lg">
+          <i data-lucide="arrow-right" aria-hidden="true"></i>
+          Get started now
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+       Django: {% include "partials/footer.html" %}
+       ============================================================ -->
+  <footer class="footer" role="contentinfo">
+    <div class="container footer__inner">
+
+      <!-- Footer Logo -->
+      <div class="footer__brand">
+        <a href="/" class="navbar__logo footer__logo" aria-label="Resumo home">
+          <span class="logo-icon" aria-hidden="true">
+            <i data-lucide="file-text"></i>
+          </span>
+          <span class="logo-text">Resumo</span>
+        </a>
+        <p class="footer__tagline">Free CV builder for everyone.</p>
+      </div>
+
+      <!-- Footer Links -->
+      <nav class="footer__links" aria-label="Footer navigation">
+        <a href="/privacy" class="footer-link">Privacy</a>
+        <a href="/terms" class="footer-link">Terms</a>
+        <a href="https://github.com/your-org/resumo" class="footer-link footer-link--icon" target="_blank" rel="noopener noreferrer" aria-label="Resumo on GitHub">
+          <i data-lucide="github" aria-hidden="true"></i>
+          GitHub
+        </a>
+      </nav>
+
+      <!-- Copyright -->
+      <!-- Django: {{ current_year }} via context processor -->
+      <p class="footer__copy">&copy; 2026 Resumo. All rights reserved.</p>
+
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       DJANGO: {% endblock content %}
+       ============================================================ -->
+
+  <!-- Main JS -->
+  <script src="script.js"></script>
+
+</body>
+</html>
