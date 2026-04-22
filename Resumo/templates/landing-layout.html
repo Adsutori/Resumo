@@ -70,7 +70,7 @@
         <div class="navbar__actions">
           {% if user.is_authenticated %}
             <ul class="nav-links" role="list">
-              <li><a href="/dashboard/">Dashboard</a></li>
+              <li><a href="{% url 'users:dashboard' %}">Dashboard</a></li>
             </ul>
             <div class="nav-actions">
               <span class="nav-login">Hi, {{ user.nick }}</span>
