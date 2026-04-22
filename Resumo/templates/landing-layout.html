@@ -68,9 +68,18 @@
 
         <!-- CTA Buttons (desktop only) -->
         <div class="navbar__actions">
-          <!-- Django: {% if user.is_authenticated %} show dashboard {% else %} show login/signup {% endif %} -->
-          <a href="{% url 'users:login' %}"  class="btn btn--ghost" aria-label="Log in to your account"  data-i18n="nav_login">Log in</a>
-          <a href="{% url 'users:register' %}" class="btn btn--accent" aria-label="Sign up for free"        data-i18n="nav_signup">Sign up</a>
+          {% if user.is_authenticated %}
+            <ul class="nav-links" role="list">
+              <li><a href="/dashboard/">Dashboard</a></li>
+            </ul>
+            <div class="nav-actions">
+              <span class="nav-login">Hi, {{ user.nick }}</span>
+              <a href="{% url 'users:logout' %}" class="btn btn-primary">Log Out</a>
+            </div>
+          {% else %} 
+            <a href="{% url 'users:login' %}"  class="btn btn--ghost" aria-label="Log in to your account"  data-i18n="nav_login">Log in</a>
+            <a href="{% url 'users:register' %}" class="btn btn--accent" aria-label="Sign up for free"        data-i18n="nav_signup">Sign up</a>
+          {% endif %}
         </div>
       </div>
 

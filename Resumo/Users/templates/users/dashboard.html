@@ -1,0 +1,7 @@
+{% extends 'landing-layout.html' %}
+
+{% block content %}
+<h1>Witaj, {{ user.first_name }}! 👋</h1>
+<p>Jesteś zalogowany jako {{ user.email }}</p>
+<a href="{% url 'users:logout' %}">Wyloguj się</a>
+{% endblock %}

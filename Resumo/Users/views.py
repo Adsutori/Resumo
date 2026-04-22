@@ -5,10 +5,11 @@ from django.contrib                 import messages
 from django.utils                   import timezone
 from django.views.decorators.http   import require_POST
 
-from .models  import User
+
 from .forms   import RegisterForm, LoginForm, VerifyEmailForm, ResendVerificationForm
 from .utils   import send_verification_email
-
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 # ================================================================
 # REGISTER
@@ -19,7 +20,7 @@ def register_view(request):
     POST — validate, create inactive user, send verification email
     """
     if request.user.is_authenticated:
-        return redirect('dashboard')
+        return redirect('/')
 
     form = RegisterForm(request.POST or None)
 
@@ -57,7 +58,7 @@ def login_view(request):
     POST — authenticate, check verification, log in
     """
     if request.user.is_authenticated:
-        return redirect('dashboard')
+        return redirect('/')
 
     form = LoginForm(request.POST or None)
 
@@ -97,7 +98,7 @@ def login_view(request):
                 messages.success(request, f'Witaj, {user.nick}! 👋')
 
                 # Respect ?next= redirect param
-                next_url = request.GET.get('next') or 'dashboard'
+                next_url = request.GET.get('next') or '/'
                 return redirect(next_url)
 
     return render(request, 'users/login.html', {'form': form})
@@ -129,7 +130,7 @@ def verify_email_view(request):
 
     # If no email in session and user is already verified → dashboard
     if not email and request.user.is_authenticated and request.user.is_verified:
-        return redirect('dashboard')
+        return redirect('/')
 
     # If no email in session at all → send to register
     if not email:
