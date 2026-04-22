@@ -1,0 +1,141 @@
+{% extends 'landing-layout.html' %}
+{% load static %}
+
+{% block title %}Zaloguj się — Resumo{% endblock %}
+
+{% block content %}
+
+<section class="auth-section" aria-labelledby="auth-heading">
+  <div class="container auth-container">
+
+    <div class="auth-card">
+
+      <!-- Header -->
+      <div class="auth-card__header">
+        <div class="auth-card__icon" aria-hidden="true">
+          <i data-lucide="log-in"></i>
+        </div>
+        <h1 class="auth-card__title" id="auth-heading">Witaj z powrotem</h1>
+        <p class="auth-card__sub">Zaloguj się, aby wrócić do swojego CV.</p>
+      </div>
+
+      <!-- Django messages (errors / success) -->
+      {% if messages %}
+        <ul class="auth-messages" role="alert" aria-live="polite">
+          {% for message in messages %}
+            <li class="auth-message auth-message--{{ message.tags }}">
+              <i data-lucide="{% if message.tags == 'error' %}alert-circle{% else %}check-circle{% endif %}" aria-hidden="true"></i>
+              {{ message }}
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      <!-- Form -->
+      <form
+        class="auth-form"
+        method="POST"
+        action="{% url 'users:login' %}"
+        novalidate
+      >
+        {% csrf_token %}
+
+        <!-- Email -->
+        <div class="form-group">
+          <label class="form-label" for="id_email">
+            <i data-lucide="mail" aria-hidden="true"></i>
+            Adres e-mail
+          </label>
+          <input
+            class="form-input {% if form.email.errors %}form-input--error{% endif %}"
+            type="email"
+            id="id_email"
+            name="email"
+            value="{{ form.email.value|default:'' }}"
+            placeholder="twoj@email.com"
+            autocomplete="email"
+            required
+            aria-describedby="{% if form.email.errors %}email-error{% endif %}"
+          />
+          {% if form.email.errors %}
+            <span class="form-error" id="email-error" role="alert">
+              <i data-lucide="alert-circle" aria-hidden="true"></i>
+              {{ form.email.errors|join:", " }}
+            </span>
+          {% endif %}
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <div class="form-label-row">
+            <label class="form-label" for="id_password">
+              <i data-lucide="lock" aria-hidden="true"></i>
+              Hasło
+            </label>
+            {% comment %} <a href="{% url 'password_reset' %}" class="form-link form-link--small">
+              Zapomniałeś hasła?
+            </a> {% endcomment %}
+          </div>
+          <div class="form-input-wrap">
+            <input
+              class="form-input {% if form.password.errors %}form-input--error{% endif %}"
+              type="password"
+              id="id_password"
+              name="password"
+              placeholder="••••••••"
+              autocomplete="current-password"
+              required
+              aria-describedby="{% if form.password.errors %}password-error{% endif %}"
+            />
+            <button
+              type="button"
+              class="form-input__toggle-pw"
+              aria-label="Pokaż/ukryj hasło"
+              data-target="id_password"
+            >
+              <i data-lucide="eye" aria-hidden="true"></i>
+            </button>
+          </div>
+          {% if form.password.errors %}
+            <span class="form-error" id="password-error" role="alert">
+              <i data-lucide="alert-circle" aria-hidden="true"></i>
+              {{ form.password.errors|join:", " }}
+            </span>
+          {% endif %}
+        </div>
+
+        <!-- Remember me -->
+        <div class="form-group form-group--inline">
+          <label class="form-checkbox">
+            <input type="checkbox" name="remember_me" id="id_remember_me" />
+            <span class="form-checkbox__box" aria-hidden="true"></span>
+            Zapamiętaj mnie
+          </label>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn btn--accent btn--full btn--lg">
+          <i data-lucide="log-in" aria-hidden="true"></i>
+          Zaloguj się
+        </button>
+
+      </form>
+
+      <!-- Divider -->
+      <div class="auth-divider" aria-hidden="true">
+        <span>lub</span>
+      </div>
+
+      <!-- Footer link -->
+      <p class="auth-card__footer">
+        Nie masz jeszcze konta?
+        <a href="{% url 'users:register' %}" class="form-link">
+          Zarejestruj się za darmo
+        </a>
+      </p>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

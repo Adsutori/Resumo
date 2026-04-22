@@ -69,8 +69,8 @@
         <!-- CTA Buttons (desktop only) -->
         <div class="navbar__actions">
           <!-- Django: {% if user.is_authenticated %} show dashboard {% else %} show login/signup {% endif %} -->
-          <a href="/login"  class="btn btn--ghost" aria-label="Log in to your account"  data-i18n="nav_login">Log in</a>
-          <a href="/signup" class="btn btn--accent" aria-label="Sign up for free"        data-i18n="nav_signup">Sign up</a>
+          <a href="{% url 'users:login' %}"  class="btn btn--ghost" aria-label="Log in to your account"  data-i18n="nav_login">Log in</a>
+          <a href="{% url 'users:register' %}" class="btn btn--accent" aria-label="Sign up for free"        data-i18n="nav_signup">Sign up</a>
         </div>
       </div>
 
@@ -94,8 +94,8 @@
         <a href="#features"     class="mobile-link" data-i18n="nav_features">Features</a>
         <a href="#templates"    class="mobile-link" data-i18n="nav_templates">Templates</a>
         <hr class="mobile-divider" />
-        <a href="/login"  class="btn btn--ghost  btn--full" data-i18n="nav_login">Log in</a>
-        <a href="/signup" class="btn btn--accent btn--full" data-i18n="nav_signup">Sign up free</a>
+        <a href="{% url 'users:login' %}"  class="btn btn--ghost  btn--full" data-i18n="nav_login">Log in</a>
+        <a href="{% url 'users:register' %}" class="btn btn--accent btn--full" data-i18n="nav_signup">Sign up free</a>
       </nav>
     </div>
   </header>

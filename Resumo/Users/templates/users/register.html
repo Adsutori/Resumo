@@ -1,0 +1,252 @@
+{% extends 'landing-layout.html' %}
+{% load static %}
+
+{% block title %}Zarejestruj się — Resumo{% endblock %}
+
+{% block content %}
+
+<section class="auth-section" aria-labelledby="auth-heading">
+  <div class="container auth-container">
+
+    <div class="    ">
+
+      <!-- Header -->
+      <div class="auth-card__header">
+        <div class="auth-card__icon" aria-hidden="true">
+          <i data-lucide="user-plus"></i>
+        </div>
+        <h1 class="auth-card__title" id="auth-heading">Utwórz konto</h1>
+        <p class="auth-card__sub">Dołącz do 12 000+ osób budujących CV z Resumo.</p>
+      </div>
+
+      <!-- Django messages -->
+      {% if messages %}
+        <ul class="auth-messages" role="alert" aria-live="polite">
+          {% for message in messages %}
+            <li class="auth-message auth-message--{{ message.tags }}">
+              <i data-lucide="{% if message.tags == 'error' %}alert-circle{% else %}check-circle{% endif %}" aria-hidden="true"></i>
+              {{ message }}
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      <!-- Form -->
+      <form
+        class="auth-form"
+        method="POST"
+        action="{% url 'users:register' %}"
+        novalidate
+      >
+        {% csrf_token %}
+
+        <!-- Name row: first + last -->
+        <div class="form-row">
+
+          <div class="form-group">
+            <label class="form-label" for="id_first_name">
+              <i data-lucide="user" aria-hidden="true"></i>
+              Imię
+            </label>
+            <input
+              class="form-input {% if form.first_name.errors %}form-input--error{% endif %}"
+              type="text"
+              id="id_first_name"
+              name="first_name"
+              value="{{ form.first_name.value|default:'' }}"
+              placeholder="Jan"
+              autocomplete="given-name"
+              required
+            />
+            {% if form.first_name.errors %}
+              <span class="form-error" role="alert">
+                <i data-lucide="alert-circle" aria-hidden="true"></i>
+                {{ form.first_name.errors|join:", " }}
+              </span>
+            {% endif %}
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="id_last_name">
+              Nazwisko
+            </label>
+            <input
+              class="form-input {% if form.last_name.errors %}form-input--error{% endif %}"
+              type="text"
+              id="id_last_name"
+              name="last_name"
+              value="{{ form.last_name.value|default:'' }}"
+              placeholder="Kowalski"
+              autocomplete="family-name"
+              required
+            />
+            {% if form.last_name.errors %}
+              <span class="form-error" role="alert">
+                <i data-lucide="alert-circle" aria-hidden="true"></i>
+                {{ form.last_name.errors|join:", " }}
+              </span>
+            {% endif %}
+          </div>
+
+        </div>
+
+        <!-- Nick -->
+        <div class="form-group">
+          <label class="form-label" for="id_nick">
+            <i data-lucide="at-sign" aria-hidden="true"></i>
+            Nick
+          </label>
+          <input
+            class="form-input {% if form.nick.errors %}form-input--error{% endif %}"
+            type="text"
+            id="id_nick"
+            name="nick"
+            value="{{ form.nick.value|default:'' }}"
+            placeholder="jankowalski99"
+            autocomplete="username"
+            required
+          />
+          {% if form.nick.errors %}
+            <span class="form-error" role="alert">
+              <i data-lucide="alert-circle" aria-hidden="true"></i>
+              {{ form.nick.errors|join:", " }}
+            </span>
+          {% endif %}
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label class="form-label" for="id_email">
+            <i data-lucide="mail" aria-hidden="true"></i>
+            Adres e-mail
+          </label>
+          <input
+            class="form-input {% if form.email.errors %}form-input--error{% endif %}"
+            type="email"
+            id="id_email"
+            name="email"
+            value="{{ form.email.value|default:'' }}"
+            placeholder="twoj@email.com"
+            autocomplete="email"
+            required
+          />
+          {% if form.email.errors %}
+            <span class="form-error" role="alert">
+              <i data-lucide="alert-circle" aria-hidden="true"></i>
+              {{ form.email.errors|join:", " }}
+            </span>
+          {% endif %}
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label class="form-label" for="id_password1">
+            <i data-lucide="lock" aria-hidden="true"></i>
+            Hasło
+          </label>
+          <div class="form-input-wrap">
+            <input
+              class="form-input {% if form.password1.errors %}form-input--error{% endif %}"
+              type="password"
+              id="id_password1"
+              name="password1"
+              placeholder="Min. 8 znaków"
+              autocomplete="new-password"
+              required
+            />
+            <button
+              type="button"
+              class="form-input__toggle-pw"
+              aria-label="Pokaż/ukryj hasło"
+              data-target="id_password1"
+            >
+              <i data-lucide="eye" aria-hidden="true"></i>
+            </button>
+          </div>
+          {% if form.password1.errors %}
+            <span class="form-error" role="alert">
+              <i data-lucide="alert-circle" aria-hidden="true"></i>
+              {{ form.password1.errors|join:", " }}
+            </span>
+          {% endif %}
+          <!-- Password strength bar -->
+          <div class="password-strength" id="password-strength" aria-hidden="true">
+            <div class="password-strength__bar">
+              <div class="password-strength__fill" id="strength-fill"></div>
+            </div>
+            <span class="password-strength__label" id="strength-label"></span>
+          </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="form-group">
+          <label class="form-label" for="id_password2">
+            <i data-lucide="lock" aria-hidden="true"></i>
+            Powtórz hasło
+          </label>
+          <div class="form-input-wrap">
+            <input
+              class="form-input {% if form.password2.errors %}form-input--error{% endif %}"
+              type="password"
+              id="id_password2"
+              name="password2"
+              placeholder="••••••••"
+              autocomplete="new-password"
+              required
+            />
+            <button
+              type="button"
+              class="form-input__toggle-pw"
+              aria-label="Pokaż/ukryj hasło"
+              data-target="id_password2"
+            >
+              <i data-lucide="eye" aria-hidden="true"></i>
+            </button>
+          </div>
+          {% if form.password2.errors %}
+            <span class="form-error" role="alert">
+              <i data-lucide="alert-circle" aria-hidden="true"></i>
+              {{ form.password2.errors|join:", " }}
+            </span>
+          {% endif %}
+        </div>
+
+        <!-- Terms checkbox -->
+        <div class="form-group form-group--inline">
+          <label class="form-checkbox">
+            <input type="checkbox" name="terms" id="id_terms" required />
+            <span class="form-checkbox__box" aria-hidden="true"></span>
+            Akceptuję
+            <a href="/terms" class="form-link" target="_blank">Regulamin</a>
+            i
+            <a href="/privacy" class="form-link" target="_blank">Politykę prywatności</a>
+          </label>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn btn--accent btn--full btn--lg">
+          <i data-lucide="user-plus" aria-hidden="true"></i>
+          Utwórz konto — to darmowe
+        </button>
+
+      </form>
+
+      <!-- Divider -->
+      <div class="auth-divider" aria-hidden="true">
+        <span>lub</span>
+      </div>
+
+      <!-- Footer link -->
+      <p class="auth-card__footer">
+        Masz już konto?
+        <a href="{% url 'users:login' %}" class="form-link">
+          Zaloguj się
+        </a>
+      </p>
+
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

@@ -427,3 +427,63 @@ function syncLangButtons(activeLang) {
     btn.setAttribute('aria-pressed', String(isActive));
   });
 }
+
+/* ============================================================
+   AUTH PAGES — password toggle + strength meter
+   Runs only if relevant elements exist on the page
+   ============================================================ */
+
+// ── Show / hide password ──
+document.querySelectorAll('.form-input__toggle-pw').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const targetId = btn.getAttribute('data-target');
+    const input    = document.getElementById(targetId);
+    if (!input) return;
+
+    const isHidden = input.type === 'password';
+    input.type     = isHidden ? 'text' : 'password';
+
+    // Swap eye icon
+    const icon = btn.querySelector('[data-lucide]');
+    if (icon) {
+      icon.setAttribute('data-lucide', isHidden ? 'eye-off' : 'eye');
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+  });
+});
+
+// ── Password strength meter (register page only) ──
+const pw1Input     = document.getElementById('id_password1');
+const strengthFill = document.getElementById('strength-fill');
+const strengthLbl  = document.getElementById('strength-label');
+
+if (pw1Input && strengthFill && strengthLbl) {
+  pw1Input.addEventListener('input', () => {
+    const val   = pw1Input.value;
+    const score = getPasswordScore(val);
+
+    const levels = [
+      { label: '',         color: 'transparent', width: '0%'   },
+      { label: 'Słabe',    color: '#ef4444',      width: '25%'  },
+      { label: 'Średnie',  color: '#f59e0b',      width: '50%'  },
+      { label: 'Dobre',    color: '#3b82f6',      width: '75%'  },
+      { label: 'Silne',    color: '#22c55e',      width: '100%' },
+    ];
+
+    const level = levels[score];
+    strengthFill.style.width           = level.width;
+    strengthFill.style.backgroundColor = level.color;
+    strengthLbl.textContent            = level.label;
+    strengthLbl.style.color            = level.color;
+  });
+}
+
+function getPasswordScore(pw) {
+  if (!pw) return 0;
+  let score = 0;
+  if (pw.length >= 8)               score++;
+  if (/[A-Z]/.test(pw))             score++;
+  if (/[0-9]/.test(pw))             score++;
+  if (/[^A-Za-z0-9]/.test(pw))      score++;
+  return score;
+}

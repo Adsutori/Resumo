@@ -1,0 +1,90 @@
+{% extends 'landing-layout.html' %}
+
+{% block content %}
+<section class="auth-section auth-section--centered">
+  <div class="container">
+    <div class="auth-card auth-card--narrow">
+
+      <div class="verify-icon" aria-hidden="true">
+        <div class="verify-icon__ring"></div>
+        <i data-lucide="mail-check"></i>
+      </div>
+
+      <div class="auth-card__header">
+        <h1 class="auth-card__title">Sprawdź swoją skrzynkę</h1>
+        <p class="auth-card__sub">
+          Wysłaliśmy 6-cyfrowy kod na<br />
+          {% if email %}<strong class="verify-email-address">{{ email }}</strong>{% endif %}
+        </p>
+      </div>
+
+      {% if messages %}
+        <ul class="auth-messages" role="alert">
+          {% for message in messages %}
+            <li class="auth-message auth-message--{{ message.tags }}">
+              <i data-lucide="{% if message.tags == 'error' %}alert-circle{% else %}check-circle{% endif %}"></i>
+              {{ message }}
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      <!-- Code entry form -->
+      <form method="POST" action="{% url 'users:verify_email' %}" class="auth-form">
+        {% csrf_token %}
+        <div class="form-group">
+          <label class="form-label" for="id_code">
+            <i data-lucide="hash" aria-hidden="true"></i>
+            Kod weryfikacyjny
+          </label>
+          <input
+            class="form-input form-input--code {% if form.code.errors %}form-input--error{% endif %}"
+            type="text"
+            id="id_code"
+            name="code"
+            maxlength="6"
+            placeholder="_ _ _ _ _ _"
+            inputmode="numeric"
+            pattern="[0-9]{6}"
+            autocomplete="one-time-code"
+            autofocus
+            required
+          />
+          {% if form.code.errors %}
+            <span class="form-error" role="alert">
+              <i data-lucide="alert-circle"></i>
+              {{ form.code.errors|join:", " }}
+            </span>
+          {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn--accent btn--full btn--lg">
+          <i data-lucide="check-circle" aria-hidden="true"></i>
+          Zweryfikuj konto
+        </button>
+      </form>
+
+      <!-- Resend -->
+      <div class="verify-resend" style="margin-top: 1.5rem;">
+        <p class="verify-resend__label">Nie dostałeś kodu?</p>
+        <form method="POST" action="{% url 'users:resend_verification' %}">
+          {% csrf_token %}
+          {% if email %}<input type="hidden" name="email" value="{{ email }}" />{% endif %}
+          <button type="submit" class="btn btn--ghost btn--full" id="resend-btn">
+            <i data-lucide="refresh-cw" aria-hidden="true"></i>
+            Wyślij ponownie
+          </button>
+        </form>
+      </div>
+
+      <p class="auth-card__footer">
+        <a href="{% url 'users:login' %}" class="form-link">
+          <i data-lucide="arrow-left" aria-hidden="true"></i>
+          Wróć do logowania
+        </a>
+      </p>
+
+    </div>
+  </div>
+</section>
+{% endblock %}
