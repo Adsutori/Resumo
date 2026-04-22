@@ -1,11 +1,14 @@
 /* ============================================================
    RESUMO — style.css
-   Mobile-first, custom properties, no frameworks
+   Mobile-first, custom properties, dark/light theme, no frameworks
    ============================================================ */
 
-/* === CUSTOM PROPERTIES (Design Tokens) === */
+/* ============================================================
+   DESIGN TOKENS — Light mode (default)
+   Original palette preserved; semantic aliases added for theming
+   ============================================================ */
 :root {
-  /* Colors */
+  /* ── Original palette (keep as source-of-truth) ── */
   --color-bg:          #ffffff;
   --color-bg-subtle:   #f8f8fc;
   --color-bg-muted:    #f1f1f7;
@@ -18,19 +21,34 @@
   --color-border:      #e5e7eb;
   --color-white:       #ffffff;
 
-  /* Typography */
-  --font-base: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  --font-size-xs:   0.75rem;   /* 12px */
-  --font-size-sm:   0.875rem;  /* 14px */
-  --font-size-base: 1rem;      /* 16px */
-  --font-size-md:   1.125rem;  /* 18px */
-  --font-size-lg:   1.25rem;   /* 20px */
-  --font-size-xl:   1.5rem;    /* 24px */
-  --font-size-2xl:  2rem;      /* 32px */
-  --font-size-3xl:  2.75rem;   /* 44px */
-  --font-size-4xl:  3.5rem;    /* 56px */
+  /* ── Semantic theme aliases (used throughout CSS) ── */
+  --bg:            var(--color-bg);
+  --bg-secondary:  var(--color-bg-subtle);
+  --bg-muted:      var(--color-bg-muted);
+  --text:          var(--color-text);
+  --text-muted:    var(--color-text-muted);
+  --text-light:    var(--color-text-light);
+  --accent:        var(--color-accent);
+  --accent-hover:  var(--color-accent-dark);
+  --accent-soft:   var(--color-accent-soft);
+  --border:        var(--color-border);
+  --card-bg:       var(--color-white);
+  --shadow:        rgba(0, 0, 0, 0.08);
+  --nav-bg:        rgba(255, 255, 255, 0.92);
 
-  /* Spacing */
+  /* ── Typography ── */
+  --font-base: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-size-xs:   0.75rem;
+  --font-size-sm:   0.875rem;
+  --font-size-base: 1rem;
+  --font-size-md:   1.125rem;
+  --font-size-lg:   1.25rem;
+  --font-size-xl:   1.5rem;
+  --font-size-2xl:  2rem;
+  --font-size-3xl:  2.75rem;
+  --font-size-4xl:  3.5rem;
+
+  /* ── Spacing ── */
   --space-1:  0.25rem;
   --space-2:  0.5rem;
   --space-3:  0.75rem;
@@ -44,31 +62,55 @@
   --space-20: 5rem;
   --space-24: 6rem;
 
-  /* Borders & Radius */
+  /* ── Borders & Radius ── */
   --radius-sm:   6px;
   --radius-md:   10px;
   --radius-lg:   16px;
   --radius-xl:   24px;
   --radius-full: 9999px;
-  --border:      1px solid var(--color-border);
 
-  /* Shadows */
-  --shadow-xs: 0 1px 2px rgba(0,0,0,0.05);
-  --shadow-sm: 0 2px 8px rgba(0,0,0,0.07);
-  --shadow-md: 0 4px 20px rgba(0,0,0,0.09);
-  --shadow-lg: 0 8px 40px rgba(0,0,0,0.12);
+  /* ── Shadows ── */
+  --shadow-xs: 0 1px 2px var(--shadow);
+  --shadow-sm: 0 2px 8px var(--shadow);
+  --shadow-md: 0 4px 20px var(--shadow);
+  --shadow-lg: 0 8px 40px var(--shadow);
 
-  /* Transitions */
+  /* ── Transitions ── */
   --transition-fast: 150ms ease;
   --transition-base: 250ms ease;
 
-  /* Layout */
+  /* ── Layout ── */
   --navbar-height: 64px;
   --container-max: 1160px;
   --container-pad: var(--space-5);
 }
 
-/* === RESET & BASE === */
+/* ============================================================
+   DARK MODE OVERRIDES
+   Applied via <html class="dark"> (set by JS on load)
+   ============================================================ */
+html.dark {
+  --bg:           #0f0f0f;
+  --bg-secondary: #111111;
+  --bg-muted:     #1a1a1a;
+  --text:         #f0f0f0;
+  --text-muted:   #9ca3af;
+  --text-light:   #6b7280;
+  --accent:       #818cf8;
+  --accent-hover: #6366f1;
+  --accent-soft:  #1e1b4b;
+  --border:       #222222;
+  --card-bg:      #161616;
+  --shadow:       rgba(0, 0, 0, 0.5);
+  --nav-bg:       rgba(15, 15, 15, 0.92);
+
+  /* Keep original palette vars intact for reference;
+     only semantic aliases are overridden above */
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
 *,
 *::before,
 *::after {
@@ -85,11 +127,13 @@ html {
 body {
   font-family: var(--font-base);
   font-size: var(--font-size-base);
-  color: var(--color-text);
-  background-color: var(--color-bg);
+  color: var(--text);
+  background-color: var(--bg);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  /* Smooth theme transition */
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 img {
@@ -114,7 +158,9 @@ button {
   background: none;
 }
 
-/* === LAYOUT UTILITIES === */
+/* ============================================================
+   LAYOUT UTILITIES
+   ============================================================ */
 .container {
   width: 100%;
   max-width: var(--container-max);
@@ -123,10 +169,12 @@ button {
 }
 
 .text-accent {
-  color: var(--color-accent);
+  color: var(--accent);
 }
 
-/* === BUTTONS === */
+/* ============================================================
+   BUTTONS
+   ============================================================ */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -136,17 +184,18 @@ button {
   font-size: var(--font-size-sm);
   font-weight: 600;
   line-height: 1;
-  transition: background-color var(--transition-fast),
-              color var(--transition-fast),
-              border-color var(--transition-fast),
-              box-shadow var(--transition-fast),
-              transform var(--transition-fast);
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
   white-space: nowrap;
   text-decoration: none;
 }
 
 .btn:focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
 
@@ -157,37 +206,37 @@ button {
 /* Ghost / Outline */
 .btn--ghost {
   background: transparent;
-  color: var(--color-text);
-  border: var(--border);
+  color: var(--text);
+  border: 1px solid var(--border);
 }
 
 .btn--ghost:hover {
-  background: var(--color-bg-muted);
-  border-color: #d1d5db;
+  background: var(--bg-muted);
+  border-color: var(--text-muted);
 }
 
 /* Accent / Filled */
 .btn--accent {
-  background: var(--color-accent);
-  color: var(--color-white);
-  border: 1px solid var(--color-accent);
+  background: var(--accent);
+  color: #ffffff;
+  border: 1px solid var(--accent);
 }
 
 .btn--accent:hover {
-  background: var(--color-accent-dark);
-  border-color: var(--color-accent-dark);
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
   box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
 }
 
-/* White (for dark backgrounds) */
+/* White (for dark-background sections) */
 .btn--white {
-  background: var(--color-white);
-  color: var(--color-accent);
-  border: 1px solid var(--color-white);
+  background: #ffffff;
+  color: var(--accent);
+  border: 1px solid #ffffff;
 }
 
 .btn--white:hover {
-  background: var(--color-accent-soft);
+  background: var(--accent-soft);
 }
 
 /* Large */
@@ -203,14 +252,15 @@ button {
   justify-content: center;
 }
 
-/* Lucide icon sizing inside buttons */
 .btn svg {
   width: 16px;
   height: 16px;
   flex-shrink: 0;
 }
 
-/* === SECTION SHARED STYLES === */
+/* ============================================================
+   SECTION SHARED STYLES
+   ============================================================ */
 .section-header {
   text-align: center;
   margin-bottom: var(--space-12);
@@ -220,31 +270,34 @@ button {
   font-size: var(--font-size-2xl);
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: var(--color-text);
+  color: var(--text);
   margin-bottom: var(--space-3);
 }
 
 .section-subtitle {
   font-size: var(--font-size-md);
-  color: var(--color-text-muted);
+  color: var(--text-muted);
   max-width: 480px;
   margin-inline: auto;
 }
 
-/* === IMAGE PLACEHOLDERS === */
+/* ============================================================
+   IMAGE PLACEHOLDERS
+   ============================================================ */
 .img-placeholder {
-  background: var(--color-bg-muted);
-  border: 2px dashed var(--color-border);
+  background: var(--bg-muted);
+  border: 2px dashed var(--border);
   border-radius: var(--radius-lg);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: var(--space-3);
-  color: var(--color-text-light);
+  color: var(--text-light);
   font-size: var(--font-size-sm);
   font-weight: 500;
   text-align: center;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .img-placeholder svg {
@@ -269,11 +322,14 @@ button {
   right: 0;
   z-index: 100;
   height: var(--navbar-height);
-  background: rgba(255, 255, 255, 0.92);
+  background: var(--nav-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: var(--border);
-  transition: box-shadow var(--transition-base);
+  border-bottom: 1px solid var(--border);
+  transition:
+    box-shadow var(--transition-base),
+    background-color 0.3s ease,
+    border-color 0.3s ease;
 }
 
 .navbar.scrolled {
@@ -284,7 +340,7 @@ button {
   display: flex;
   align-items: center;
   height: var(--navbar-height);
-  gap: var(--space-6);
+  gap: var(--space-4);
 }
 
 /* Logo */
@@ -294,7 +350,7 @@ button {
   gap: var(--space-2);
   font-weight: 800;
   font-size: var(--font-size-lg);
-  color: var(--color-text);
+  color: var(--text);
   text-decoration: none;
   flex-shrink: 0;
 }
@@ -305,9 +361,10 @@ button {
   justify-content: center;
   width: 32px;
   height: 32px;
-  background: var(--color-accent);
-  color: var(--color-white);
+  background: var(--accent);
+  color: #ffffff;
   border-radius: var(--radius-sm);
+  transition: background-color 0.3s ease;
 }
 
 .logo-icon svg {
@@ -330,21 +387,28 @@ button {
 .nav-link {
   font-size: var(--font-size-sm);
   font-weight: 500;
-  color: var(--color-text-muted);
+  color: var(--text-muted);
   transition: color var(--transition-fast);
   text-decoration: none;
 }
 
 .nav-link:hover {
-  color: var(--color-text);
+  color: var(--text);
 }
 
-/* Navbar actions */
+/* Right-side controls wrapper */
+.navbar__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-left: auto;
+}
+
+/* CTA buttons (inside controls, desktop only) */
 .navbar__actions {
   display: none;
   align-items: center;
   gap: var(--space-3);
-  margin-left: auto;
 }
 
 /* Hamburger */
@@ -352,15 +416,15 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: auto;
   padding: var(--space-2);
   border-radius: var(--radius-sm);
-  color: var(--color-text);
+  color: var(--text);
   transition: background var(--transition-fast);
+  flex-shrink: 0;
 }
 
 .navbar__hamburger:hover {
-  background: var(--color-bg-muted);
+  background: var(--bg-muted);
 }
 
 .navbar__hamburger svg {
@@ -375,11 +439,12 @@ button {
   top: var(--navbar-height);
   left: 0;
   right: 0;
-  background: var(--color-white);
-  border-bottom: var(--border);
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border);
   box-shadow: var(--shadow-md);
   padding: var(--space-5);
   z-index: 99;
+  transition: background-color 0.3s ease;
 }
 
 .mobile-menu.is-open {
@@ -395,20 +460,110 @@ button {
 .mobile-link {
   font-size: var(--font-size-base);
   font-weight: 500;
-  color: var(--color-text);
+  color: var(--text);
   padding: var(--space-2) 0;
   transition: color var(--transition-fast);
 }
 
 .mobile-link:hover {
-  color: var(--color-accent);
+  color: var(--accent);
 }
 
 .mobile-divider {
   border: none;
-  border-top: var(--border);
+  border-top: 1px solid var(--border);
   margin: var(--space-2) 0;
 }
+
+/* ============================================================
+   LANGUAGE SWITCHER
+   ============================================================ */
+.lang-switcher {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.lang-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.45;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+  transition:
+    opacity 0.2s ease,
+    background-color 0.2s ease;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  line-height: 1;
+}
+
+.lang-btn:hover {
+  opacity: 0.75;
+  background: var(--bg-muted);
+}
+
+.lang-btn.active {
+  opacity: 1;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--accent);
+}
+
+.lang-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   THEME TOGGLE BUTTON
+   ============================================================ */
+.theme-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  background: none;
+  border: 1px solid var(--border);
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    border-color var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.theme-btn:hover {
+  background: var(--bg-muted);
+  color: var(--text);
+}
+
+.theme-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.theme-btn svg {
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+}
+
+/* Icon visibility logic:
+   Light mode → show moon (to switch to dark)
+   Dark mode  → show sun  (to switch to light)  */
+html:not(.dark) .icon-light { display: none; }   /* hide sun in light mode  */
+html:not(.dark) .icon-dark  { display: block; }  /* show moon in light mode */
+html.dark       .icon-light { display: block; }  /* show sun in dark mode   */
+html.dark       .icon-dark  { display: none; }   /* hide moon in dark mode  */
 
 /* ============================================================
    HERO
@@ -416,8 +571,9 @@ button {
 .hero {
   padding-top: calc(var(--navbar-height) + var(--space-16));
   padding-bottom: var(--space-20);
-  background: var(--color-bg);
+  background: var(--bg);
   overflow: hidden;
+  transition: background-color 0.3s ease;
 }
 
 .hero__inner {
@@ -441,12 +597,13 @@ button {
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-2) var(--space-4);
-  background: var(--color-accent-soft);
-  color: var(--color-accent);
+  background: var(--accent-soft);
+  color: var(--accent);
   border-radius: var(--radius-full);
   font-size: var(--font-size-sm);
   font-weight: 600;
   margin-bottom: var(--space-6);
+  transition: background-color 0.3s ease;
 }
 
 .hero__badge svg {
@@ -460,14 +617,14 @@ button {
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.15;
-  color: var(--color-text);
+  color: var(--text);
   margin-bottom: var(--space-5);
 }
 
 /* Subline */
 .hero__subline {
   font-size: var(--font-size-md);
-  color: var(--color-text-muted);
+  color: var(--text-muted);
   line-height: 1.7;
   margin-bottom: var(--space-8);
   max-width: 520px;
@@ -488,13 +645,13 @@ button {
   align-items: center;
   gap: var(--space-2);
   font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
+  color: var(--text-muted);
 }
 
 .hero__social-proof svg {
   width: 16px;
   height: 16px;
-  color: var(--color-accent);
+  color: var(--accent);
 }
 
 /* Hero image */
@@ -514,7 +671,8 @@ button {
    ============================================================ */
 .how-it-works {
   padding-block: var(--space-20);
-  background: var(--color-bg-subtle);
+  background: var(--bg-secondary);
+  transition: background-color 0.3s ease;
 }
 
 .steps {
@@ -525,11 +683,15 @@ button {
 
 .step-card {
   position: relative;
-  background: var(--color-white);
-  border: var(--border);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: var(--space-8);
-  transition: box-shadow var(--transition-base), transform var(--transition-base);
+  transition:
+    box-shadow var(--transition-base),
+    transform var(--transition-base),
+    background-color 0.3s ease,
+    border-color 0.3s ease;
 }
 
 .step-card:hover {
@@ -541,7 +703,7 @@ button {
   font-size: var(--font-size-xs);
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: var(--color-text-light);
+  color: var(--text-light);
   margin-bottom: var(--space-4);
 }
 
@@ -551,10 +713,11 @@ button {
   justify-content: center;
   width: 48px;
   height: 48px;
-  background: var(--color-accent-soft);
-  color: var(--color-accent);
+  background: var(--accent-soft);
+  color: var(--accent);
   border-radius: var(--radius-md);
   margin-bottom: var(--space-4);
+  transition: background-color 0.3s ease;
 }
 
 .step-icon svg {
@@ -565,13 +728,14 @@ button {
 .step-title {
   font-size: var(--font-size-lg);
   font-weight: 700;
+  color: var(--text);
   margin-bottom: var(--space-2);
   letter-spacing: -0.01em;
 }
 
 .step-desc {
   font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
+  color: var(--text-muted);
   line-height: 1.65;
 }
 
@@ -580,7 +744,8 @@ button {
    ============================================================ */
 .features {
   padding-block: var(--space-20);
-  background: var(--color-bg);
+  background: var(--bg);
+  transition: background-color 0.3s ease;
 }
 
 .features-grid {
@@ -590,18 +755,20 @@ button {
 }
 
 .feature-card {
-  background: var(--color-bg-subtle);
-  border: var(--border);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: var(--space-6);
-  transition: box-shadow var(--transition-base),
-              border-color var(--transition-base),
-              transform var(--transition-base);
+  transition:
+    box-shadow var(--transition-base),
+    border-color var(--transition-base),
+    transform var(--transition-base),
+    background-color 0.3s ease;
 }
 
 .feature-card:hover {
   box-shadow: var(--shadow-sm);
-  border-color: #d1d5db;
+  border-color: var(--text-light);
   transform: translateY(-2px);
 }
 
@@ -611,10 +778,11 @@ button {
   justify-content: center;
   width: 44px;
   height: 44px;
-  background: var(--color-accent-soft);
-  color: var(--color-accent);
+  background: var(--accent-soft);
+  color: var(--accent);
   border-radius: var(--radius-md);
   margin-bottom: var(--space-4);
+  transition: background-color 0.3s ease;
 }
 
 .feature-icon svg {
@@ -625,13 +793,14 @@ button {
 .feature-title {
   font-size: var(--font-size-base);
   font-weight: 700;
+  color: var(--text);
   margin-bottom: var(--space-2);
   letter-spacing: -0.01em;
 }
 
 .feature-desc {
   font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
+  color: var(--text-muted);
   line-height: 1.65;
 }
 
@@ -640,7 +809,8 @@ button {
    ============================================================ */
 .templates {
   padding-block: var(--space-20);
-  background: var(--color-bg-subtle);
+  background: var(--bg-secondary);
+  transition: background-color 0.3s ease;
 }
 
 .templates-grid {
@@ -651,11 +821,15 @@ button {
 }
 
 .template-card {
-  background: var(--color-white);
-  border: var(--border);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  transition: box-shadow var(--transition-base), transform var(--transition-base);
+  transition:
+    box-shadow var(--transition-base),
+    transform var(--transition-base),
+    background-color 0.3s ease,
+    border-color 0.3s ease;
 }
 
 .template-card:hover {
@@ -673,21 +847,23 @@ button {
   align-items: center;
   justify-content: space-between;
   padding: var(--space-4) var(--space-5);
-  border-top: var(--border);
+  border-top: 1px solid var(--border);
 }
 
 .template-name {
   font-size: var(--font-size-sm);
   font-weight: 700;
+  color: var(--text);
 }
 
 .template-tag {
   font-size: var(--font-size-xs);
-  color: var(--color-text-muted);
-  background: var(--color-bg-muted);
+  color: var(--text-muted);
+  background: var(--bg-muted);
   padding: var(--space-1) var(--space-3);
   border-radius: var(--radius-full);
   font-weight: 500;
+  transition: background-color 0.3s ease;
 }
 
 .templates__cta {
@@ -700,7 +876,8 @@ button {
    ============================================================ */
 .cta-banner {
   padding-block: var(--space-20);
-  background: var(--color-accent);
+  background: var(--accent);
+  transition: background-color 0.3s ease;
 }
 
 .cta-banner__inner {
@@ -714,7 +891,7 @@ button {
 .cta-banner__title {
   font-size: var(--font-size-2xl);
   font-weight: 800;
-  color: var(--color-white);
+  color: #ffffff;
   letter-spacing: -0.02em;
 }
 
@@ -728,9 +905,10 @@ button {
    FOOTER
    ============================================================ */
 .footer {
-  background: var(--color-bg);
-  border-top: var(--border);
+  background: var(--bg);
+  border-top: 1px solid var(--border);
   padding-block: var(--space-10);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .footer__inner {
@@ -750,7 +928,7 @@ button {
 
 .footer__tagline {
   font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
+  color: var(--text-muted);
 }
 
 .footer__links {
@@ -763,13 +941,13 @@ button {
 
 .footer-link {
   font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
+  color: var(--text-muted);
   transition: color var(--transition-fast);
   text-decoration: none;
 }
 
 .footer-link:hover {
-  color: var(--color-text);
+  color: var(--text);
 }
 
 .footer-link--icon {
@@ -785,7 +963,7 @@ button {
 
 .footer__copy {
   font-size: var(--font-size-xs);
-  color: var(--color-text-light);
+  color: var(--text-light);
 }
 
 /* ============================================================
@@ -836,22 +1014,28 @@ button {
     --container-pad: var(--space-10);
   }
 
-  /* Navbar: show links + actions, hide hamburger */
+  /* Show desktop nav links */
   .navbar__links {
     display: flex;
     margin-left: auto;
   }
 
+  /* Show CTA buttons inside controls */
   .navbar__actions {
     display: flex;
-    margin-left: var(--space-4);
   }
 
+  /* Override controls margin — links already push right */
+  .navbar__controls {
+    margin-left: 0;
+  }
+
+  /* Hide hamburger */
   .navbar__hamburger {
     display: none;
   }
 
-  /* Hero: side-by-side layout */
+  /* Hero: side-by-side */
   .hero__inner {
     flex-direction: row;
     align-items: center;
@@ -879,7 +1063,6 @@ button {
     max-width: 580px;
   }
 
-  /* Larger headline on desktop */
   .hero__headline {
     font-size: var(--font-size-4xl);
   }
@@ -914,10 +1097,10 @@ button {
 }
 
 /* ============================================================
-   FOCUS STYLES (keyboard nav)
+   FOCUS STYLES (keyboard navigation)
    ============================================================ */
 :focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: var(--radius-sm);
 }
