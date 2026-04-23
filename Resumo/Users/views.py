@@ -115,7 +115,7 @@ def logout_view(request):
     """
     logout(request)
     messages.info(request, 'Zostałeś wylogowany.')
-    return redirect('home')
+    return redirect('landing_page')
 
 
 # ================================================================

@@ -74,7 +74,10 @@
             </ul>
             <div class="nav-actions">
               <span class="nav-login">Hi, {{ user.nick }}</span>
-              <a href="{% url 'users:logout' %}" class="btn btn-primary">Log Out</a>
+              <form method="POST" action="{% url 'users:logout' %}">
+                  {% csrf_token %}
+                  <button type="submit">Logout</button>
+              </form>
             </div>
           {% else %} 
             <a href="{% url 'users:login' %}"  class="btn btn--ghost" aria-label="Log in to your account"  data-i18n="nav_login">Log in</a>
