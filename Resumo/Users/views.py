@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib                 import messages
 from django.utils                   import timezone
 from django.views.decorators.http   import require_POST
+from datetime import datetime
 
 
 from .forms   import RegisterForm, LoginForm, VerifyEmailForm, ResendVerificationForm
@@ -95,7 +96,7 @@ def login_view(request):
                     request.session.set_expiry(60 * 60 * 24 * 14)
 
                 login(request, user)
-                messages.success(request, f'Witaj, {user.nick}! 👋')
+
 
                 # Respect ?next= redirect param
                 next_url = request.GET.get('next') or '/'
@@ -114,7 +115,6 @@ def logout_view(request):
     POST-only prevents CSRF logout attacks.
     """
     logout(request)
-    messages.info(request, 'Zostałeś wylogowany.')
     return redirect('landing_page')
 
 
@@ -211,7 +211,7 @@ def resend_verification_view(request):
     # ── Rate limit: max 1 resend per 60 seconds ──
     last_resend = request.session.get('last_resend_ts')
     if last_resend:
-        elapsed = (timezone.now() - timezone.datetime.fromisoformat(last_resend)).seconds
+        elapsed = (timezone.now() - datetime.fromisoformat(last_resend)).seconds
         if elapsed < 60:
             remaining = 60 - elapsed
             messages.warning(
