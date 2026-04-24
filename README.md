@@ -1,6 +1,7 @@
+```markdown
 # 📄 Resumo
 
-> Nowoczesny kreator CV — twórz, edytuj i pobieraj profesjonalne CV w kilka minut.
+> Nowoczesny kreator CV w stylu SaaS — twórz, edytuj i pobieraj profesjonalne CV w kilka minut.
 
 ![Python](https://img.shields.io/badge/Python-3.14-blue?style=flat-square&logo=python)
 ![Django](https://img.shields.io/badge/Django-6.0-green?style=flat-square&logo=django)
