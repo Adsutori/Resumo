@@ -30,6 +30,13 @@ class RegisterForm(UserCreationForm):
         widget=forms.TextInput(attrs={'placeholder': 'Kowalski'})
     )
 
+    terms = forms.BooleanField(
+        required=True,
+        error_messages={
+            'required': 'Musisz zaakceptować Regulamin i Politykę prywatności.'
+        }
+    )
+
     class Meta:
         model  = User
         fields = [

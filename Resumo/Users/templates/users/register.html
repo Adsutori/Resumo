@@ -8,7 +8,7 @@
 <section class="auth-section" aria-labelledby="auth-heading">
   <div class="container auth-container">
 
-    <div class="    ">
+    <div class="auth-card">
 
       <!-- Header -->
       <div class="auth-card__header">
@@ -16,7 +16,7 @@
           <i data-lucide="user-plus"></i>
         </div>
         <h1 class="auth-card__title" id="auth-heading">Utwórz konto</h1>
-        <p class="auth-card__sub">Dołącz do 12 000+ osób budujących CV z Resumo.</p>
+        <p class="auth-card__sub">Dołącz do osób budujących CV z Resumo.</p>
       </div>
 
       <!-- Django messages -->
@@ -47,6 +47,9 @@
             <label class="form-label" for="id_first_name">
               <i data-lucide="user" aria-hidden="true"></i>
               Imię
+              {% if form.first_name.field.required %}
+                <span class="required-star" aria-hidden="true">*</span>
+              {% endif %}
             </label>
             <input
               class="form-input {% if form.first_name.errors %}form-input--error{% endif %}"
@@ -69,6 +72,9 @@
           <div class="form-group">
             <label class="form-label" for="id_last_name">
               Nazwisko
+              {% if form.first_name.field.required %}
+                <span class="required-star" aria-hidden="true">*</span>
+              {% endif %}
             </label>
             <input
               class="form-input {% if form.last_name.errors %}form-input--error{% endif %}"
@@ -95,6 +101,9 @@
           <label class="form-label" for="id_nick">
             <i data-lucide="at-sign" aria-hidden="true"></i>
             Nick
+              {% if form.first_name.field.required %}
+                <span class="required-star" aria-hidden="true">*</span>
+              {% endif %}
           </label>
           <input
             class="form-input {% if form.nick.errors %}form-input--error{% endif %}"
@@ -119,6 +128,9 @@
           <label class="form-label" for="id_email">
             <i data-lucide="mail" aria-hidden="true"></i>
             Adres e-mail
+              {% if form.first_name.field.required %}
+                <span class="required-star" aria-hidden="true">*</span>
+              {% endif %}
           </label>
           <input
             class="form-input {% if form.email.errors %}form-input--error{% endif %}"
@@ -143,6 +155,9 @@
           <label class="form-label" for="id_password1">
             <i data-lucide="lock" aria-hidden="true"></i>
             Hasło
+              {% if form.first_name.field.required %}
+                <span class="required-star" aria-hidden="true">*</span>
+              {% endif %}
           </label>
           <div class="form-input-wrap">
             <input
@@ -183,6 +198,9 @@
           <label class="form-label" for="id_password2">
             <i data-lucide="lock" aria-hidden="true"></i>
             Powtórz hasło
+              {% if form.first_name.field.required %}
+                <span class="required-star" aria-hidden="true">*</span>
+              {% endif %}
           </label>
           <div class="form-input-wrap">
             <input
@@ -214,14 +232,28 @@
         <!-- Terms checkbox -->
         <div class="form-group form-group--inline">
           <label class="form-checkbox">
-            <input type="checkbox" name="terms" id="id_terms" required />
+            <input
+              type="checkbox"
+              name="terms"
+              id="id_terms"
+              {% if form.terms.value %}checked{% endif %}
+            />
             <span class="form-checkbox__box" aria-hidden="true"></span>
             Akceptuję
             <a href="/terms" class="form-link" target="_blank">Regulamin</a>
             i
             <a href="/privacy" class="form-link" target="_blank">Politykę prywatności</a>
+            <span class="required-star" aria-hidden="true">*</span>
           </label>
+
+          {% if form.terms.errors %}
+            <span class="form-error" role="alert">
+              <i data-lucide="alert-circle" aria-hidden="true"></i>
+              {{ form.terms.errors|join:", " }}
+            </span>
+          {% endif %}
         </div>
+
 
         <!-- Submit -->
         <button type="submit" class="btn btn--accent btn--full btn--lg">

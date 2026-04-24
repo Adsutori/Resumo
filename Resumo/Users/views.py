@@ -115,7 +115,7 @@ def logout_view(request):
     POST-only prevents CSRF logout attacks.
     """
     logout(request)
-    return redirect('landing_page')
+    return redirect('/')
 
 
 # ================================================================
@@ -181,8 +181,7 @@ def verify_email_view(request):
             # Log user in immediately
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
 
-            messages.success(request, f'E-mail zweryfikowany! Witaj, {user.nick} 🎉')
-            return redirect('index')
+            return redirect('landing_page')
 
     return render(request, 'users/verify_email.html', {
         'form':  form,

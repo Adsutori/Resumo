@@ -32,8 +32,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Third party
-    'lucide',           # tylko jeśli pip install django-lucide
+    'lucide',
+    'django_apscheduler',
     # Local
     'Users',
 ]
@@ -178,3 +178,6 @@ CSRF_COOKIE_SAMESITE    = 'Lax'
 
 SESSION_SAVE_EVERY_REQUEST = True
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 14
+
+APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
+APSCHEDULER_RUN_NOW_TIMEOUT = 25

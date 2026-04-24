@@ -1109,6 +1109,12 @@ html.dark       .icon-dark  { display: none; }   /* hide moon in dark mode  */
    AUTH PAGES — login, register, verify_email
    ============================================================ */
 
+.required-star {
+  color: #e53e3e;
+  font-weight: 700;
+  margin-left: 2px;
+}
+
 .auth-section {
   min-height: calc(100vh - var(--navbar-height));
   padding-top: calc(var(--navbar-height) + var(--space-12));
@@ -1124,10 +1130,10 @@ html.dark       .icon-dark  { display: none; }   /* hide moon in dark mode  */
 
 /* Two-column layout: card + aside */
 .auth-container {
-  display: grid;
   grid-template-columns: 1fr;
   gap: var(--space-10);
   align-items: start;
+  width: 550px;
 }
 
 /* ── Auth Card ── */

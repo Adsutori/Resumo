@@ -38,6 +38,7 @@ class User(AbstractUser):
         validators=[validate_avatar_size]
     )
 
+    created_at = models.DateTimeField(auto_now_add=True)
     is_verified = models.BooleanField(default=False)
     verification_code = models.CharField(
         max_length=6,
