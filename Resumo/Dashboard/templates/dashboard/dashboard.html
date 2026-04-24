@@ -1,0 +1,979 @@
+{% extends 'dashboard-layout.html' %}
+{% load static %}
+
+{% block title %}Moje CV — Resumo{% endblock %}
+
+{% block page_title %}Moje CV{% endblock %}
+
+{% block content %}
+
+<!-- ============================================================
+     SEKCJA 1 — POWITANIE
+============================================================ -->
+<div class="welcome">
+  <div class="welcome__text">
+    <h2 class="welcome__heading">
+      Cześć, {{ user.nick }}! 👋
+    </h2>
+    <p class="welcome__sub">Co dziś tworzymy?</p>
+  </div>
+  <div class="welcome__date">
+    <i data-lucide="calendar" aria-hidden="true"></i>
+    <span id="currentDate"></span>
+  </div>
+</div>
+
+<!-- ============================================================
+     SEKCJA 2 — SZYBKIE AKCJE
+============================================================ -->
+<div class="section-header" style="margin-top: 32px;">
+  <h3 class="section-header__title">
+    <i data-lucide="zap"></i>
+    Szybkie akcje
+  </h3>
+</div>
+
+<div class="quick-actions">
+
+  <!-- Nowe CV od zera -->
+  <div class="quick-card quick-card--accent">
+    <div class="quick-card__icon" style="background: rgba(108,99,255,0.15); color: var(--color-accent);">
+      <i data-lucide="file-plus"></i>
+    </div>
+    <div class="quick-card__body">
+      <h4 class="quick-card__title">Nowe CV od zera</h4>
+      <p class="quick-card__desc">Zacznij z pustym dokumentem i buduj krok po kroku.</p>
+    </div>
+    <a href="#" class="btn btn--accent btn--sm">
+      <i data-lucide="arrow-right"></i>
+      Zacznij
+    </a>
+  </div>
+
+  <!-- Użyj szablonu -->
+  <div class="quick-card">
+    <div class="quick-card__icon" style="background: rgba(16,185,129,0.15); color: #10b981;">
+      <i data-lucide="layout-template"></i>
+    </div>
+    <div class="quick-card__body">
+      <h4 class="quick-card__title">Użyj szablonu</h4>
+      <p class="quick-card__desc">Wybierz gotowy projekt i dostosuj go do siebie.</p>
+    </div>
+    <a href="#" class="btn btn--ghost btn--sm">
+      <i data-lucide="arrow-right"></i>
+      Przeglądaj
+    </a>
+  </div>
+
+  <!-- Importuj z LinkedIn -->
+  <div class="quick-card">
+    <div class="quick-card__icon" style="background: rgba(0,119,181,0.15); color: #0077b5;">
+      <i data-lucide="linkedin"></i>
+    </div>
+    <div class="quick-card__body">
+      <h4 class="quick-card__title">Importuj z LinkedIn</h4>
+      <p class="quick-card__desc">Pobierz dane z profilu i stwórz CV w minutę.</p>
+    </div>
+    <a href="#" class="btn btn--ghost btn--sm">
+      <i data-lucide="arrow-right"></i>
+      Importuj
+    </a>
+  </div>
+
+</div>
+
+<!-- ============================================================
+     SEKCJA 3 — MOJE CV
+============================================================ -->
+<div class="section-header" style="margin-top: 40px;">
+  <h3 class="section-header__title">
+    <i data-lucide="files"></i>
+    Moje CV
+    <span class="section-header__count">3 dokumenty</span>
+  </h3>
+  <a href="#" class="btn btn--ghost btn--sm">
+    <i data-lucide="plus"></i>
+    Dodaj nowe
+  </a>
+</div>
+
+<div class="cv-grid">
+
+  <!-- Karta CV 1 -->
+  <div class="cv-card card">
+    <div class="cv-card__preview">
+      <i data-lucide="file-text" aria-hidden="true"></i>
+      <span class="cv-card__preview-label">CV</span>
+    </div>
+    <div class="cv-card__body">
+      <div class="cv-card__header">
+        <h4 class="cv-card__title">CV — Frontend Developer</h4>
+        <span class="badge badge--success">Aktywne</span>
+      </div>
+      <p class="cv-card__meta">
+        <i data-lucide="clock" aria-hidden="true"></i>
+        Edytowano 2 godz. temu
+      </p>
+      <div class="cv-card__progress">
+        <div class="cv-card__progress-header">
+          <span>Wypełnienie</span>
+          <span>75%</span>
+        </div>
+        <div class="progress">
+          <div class="progress__fill" style="width: 75%;"></div>
+        </div>
+      </div>
+      <div class="cv-card__actions">
+        <a href="#" class="btn btn--accent btn--sm">
+          <i data-lucide="pencil"></i>
+          Edytuj
+        </a>
+        <a href="#" class="btn btn--ghost btn--sm">
+          <i data-lucide="download"></i>
+          PDF
+        </a>
+        <a href="#" class="btn btn--ghost btn--sm">
+          <i data-lucide="copy"></i>
+          Duplikuj
+        </a>
+        <button class="btn btn--danger btn--sm">
+          <i data-lucide="trash-2"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Karta CV 2 -->
+  <div class="cv-card card">
+    <div class="cv-card__preview cv-card__preview--green">
+      <i data-lucide="file-text" aria-hidden="true"></i>
+      <span class="cv-card__preview-label">CV</span>
+    </div>
+    <div class="cv-card__body">
+      <div class="cv-card__header">
+        <h4 class="cv-card__title">CV — UX Designer</h4>
+        <span class="badge badge--warning">Szkic</span>
+      </div>
+      <p class="cv-card__meta">
+        <i data-lucide="clock" aria-hidden="true"></i>
+        Edytowano 3 dni temu
+      </p>
+      <div class="cv-card__progress">
+        <div class="cv-card__progress-header">
+          <span>Wypełnienie</span>
+          <span>45%</span>
+        </div>
+        <div class="progress">
+          <div class="progress__fill progress__fill--warning" style="width: 45%;"></div>
+        </div>
+      </div>
+      <div class="cv-card__actions">
+        <a href="#" class="btn btn--accent btn--sm">
+          <i data-lucide="pencil"></i>
+          Edytuj
+        </a>
+        <a href="#" class="btn btn--ghost btn--sm">
+          <i data-lucide="download"></i>
+          PDF
+        </a>
+        <a href="#" class="btn btn--ghost btn--sm">
+          <i data-lucide="copy"></i>
+          Duplikuj
+        </a>
+        <button class="btn btn--danger btn--sm">
+          <i data-lucide="trash-2"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Karta CV 3 -->
+  <div class="cv-card card">
+    <div class="cv-card__preview cv-card__preview--orange">
+      <i data-lucide="file-text" aria-hidden="true"></i>
+      <span class="cv-card__preview-label">CV</span>
+    </div>
+    <div class="cv-card__body">
+      <div class="cv-card__header">
+        <h4 class="cv-card__title">CV — Project Manager</h4>
+        <span class="badge badge--accent">Nowe</span>
+      </div>
+      <p class="cv-card__meta">
+        <i data-lucide="clock" aria-hidden="true"></i>
+        Edytowano wczoraj
+      </p>
+      <div class="cv-card__progress">
+        <div class="cv-card__progress-header">
+          <span>Wypełnienie</span>
+          <span>90%</span>
+        </div>
+        <div class="progress">
+          <div class="progress__fill progress__fill--success" style="width: 90%;"></div>
+        </div>
+      </div>
+      <div class="cv-card__actions">
+        <a href="#" class="btn btn--accent btn--sm">
+          <i data-lucide="pencil"></i>
+          Edytuj
+        </a>
+        <a href="#" class="btn btn--ghost btn--sm">
+          <i data-lucide="download"></i>
+          PDF
+        </a>
+        <a href="#" class="btn btn--ghost btn--sm">
+          <i data-lucide="copy"></i>
+          Duplikuj
+        </a>
+        <button class="btn btn--danger btn--sm">
+          <i data-lucide="trash-2"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Karta "Dodaj nowe CV" -->
+  <a href="#" class="cv-card cv-card--add">
+    <div class="cv-card--add__inner">
+      <div class="cv-card--add__icon">
+        <i data-lucide="plus"></i>
+      </div>
+      <span class="cv-card--add__label">Nowe CV</span>
+      <span class="cv-card--add__sub">Kliknij, aby dodać</span>
+    </div>
+  </a>
+
+</div>
+
+<!-- ============================================================
+     SEKCJA 4 — SZABLONY
+============================================================ -->
+<div class="section-header" style="margin-top: 48px;">
+  <h3 class="section-header__title">
+    <i data-lucide="layout-template"></i>
+    Wybierz szablon
+  </h3>
+  <a href="#" class="btn btn--ghost btn--sm">
+    Zobacz wszystkie
+    <i data-lucide="arrow-right"></i>
+  </a>
+</div>
+
+<div class="templates-grid">
+
+  <!-- Szablon: Klasyczny -->
+  <div class="template-card card">
+    <div class="template-card__badge">
+      <span class="badge badge--accent">
+        <i data-lucide="star"></i>
+        Popularny
+      </span>
+    </div>
+    <!-- Mockup podglądu CV — CSS art -->
+    <div class="template-card__preview template-card__preview--classic">
+      <div class="cv-mock">
+        <div class="cv-mock__header cv-mock__header--classic"></div>
+        <div class="cv-mock__body">
+          <div class="cv-mock__line cv-mock__line--long"></div>
+          <div class="cv-mock__line cv-mock__line--medium"></div>
+          <div class="cv-mock__divider"></div>
+          <div class="cv-mock__line cv-mock__line--short"></div>
+          <div class="cv-mock__line cv-mock__line--long"></div>
+          <div class="cv-mock__line cv-mock__line--medium"></div>
+          <div class="cv-mock__divider"></div>
+          <div class="cv-mock__line cv-mock__line--short"></div>
+          <div class="cv-mock__line cv-mock__line--long"></div>
+          <div class="cv-mock__line cv-mock__line--medium"></div>
+        </div>
+      </div>
+    </div>
+    <div class="template-card__info">
+      <h4 class="template-card__name">Klasyczny</h4>
+      <p class="template-card__desc">Sprawdzony układ dla każdej branży</p>
+      <a href="#" class="btn btn--accent btn--sm" style="width: 100%; justify-content: center; margin-top: 12px;">
+        <i data-lucide="arrow-right"></i>
+        Użyj szablonu
+      </a>
+    </div>
+  </div>
+
+  <!-- Szablon: Minimalistyczny -->
+  <div class="template-card card">
+    <div class="template-card__badge">
+      <span class="badge badge--success">
+        <i data-lucide="trending-up"></i>
+        Polecany
+      </span>
+    </div>
+    <div class="template-card__preview template-card__preview--minimal">
+      <div class="cv-mock">
+        <div class="cv-mock__header cv-mock__header--minimal"></div>
+        <div class="cv-mock__body">
+          <div class="cv-mock__line cv-mock__line--medium" style="background: rgba(16,185,129,0.4);"></div>
+          <div class="cv-mock__line cv-mock__line--long"></div>
+          <div class="cv-mock__line cv-mock__line--long"></div>
+          <div class="cv-mock__spacer"></div>
+          <div class="cv-mock__line cv-mock__line--medium" style="background: rgba(16,185,129,0.4);"></div>
+          <div class="cv-mock__line cv-mock__line--long"></div>
+          <div class="cv-mock__line cv-mock__line--short"></div>
+          <div class="cv-mock__spacer"></div>
+          <div class="cv-mock__line cv-mock__line--medium" style="background: rgba(16,185,129,0.4);"></div>
+          <div class="cv-mock__line cv-mock__line--long"></div>
+        </div>
+      </div>
+    </div>
+    <div class="template-card__info">
+      <h4 class="template-card__name">Minimalistyczny</h4>
+      <p class="template-card__desc">Czysty, nowoczesny, bez zbędnych ozdób</p>
+      <a href="#" class="btn btn--sm" style="width: 100%; justify-content: center; margin-top: 12px; background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.3);">
+        <i data-lucide="arrow-right"></i>
+        Użyj szablonu
+      </a>
+    </div>
+  </div>
+
+  <!-- Szablon: Nowoczesny -->
+  <div class="template-card card">
+    <div class="template-card__badge">
+      <span class="badge badge--warning">
+        <i data-lucide="sparkles"></i>
+        Nowy
+      </span>
+    </div>
+    <div class="template-card__preview template-card__preview--modern">
+      <div class="cv-mock cv-mock--modern">
+        <div class="cv-mock__sidebar-col">
+          <div class="cv-mock__avatar"></div>
+          <div class="cv-mock__line cv-mock__line--short" style="background: rgba(245,158,11,0.5); margin: 6px auto; width: 60%;"></div>
+          <div class="cv-mock__line cv-mock__line--short" style="width: 80%; margin: 4px auto;"></div>
+          <div class="cv-mock__line cv-mock__line--short" style="width: 70%; margin: 4px auto;"></div>
+          <div class="cv-mock__spacer"></div>
+          <div class="cv-mock__skill-bar"></div>
+          <div class="cv-mock__skill-bar cv-mock__skill-bar--short"></div>
+          <div class="cv-mock__skill-bar cv-mock__skill-bar--medium"></div>
+        </div>
+        <div class="cv-mock__main-col">
+          <div class="cv-mock__line cv-mock__line--long" style="background: rgba(245,158,11,0.5);"></div>
+          <div class="cv-mock__line cv-mock__line--medium"></div>
+          <div class="cv-mock__spacer"></div>
+          <div class="cv-mock__line cv-mock__line--short" style="background: rgba(245,158,11,0.3);"></div>
+          <div class="cv-mock__line cv-mock__line--long"></div>
+          <div class="cv-mock__line cv-mock__line--medium"></div>
+          <div class="cv-mock__spacer"></div>
+          <div class="cv-mock__line cv-mock__line--short" style="background: rgba(245,158,11,0.3);"></div>
+          <div class="cv-mock__line cv-mock__line--long"></div>
+        </div>
+      </div>
+    </div>
+    <div class="template-card__info">
+      <h4 class="template-card__name">Nowoczesny</h4>
+      <p class="template-card__desc">Wyróżnij się z tłumu — kreatywny układ</p>
+      <a href="#" class="btn btn--sm" style="width: 100%; justify-content: center; margin-top: 12px; background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3);">
+        <i data-lucide="arrow-right"></i>
+        Użyj szablonu
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============================================================
+     SEKCJA 5 — STATYSTYKI
+============================================================ -->
+<div class="stats-row" style="margin-top: 48px; margin-bottom: 40px;">
+
+  <div class="stat-card card">
+    <div class="stat-card__icon" style="color: var(--color-accent); background: var(--color-accent-glow);">
+      <i data-lucide="download"></i>
+    </div>
+    <div class="stat-card__body">
+      <span class="stat-card__value">12</span>
+      <span class="stat-card__label">Pobrań PDF</span>
+    </div>
+  </div>
+
+  <div class="stat-card card">
+    <div class="stat-card__icon" style="color: #10b981; background: rgba(16,185,129,0.15);">
+      <i data-lucide="eye"></i>
+    </div>
+    <div class="stat-card__body">
+      <span class="stat-card__value">48</span>
+      <span class="stat-card__label">Wyświetleń CV</span>
+    </div>
+  </div>
+
+  <div class="stat-card stat-card--wide card">
+    <div class="stat-card__icon" style="color: #f59e0b; background: rgba(245,158,11,0.15);">
+      <i data-lucide="user-check"></i>
+    </div>
+    <div class="stat-card__body" style="flex: 1;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <span class="stat-card__label">Ukończenie profilu</span>
+        <span class="stat-card__value" style="font-size: 18px;">80%</span>
+      </div>
+      <div class="progress">
+        <div class="progress__fill progress__fill--warning" style="width: 80%;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stat-card card">
+    <div class="stat-card__icon" style="color: #6C63FF; background: var(--color-accent-glow);">
+      <i data-lucide="flame"></i>
+    </div>
+    <div class="stat-card__body">
+      <span class="stat-card__value">7</span>
+      <span class="stat-card__label">Dni aktywności</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============================================================
+     STYLE SPECYFICZNE DLA DASHBOARDU
+     (wyjątkowo inline — layout nie zna tych komponentów)
+============================================================ -->
+<style>
+  /* Powitanie */
+  .welcome {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .welcome__heading {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--color-text);
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+  }
+
+  .welcome__sub {
+    font-size: 15px;
+    color: var(--color-text-muted);
+    margin-top: 4px;
+  }
+
+  .welcome__date {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--color-text-muted);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    padding: 6px 12px;
+    border-radius: var(--radius-md);
+    white-space: nowrap;
+  }
+
+  .welcome__date i {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* Szybkie akcje */
+  .quick-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .quick-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+  }
+
+  .quick-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-surface-3);
+  }
+
+  .quick-card__icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .quick-card__icon i {
+    width: 22px;
+    height: 22px;
+  }
+
+  .quick-card__title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 4px;
+  }
+
+  .quick-card__desc {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+  }
+
+  /* Siatka CV */
+  .cv-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+  }
+
+  .cv-card {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .cv-card__preview {
+    height: 120px;
+    background: linear-gradient(135deg, #1e1e2e, #2a2a3e);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--color-accent);
+    border-bottom: 1px solid var(--color-border);
+    flex-shrink: 0;
+  }
+
+  .cv-card__preview--green {
+    color: #10b981;
+    background: linear-gradient(135deg, #1a2e26, #1e3a30);
+  }
+
+  .cv-card__preview--orange {
+    color: #f59e0b;
+    background: linear-gradient(135deg, #2e2a1a, #3a321e);
+  }
+
+  .cv-card__preview i {
+    width: 36px;
+    height: 36px;
+    opacity: 0.7;
+  }
+
+  .cv-card__preview-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.6;
+  }
+
+  .cv-card__body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+  }
+
+  .cv-card__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .cv-card__title {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--color-text);
+    line-height: 1.3;
+  }
+
+  .cv-card__meta {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: var(--color-text-muted);
+  }
+
+  .cv-card__meta i {
+    width: 12px;
+    height: 12px;
+  }
+
+  .cv-card__progress {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .cv-card__progress-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--color-text-muted);
+  }
+
+  .cv-card__actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: auto;
+    padding-top: 4px;
+  }
+
+  /* Karta "Dodaj nowe" */
+  .cv-card--add {
+    min-height: 240px;
+    border: 2px dashed var(--color-border);
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-xl);
+    text-decoration: none;
+    transition: border-color var(--transition), background var(--transition), transform var(--transition);
+    cursor: pointer;
+  }
+
+  .cv-card--add:hover {
+    border-color: var(--color-accent);
+    background: var(--color-accent-glow);
+    transform: translateY(-2px);
+  }
+
+  .cv-card--add__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+  }
+
+  .cv-card--add__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--color-surface-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-muted);
+    transition: background var(--transition), color var(--transition);
+  }
+
+  .cv-card--add:hover .cv-card--add__icon {
+    background: var(--color-accent);
+    color: #fff;
+  }
+
+  .cv-card--add__icon i {
+    width: 22px;
+    height: 22px;
+  }
+
+  .cv-card--add__label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+
+  .cv-card--add__sub {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    opacity: 0.6;
+  }
+
+  /* Siatka szablonów */
+  .templates-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .template-card {
+    padding: 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .template-card__badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+  }
+
+  /* Podgląd szablonu — CSS art */
+  .template-card__preview {
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .template-card__preview--classic {
+    background: linear-gradient(160deg, #1e1e2e 0%, #16162a 100%);
+  }
+
+  .template-card__preview--minimal {
+    background: linear-gradient(160deg, #1a2e26 0%, #162620 100%);
+  }
+
+  .template-card__preview--modern {
+    background: linear-gradient(160deg, #2e2a1a 0%, #261e10 100%);
+  }
+
+  /* Mockup CV */
+  .cv-mock {
+    width: 110px;
+    height: 148px;
+    background: #fff;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cv-mock__header {
+    height: 32px;
+    flex-shrink: 0;
+  }
+
+  .cv-mock__header--classic {
+    background: var(--color-accent);
+  }
+
+  .cv-mock__header--minimal {
+    height: 12px;
+    background: #10b981;
+  }
+
+  .cv-mock__body {
+    padding: 6px 7px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+  }
+
+  .cv-mock__line {
+    height: 4px;
+    border-radius: 2px;
+    background: #e0e0e0;
+  }
+
+  .cv-mock__line--long   { width: 100%; }
+  .cv-mock__line--medium { width: 70%; }
+  .cv-mock__line--short  { width: 45%; }
+
+  .cv-mock__divider {
+    height: 1px;
+    background: #e8e8e8;
+    margin: 2px 0;
+  }
+
+  .cv-mock__spacer {
+    height: 4px;
+  }
+
+  /* Nowoczesny mockup — dwukolumnowy */
+  .cv-mock--modern {
+    flex-direction: row;
+  }
+
+  .cv-mock__sidebar-col {
+    width: 38px;
+    background: rgba(245,158,11,0.15);
+    padding: 6px 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    flex-shrink: 0;
+  }
+
+  .cv-mock__main-col {
+    flex: 1;
+    padding: 6px 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .cv-mock__avatar {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(245,158,11,0.6);
+    margin-bottom: 4px;
+    flex-shrink: 0;
+  }
+
+  .cv-mock__skill-bar {
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(245,158,11,0.5);
+    width: 80%;
+  }
+
+  .cv-mock__skill-bar--short  { width: 55%; }
+  .cv-mock__skill-bar--medium { width: 70%; }
+
+  .template-card__info {
+    padding: 16px;
+  }
+
+  .template-card__name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 4px;
+  }
+
+  .template-card__desc {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+  }
+
+  /* Statystyki */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+
+  .stat-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 20px;
+  }
+
+  .stat-card--wide {
+    grid-column: span 1;
+  }
+
+  .stat-card__icon {
+    width: 42px;
+    height: 42px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .stat-card__icon i {
+    width: 20px;
+    height: 20px;
+  }
+
+  .stat-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .stat-card__value {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--color-text);
+    letter-spacing: -0.5px;
+    line-height: 1;
+  }
+
+  .stat-card__label {
+    font-size: 12px;
+    color: var(--color-text-muted);
+  }
+
+  /* ── Responsywność dashboardu ── */
+  @media (max-width: 1100px) {
+    .stats-row {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .templates-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 900px) {
+    .quick-actions {
+      grid-template-columns: 1fr;
+    }
+
+    .templates-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .welcome__heading {
+      font-size: 20px;
+    }
+
+    .cv-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .stats-row {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .quick-actions {
+      grid-template-columns: 1fr;
+    }
+
+    .templates-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .stats-row {
+      grid-template-columns: 1fr;
+    }
+
+    .welcome {
+      flex-direction: column;
+    }
+
+    .cv-card__actions {
+      flex-wrap: wrap;
+    }
+  }
+</style>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Wyświetl aktualną datę w powitaniu
+  const dateEl = document.getElementById('currentDate');
+  if (dateEl) {
+    const now = new Date();
+    dateEl.textContent = now.toLocaleDateString('pl-PL', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
+  }
+</script>
+{% endblock %}

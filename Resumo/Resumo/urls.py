@@ -24,5 +24,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.landing_page, name="landing_page"),
     path('users/', include("Users.urls")),
+    path('dashboard/', include('Dashboard.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

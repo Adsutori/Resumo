@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Dashboard — Resumo{% endblock %}</title>
+
+  <!-- Fonty -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <style>
+    /* ============================================================
+       ZMIENNE CSS — zgodne z paletą projektu Resumo
+    ============================================================ */
+    :root {
+      --color-accent:       #6C63FF;
+      --color-accent-dark:  #574fd6;
+      --color-accent-glow:  rgba(108, 99, 255, 0.15);
+      --color-bg:           #0f0f13;
+      --color-surface:      #1a1a24;
+      --color-surface-2:    #22222f;
+      --color-surface-3:    #2a2a3a;
+      --color-border:       #2e2e3e;
+      --color-text:         #e8e8f0;
+      --color-text-muted:   #8888a0;
+      --color-success:      #10b981;
+      --color-warning:      #f59e0b;
+      --color-danger:       #ef4444;
+      --color-info:         #0077b5;
+      --radius-sm:          6px;
+      --radius-md:          8px;
+      --radius-lg:          12px;
+      --radius-xl:          16px;
+      --radius-2xl:         20px;
+      --shadow-sm:          0 2px 8px rgba(0,0,0,0.2);
+      --shadow-lg:          0 8px 32px rgba(0,0,0,0.4);
+      --shadow-xl:          0 16px 48px rgba(0,0,0,0.5);
+      --sidebar-width:      240px;
+      --topbar-height:      64px;
+      --transition:         0.2s ease;
+      --font:               'Inter', sans-serif;
+    }
+
+    /* ============================================================
+       RESET I BAZA
+    ============================================================ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: var(--font);
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      font-size: 14px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: var(--font);
+      cursor: pointer;
+      border: none;
+      background: none;
+    }
+
+    ul, ol {
+      list-style: none;
+    }
+
+    /* ============================================================
+       LAYOUT GŁÓWNY — sidebar + workspace
+    ============================================================ */
+    .dash-layout {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ============================================================
+       SIDEBAR
+    ============================================================ */
+    .sidebar {
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      height: 100vh;
+      background-color: var(--color-surface);
+      border-right: 1px solid var(--color-border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 100;
+      transition: transform var(--transition);
+    }
+
+    /* Logo w sidebarze */
+    .sidebar__logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid var(--color-border);
+      text-decoration: none;
+    }
+
+    .sidebar__logo-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--color-accent);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .sidebar__logo-icon i {
+      width: 18px;
+      height: 18px;
+    }
+
+    .sidebar__logo-text {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-text);
+      letter-spacing: -0.3px;
+    }
+
+    /* Nawigacja główna */
+    .sidebar__nav {
+      flex: 1;
+      padding: 12px 12px;
+      overflow-y: auto;
+    }
+
+    .sidebar__nav-label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--color-text-muted);
+      padding: 8px 8px 4px;
+      margin-top: 8px;
+    }
+
+    .sidebar__nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: var(--radius-md);
+      color: var(--color-text-muted);
+      font-size: 13.5px;
+      font-weight: 500;
+      transition: background var(--transition), color var(--transition);
+      position: relative;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .sidebar__nav-item:hover {
+      background: var(--color-surface-2);
+      color: var(--color-text);
+    }
+
+    /* Aktywny element nawigacji */
+    .sidebar__nav-item--active {
+      background: var(--color-accent-glow);
+      color: var(--color-accent);
+    }
+
+    .sidebar__nav-item--active:hover {
+      background: var(--color-accent-glow);
+      color: var(--color-accent);
+    }
+
+    /* Wyróżniony przycisk "Nowe CV" */
+    .sidebar__nav-item--accent {
+      background: var(--color-accent);
+      color: #fff;
+      margin: 4px 0;
+    }
+
+    .sidebar__nav-item--accent:hover {
+      background: var(--color-accent-dark);
+      color: #fff;
+    }
+
+    .sidebar__nav-item i {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    /* Badge "Wkrótce" */
+    .sidebar__badge {
+      margin-left: auto;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 2px 6px;
+      border-radius: 20px;
+      background: var(--color-surface-3);
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+
+    .sidebar__badge--soon {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--color-warning);
+    }
+
+    /* Dół sidebaru — profil użytkownika */
+    .sidebar__footer {
+      padding: 12px;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .sidebar__user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: var(--radius-md);
+      margin-bottom: 6px;
+    }
+
+    .sidebar__avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--color-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .sidebar__user-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .sidebar__user-nick {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sidebar__user-role {
+      font-size: 11px;
+      color: var(--color-text-muted);
+    }
+
+    /* Przycisk wylogowania */
+    .sidebar__logout-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: var(--radius-md);
+      color: var(--color-text-muted);
+      font-size: 13px;
+      font-weight: 500;
+      transition: background var(--transition), color var(--transition);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font);
+    }
+
+    .sidebar__logout-btn:hover {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--color-danger);
+    }
+
+    .sidebar__logout-btn i {
+      width: 15px;
+      height: 15px;
+    }
+
+    /* ============================================================
+       WORKSPACE — prawa strona
+    ============================================================ */
+    .workspace {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ============================================================
+       TOPBAR
+    ============================================================ */
+    .topbar {
+      height: var(--topbar-height);
+      min-height: var(--topbar-height);
+      background: var(--color-surface);
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .topbar__left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Hamburger — widoczny tylko na mobile */
+    .topbar__hamburger {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-md);
+      color: var(--color-text-muted);
+      transition: background var(--transition);
+    }
+
+    .topbar__hamburger:hover {
+      background: var(--color-surface-2);
+      color: var(--color-text);
+    }
+
+    .topbar__hamburger i {
+      width: 20px;
+      height: 20px;
+    }
+
+    .topbar__title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    .topbar__right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Przycisk powiadomień */
+    .topbar__icon-btn {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-md);
+      color: var(--color-text-muted);
+      transition: background var(--transition), color var(--transition);
+    }
+
+    .topbar__icon-btn:hover {
+      background: var(--color-surface-2);
+      color: var(--color-text);
+    }
+
+    .topbar__icon-btn i {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* Czerwona kropka powiadomień */
+    .topbar__notif-dot {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 7px;
+      height: 7px;
+      background: var(--color-danger);
+      border-radius: 50%;
+      border: 2px solid var(--color-surface);
+    }
+
+    /* Przycisk "Nowe CV" w topbarze */
+    .topbar__btn {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 16px;
+      background: var(--color-accent);
+      color: #fff;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 600;
+      transition: background var(--transition), transform var(--transition);
+      white-space: nowrap;
+    }
+
+    .topbar__btn:hover {
+      background: var(--color-accent-dark);
+      transform: translateY(-1px);
+    }
+
+    .topbar__btn i {
+      width: 15px;
+      height: 15px;
+    }
+
+    /* ============================================================
+       GŁÓWNA TREŚĆ
+    ============================================================ */
+    .workspace__content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 32px 28px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--color-border) transparent;
+    }
+
+    .workspace__content::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .workspace__content::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .workspace__content::-webkit-scrollbar-thumb {
+      background: var(--color-border);
+      border-radius: 3px;
+    }
+
+    /* ============================================================
+       OVERLAY — tło przy otwartym sidebarze na mobile
+    ============================================================ */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 99;
+      backdrop-filter: blur(2px);
+    }
+
+    .sidebar-overlay--active {
+      display: block;
+    }
+
+    /* ============================================================
+       KOMPONENTY WSPÓLNE
+    ============================================================ */
+
+    /* Karta */
+    .card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--color-surface-3);
+    }
+
+    /* Przycisk główny */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 16px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 600;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: all var(--transition);
+      border: none;
+      text-decoration: none;
+    }
+
+    .btn i {
+      width: 14px;
+      height: 14px;
+    }
+
+    .btn--accent {
+      background: var(--color-accent);
+      color: #fff;
+    }
+
+    .btn--accent:hover {
+      background: var(--color-accent-dark);
+      transform: translateY(-1px);
+    }
+
+    .btn--ghost {
+      background: var(--color-surface-2);
+      color: var(--color-text);
+      border: 1px solid var(--color-border);
+    }
+
+    .btn--ghost:hover {
+      background: var(--color-surface-3);
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+    }
+
+    .btn--danger {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--color-danger);
+      border: 1px solid transparent;
+    }
+
+    .btn--danger:hover {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: var(--color-danger);
+    }
+
+    .btn--sm {
+      padding: 5px 11px;
+      font-size: 12px;
+    }
+
+    /* Badge */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .badge--accent {
+      background: var(--color-accent-glow);
+      color: var(--color-accent);
+    }
+
+    .badge--success {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--color-success);
+    }
+
+    .badge--warning {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--color-warning);
+    }
+
+    /* Pasek postępu */
+    .progress {
+      height: 4px;
+      background: var(--color-surface-2);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress__fill {
+      height: 100%;
+      border-radius: 2px;
+      background: var(--color-accent);
+      transition: width 0.6s ease;
+    }
+
+    .progress__fill--success {
+      background: var(--color-success);
+    }
+
+    .progress__fill--warning {
+      background: var(--color-warning);
+    }
+
+    /* Nagłówek sekcji */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .section-header__title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--color-text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-header__title i {
+      width: 18px;
+      height: 18px;
+      color: var(--color-accent);
+    }
+
+    .section-header__count {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-text-muted);
+      background: var(--color-surface-2);
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+
+    /* ============================================================
+       RESPONSYWNOŚĆ — MOBILE
+    ============================================================ */
+    @media (max-width: 768px) {
+      /* Sidebar schowany domyślnie na mobile */
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar--open {
+        transform: translateX(0);
+      }
+
+      /* Workspace zajmuje całą szerokość */
+      .workspace {
+        margin-left: 0;
+      }
+
+      /* Hamburger widoczny */
+      .topbar__hamburger {
+        display: flex;
+      }
+
+      /* Topbar przycisk "Nowe CV" — tylko ikona */
+      .topbar__btn span {
+        display: none;
+      }
+
+      /* Mniejszy padding treści */
+      .workspace__content {
+        padding: 20px 16px;
+      }
+
+      .topbar {
+        padding: 0 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .topbar__btn {
+        padding: 8px 10px;
+      }
+    }
+  </style>
+
+  {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+
+<!-- ============================================================
+     OVERLAY — tło przy otwartym sidebarze na mobile
+============================================================ -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ============================================================
+     GŁÓWNY LAYOUT
+============================================================ -->
+<div class="dash-layout">
+
+  <!-- ══════════════════════════════════════════
+       SIDEBAR
+  ══════════════════════════════════════════ -->
+  <aside class="sidebar" id="sidebar" role="navigation" aria-label="Nawigacja główna">
+
+    <!-- Logo -->
+    <a href="{% url 'dashboard:dashboard' %}" class="sidebar__logo">
+      <div class="sidebar__logo-icon">
+        <i data-lucide="file-text"></i>
+      </div>
+      <span class="sidebar__logo-text">Resumo</span>
+    </a>
+
+    <!-- Nawigacja -->
+    <nav class="sidebar__nav">
+
+      <!-- Główne -->
+      <span class="sidebar__nav-label">Menu</span>
+
+      <a href="{% url 'dashboard:dashboard' %}" class="sidebar__nav-item sidebar__nav-item--active">
+        <i data-lucide="home"></i>
+        Moje CV
+      </a>
+
+      <a href="#" class="sidebar__nav-item sidebar__nav-item--accent">
+        <i data-lucide="plus-circle"></i>
+        Nowe CV
+      </a>
+
+      <a href="#" class="sidebar__nav-item">
+        <i data-lucide="layout-template"></i>
+        Szablony
+      </a>
+
+      <a href="#" class="sidebar__nav-item">
+        <i data-lucide="share-2"></i>
+        Udostępnij CV
+      </a>
+
+      <!-- Narzędzia -->
+      <span class="sidebar__nav-label">Narzędzia</span>
+
+      <a href="#" class="sidebar__nav-item">
+        <i data-lucide="sparkles"></i>
+        Analiza AI
+        <span class="sidebar__badge sidebar__badge--soon">Wkrótce</span>
+      </a>
+
+      <a href="#" class="sidebar__nav-item">
+        <i data-lucide="briefcase"></i>
+        Aplikacje
+        <span class="sidebar__badge sidebar__badge--soon">Wkrótce</span>
+      </a>
+
+      <!-- Konto -->
+      <span class="sidebar__nav-label">Konto</span>
+
+      <a href="#" class="sidebar__nav-item">
+        <i data-lucide="settings"></i>
+        Ustawienia
+      </a>
+
+      <a href="#" class="sidebar__nav-item">
+        <i data-lucide="help-circle"></i>
+        Pomoc
+      </a>
+
+    </nav>
+
+    <!-- Profil użytkownika + wylogowanie -->
+    <div class="sidebar__footer">
+      <div class="sidebar__user">
+        <div class="sidebar__avatar">
+          {{ user.nick|first|upper }}
+        </div>
+        <div class="sidebar__user-info">
+          <div class="sidebar__user-nick">{{ user.nick }}</div>
+          <div class="sidebar__user-role">Plan darmowy</div>
+        </div>
+      </div>
+
+      <!-- Wylogowanie — POST (zabezpieczenie CSRF) -->
+      <form method="POST" action="{% url 'users:logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="sidebar__logout-btn">
+          <i data-lucide="log-out"></i>
+          Wyloguj się
+        </button>
+      </form>
+    </div>
+
+  </aside>
+
+  <!-- ══════════════════════════════════════════
+       WORKSPACE
+  ══════════════════════════════════════════ -->
+  <div class="workspace">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar__left">
+        <!-- Hamburger (mobile) -->
+        <button class="topbar__hamburger" id="hamburgerBtn" aria-label="Otwórz menu">
+          <i data-lucide="menu"></i>
+        </button>
+
+        <!-- Tytuł strony — nadpisywany w child templates -->
+        <h1 class="topbar__title">
+          {% block page_title %}Dashboard{% endblock %}
+        </h1>
+      </div>
+
+      <div class="topbar__right">
+        <!-- Powiadomienia -->
+        <a href="#" class="topbar__icon-btn" aria-label="Powiadomienia">
+          <i data-lucide="bell"></i>
+          <span class="topbar__notif-dot" aria-hidden="true"></span>
+        </a>
+
+        <!-- Przycisk Nowe CV -->
+        <a href="#" class="topbar__btn">
+          <i data-lucide="plus"></i>
+          <span>Nowe CV</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- Główna treść — nadpisywana w child templates -->
+    <main class="workspace__content">
+      {% block content %}{% endblock %}
+    </main>
+
+  </div><!-- /workspace -->
+
+</div><!-- /dash-layout -->
+
+<!-- ============================================================
+     SKRYPTY
+============================================================ -->
+<script>
+  // Inicjalizacja Lucide Icons
+  lucide.createIcons();
+
+  // Hamburger menu — toggle sidebara na mobile
+  const hamburgerBtn   = document.getElementById('hamburgerBtn');
+  const sidebar        = document.getElementById('sidebar');
+  const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+  function openSidebar() {
+    sidebar.classList.add('sidebar--open');
+    sidebarOverlay.classList.add('sidebar-overlay--active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeSidebar() {
+    sidebar.classList.remove('sidebar--open');
+    sidebarOverlay.classList.remove('sidebar-overlay--active');
+    document.body.style.overflow = '';
+  }
+
+  hamburgerBtn.addEventListener('click', () => {
+    sidebar.classList.contains('sidebar--open') ? closeSidebar() : openSidebar();
+  });
+
+  // Kliknięcie w overlay zamyka sidebar
+  sidebarOverlay.addEventListener('click', closeSidebar);
+
+  // Zamknięcie sidebara po zmianie rozmiaru okna
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 768) closeSidebar();
+  });
+</script>
+
+{% block extra_js %}{% endblock %}
+
+</body>
+</html>

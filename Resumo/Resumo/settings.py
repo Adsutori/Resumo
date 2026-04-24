@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django_apscheduler',
     # Local
     'Users',
+    'Dashboard',
 ]
 
 MIDDLEWARE = [

@@ -130,7 +130,7 @@ def verify_email_view(request):
 
     # If no email in session and user is already verified → dashboard
     if not email and request.user.is_authenticated and request.user.is_verified:
-        return redirect('/')
+        return redirect('dashboard:dashboard')
 
     # If no email in session at all → send to register
     if not email:
@@ -243,8 +243,8 @@ def resend_verification_view(request):
 # ================================================================
 # DASHBOARD (placeholder — replace with real view)
 # ================================================================
-@login_required
-def dashboard_view(request):
-    return render(request, 'users/dashboard.html', {
-        'user': request.user,
-    })
+# @login_required
+# def dashboard_view(request):
+#     return render(request, 'users/dashboard.html', {
+#         'user': request.user,
+#     })

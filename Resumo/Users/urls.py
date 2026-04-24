@@ -9,5 +9,5 @@ urlpatterns = [
     path('logout/',             views.logout_view,              name='logout'),
     path('verify-email/',       views.verify_email_view,        name='verify_email'),
     path('resend-verification/',views.resend_verification_view, name='resend_verification'),
-    path('dashboard/',          views.dashboard_view,           name='dashboard'),
+    # path('dashboard/',          views.dashboard_view,           name='dashboard'),
 ]
