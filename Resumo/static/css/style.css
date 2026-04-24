@@ -1715,3 +1715,18 @@ html.dark .auth-message--success {
     border-radius: var(--radius-lg);
   }
 }
+
+/* Logo jako obrazek — skalowanie proporcjonalne */
+.nav__logo-img,
+.sidebar__logo-img,
+.footer__logo-img {
+  height: 28px;          /* wysokość stała */
+  width: auto;           /* szerokość proporcjonalna */
+  display: block;
+  object-fit: contain;
+}
+
+/* Navbar może potrzebować trochę więcej wysokości */
+.nav__logo-img {
+  height: 32px;
+}

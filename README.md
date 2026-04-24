@@ -1,4 +1,4 @@
-# 📄 Resumo
+# ![Resumo](static/media/logo/favicon.ico) Resumo
 
 > Nowoczesny kreator CV w stylu SaaS — twórz, edytuj i pobieraj profesjonalne CV w kilka minut.
 
@@ -187,16 +187,6 @@ Resumo/
 
 ---
 
-## 🤝 Wkład w projekt
-
-1. Zrób fork repozytorium
-2. Utwórz branch: `git checkout -b feature/nazwa-funkcji`
-3. Wprowadź zmiany i zrób commit: `git commit -m 'feat: opis zmiany'`
-4. Wypchnij branch: `git push origin feature/nazwa-funkcji`
-5. Otwórz Pull Request
-
----
-
 ## 📝 Licencja
 
 Ten projekt jest objęty licencją **MIT** — szczegóły w pliku [LICENSE](LICENSE).
@@ -206,4 +196,3 @@ Ten projekt jest objęty licencją **MIT** — szczegóły w pliku [LICENSE](LIC
 <p align="center">
   Zbudowane z ❤️ przy użyciu Django
 </p>
-```

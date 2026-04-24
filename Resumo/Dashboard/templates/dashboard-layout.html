@@ -1,9 +1,12 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="pl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}Dashboard — Resumo{% endblock %}</title>
+  <link rel="icon" type="image/x-icon" href="{% static 'media/logo/favicon.ico' %}">
 
   <!-- Fonty -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -701,10 +704,12 @@
 
     <!-- Logo -->
     <a href="{% url 'dashboard:dashboard' %}" class="sidebar__logo">
-      <div class="sidebar__logo-icon">
-        <i data-lucide="file-text"></i>
-      </div>
-      <span class="sidebar__logo-text">Resumo</span>
+      <img
+        src="{% static 'media/logo/logo_wh.png' %}"
+        alt="Resumo"
+        class="sidebar__logo-img"
+        height="28"
+      />
     </a>
 
     <!-- Nawigacja -->

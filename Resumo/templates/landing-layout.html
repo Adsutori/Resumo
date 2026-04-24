@@ -9,6 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Resumo — Build a professional CV for free. No sign-up required to start." />
   <title>{% block title %}Resumo — Free Online CV Builder{% endblock %}</title>
+  <link rel="icon" type="image/x-icon" href="{% static 'media/logo/favicon.ico' %}">
 
   <!-- Google Fonts: Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -29,11 +30,13 @@
     <div class="container navbar__inner">
 
       <!-- Logo -->
-      <a href="/" class="navbar__logo" aria-label="Resumo home">
-        <span class="logo-icon" aria-hidden="true">
-          <i data-lucide="file-text"></i>
-        </span>
-        <span class="logo-text">Resumo</span>
+      <a href="/" class="nav__logo">
+        <img
+          src="{% static 'media/logo/logo_bl.png' %}"
+          alt="Resumo"
+          class="nav__logo-img"
+          height="32"
+        />
       </a>
 
       <!-- Desktop Nav Links -->
@@ -126,10 +129,12 @@
 
       <div class="footer__brand">
         <a href="/" class="navbar__logo footer__logo" aria-label="Resumo home">
-          <span class="logo-icon" aria-hidden="true">
-            <i data-lucide="file-text"></i>
-          </span>
-          <span class="logo-text">Resumo</span>
+          <img
+            src="{% static 'media/logo/logo_bl.png' %}"
+            alt="Resumo"
+            class="footer__logo-img"
+            height="28"
+          />
         </a>
         <p class="footer__tagline" data-i18n="footer_tagline">Free CV builder for everyone.</p>
       </div>
