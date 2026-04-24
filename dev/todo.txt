@@ -1,0 +1,162 @@
+🏗️ BACKEND — Modele i baza danych
+
+[ ] Stworzyć model CV w Dashboard/models.py
+class CV(models.Model):
+    user        = models.ForeignKey(User, on_delete=models.CASCADE)
+    title       = models.CharField(max_length=200)
+    template    = models.CharField(max_length=50)  # classic / minimal / modern
+    content     = models.JSONField(default=dict)   # dane CV
+    progress    = models.IntegerField(default=0)   # % wypełnienia
+    is_active   = models.BooleanField(default=True)
+    created_at  = models.DateTimeField(auto_now_add=True)
+    updated_at  = models.DateTimeField(auto_now=True)
+
+
+[ ] makemigrations + migrate
+[ ] Stworzyć model Template (klasyczny / minimalistyczny / nowoczesny) lub trzymać jako stałe w kodzie
+
+
+👁️ WIDOKI — Dashboard
+
+[ ] dashboard_view — pobrać CV usera z bazy i przekazać do szablonu
+cvs = CV.objects.filter(user=request.user).order_by('-updated_at')
+
+
+[ ] Zamienić hardcodowane karty CV w dashboard.html na {% for cv in cvs %}
+[ ] Zamienić licznik 3 dokumenty na {{ cvs.count }} dokumenty
+[ ] Dynamiczna data edycji (timesince filter Django)
+Edytowano {{ cv.updated_at|timesince }} temu
+
+
+[ ] Dynamiczny pasek postępu z cv.progress
+
+
+➕ TWORZENIE CV
+
+[ ] Widok create_cv_view — formularz tworzenia nowego CV
+[ ] Strona wyboru szablonu przed stworzeniem CV
+[ ] URL: dashboard/cv/new/
+[ ] Po stworzeniu → redirect do edytora CV
+[ ] Podpiąć przyciski:
+
+Nowe CV w topbarze
+Nowe CV od zera w szybkich akcjach
+Karta + w siatce CV
+
+
+
+
+✏️ EDYTOR CV
+
+[ ] Stworzyć stronę cv-editor.html z layoutem edytora
+[ ] Sekcje do wypełnienia:
+
+[ ] Dane osobowe (imię, nazwisko, email, telefon, miasto)
+[ ] Podsumowanie zawodowe
+[ ] Doświadczenie zawodowe (wiele wpisów)
+[ ] Wykształcenie (wiele wpisów)
+[ ] Umiejętności
+[ ] Języki
+[ ] Linki (LinkedIn, GitHub, portfolio)
+
+
+[ ] Podgląd CV na żywo (live preview po prawej stronie)
+[ ] Autosave (co 30 sekund lub przy każdej zmianie)
+[ ] Obliczanie progress (ile % sekcji wypełniono)
+
+
+📄 GENEROWANIE PDF
+
+[ ] Zainstalować weasyprint lub xhtml2pdf
+pip install weasyprint
+
+
+[ ] Widok download_pdf_view — generuje PDF z danych CV
+[ ] Osobny szablon HTML dla każdego z 3 designów CV (czysty, bez sidebar/topbar)
+[ ] URL: dashboard/cv/<id>/pdf/
+[ ] Podpiąć przycisk Pobierz PDF w kartach CV
+
+
+🔁 OPERACJE NA CV
+
+[ ] Duplikowanie — duplicate_cv_view kopiuje obiekt CV
+[ ] Usuwanie — delete_cv_view z potwierdzeniem (modal)
+[ ] Edytowanie — edit_cv_view ładuje dane do edytora
+[ ] Zabezpieczenie: sprawdzać czy cv.user == request.user (żeby user nie edytował cudzego CV)
+
+
+🎨 SZABLONY CV
+
+[ ] Podpiąć przyciski Użyj szablonu → redirect do tworzenia CV z wybranym templatem
+[ ] Stworzyć 3 szablony HTML do renderowania/PDF:
+
+[ ] cv-template-classic.html
+[ ] cv-template-minimal.html
+[ ] cv-template-modern.html
+
+
+
+
+🔗 UDOSTĘPNIANIE CV
+
+[ ] Dodać pole share_token do modelu CV (UUID)
+share_token = models.UUIDField(default=uuid.uuid4, unique=True)
+
+
+[ ] Widok publiczny CV: cv/share/<token>/
+[ ] Przycisk Udostępnij generuje link i kopiuje do schowka (JS)
+[ ] Opcja włącz/wyłącz udostępnianie
+
+
+📊 STATYSTYKI
+
+[ ] Licznik pobrań PDF — pole download_count w modelu CV
+[ ] Licznik wyświetleń — inkrementować przy każdym wejściu na publiczny link
+[ ] Ukończenie profilu — obliczyć na podstawie wypełnionych pól usera + CV
+[ ] Dni aktywności — policzyć z last_login lub osobnej tabeli aktywności
+
+
+🔔 POWIADOMIENIA
+
+[ ] Model Notification lub prostsze — Django messages framework
+[ ] Czerwona kropka znika po przeczytaniu
+[ ] Powiadomienia: pierwsze logowanie, ukończenie profilu, nowe funkcje
+
+
+🔧 USTAWIENIA KONTA
+
+[ ] Strona settings.html — zmiana nicku, emaila, hasła
+[ ] Upload avatara użytkownika
+[ ] Usunięcie konta z potwierdzeniem
+
+
+🔜 WKRÓTCE (placeholder na teraz)
+
+[ ] Analiza CV przez AI — badge "Wkrótce", docelowo integracja z OpenAI API
+[ ] Śledzenie aplikacji — tabela z aplikacjami o pracę (firma, stanowisko, status)
+[ ] Import z LinkedIn — wymaga LinkedIn API lub parsowania PDF eksportu
+
+
+🧹 PORZĄDKI TECHNICZNE
+
+[ ] LOGIN_REDIRECT_URL zmienić z /users/dashboard/ na /dashboard/
+[ ] Dodać @login_required do wszystkich widoków dashboardu
+[ ] favicon.ico — dodać do static/ (teraz 404)
+[ ] Obsługa błędów 404 / 500 — własne strony błędów
+[ ] Zmienne środowiskowe — upewnić się że SECRET_KEY i dane DB są w .env
+
+
+
+
+
+📋 Kolejność realizacji (sugerowana)
+1. Model CV + migracje
+2. Dashboard z dynamicznymi danymi
+3. Tworzenie CV (formularz)
+4. Edytor CV
+5. Generowanie PDF
+6. Duplikowanie / usuwanie
+7. Udostępnianie przez link
+8. Statystyki
+9. Ustawienia konta
+10. Powiadomienia
