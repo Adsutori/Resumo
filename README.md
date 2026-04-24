@@ -1,4 +1,7 @@
-# ![Resumo](Resumo/static/media/logo/favicon.ico) Resumo
+<p align="center">
+  <img src="static/media/logo/logo_bl.png" alt="Resumo" height="80" />
+</p>
+# Resumo
 
 > Nowoczesny kreator CV w stylu SaaS — twórz, edytuj i pobieraj profesjonalne CV w kilka minut.
 
