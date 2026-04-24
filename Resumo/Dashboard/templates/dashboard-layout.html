@@ -723,7 +723,7 @@
         Moje CV
       </a>
 
-      <a href="#" class="sidebar__nav-item sidebar__nav-item--accent">
+      <a href="{% url 'dashboard:create_cv' %}" class="sidebar__nav-item sidebar__nav-item--accent">
         <i data-lucide="plus-circle"></i>
         Nowe CV
       </a>
@@ -819,7 +819,7 @@
         </a>
 
         <!-- Przycisk Nowe CV -->
-        <a href="#" class="topbar__btn">
+        <a href="{% url 'dashboard:create_cv' %}" class="topbar__btn">
           <i data-lucide="plus"></i>
           <span>Nowe CV</span>
         </a>

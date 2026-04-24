@@ -89,150 +89,98 @@
   <h3 class="section-header__title">
     <i data-lucide="files"></i>
     Moje CV
-    <span class="section-header__count">3 dokumenty</span>
+    <span class="section__count">
+      {{ cvs_count }}
+      {% if cvs_count == 1 %}dokument
+      {% elif cvs_count == 2 or cvs_count == 3 or cvs_count == 4 %}dokumenty
+      {% else %}dokumentów
+      {% endif %}
+    </span>
   </h3>
-  <a href="#" class="btn btn--ghost btn--sm">
+  <a href="{% url 'dashboard:create_cv' %}" class="btn btn--ghost btn--sm">
     <i data-lucide="plus"></i>
     Dodaj nowe
   </a>
 </div>
 
+
 <div class="cv-grid">
 
-  <!-- Karta CV 1 -->
+  {% for cv in cvs %}
   <div class="cv-card card">
-    <div class="cv-card__preview">
-      <i data-lucide="file-text" aria-hidden="true"></i>
-      <span class="cv-card__preview-label">CV</span>
+
+    <!-- Miniatura -->
+    <div class="cv-card__preview cv-card__preview--{{ cv.template }}">
+      <a href="{% url 'dashboard:edit_cv' cv.id %}" class="cv-card__preview cv-card__preview--{{ cv.template }}">
+          <i data-lucide="file-text"></i>
+          <span class="cv-card__preview-label">CV</span>
+      </a>
     </div>
+
+    <!-- Treść karty -->
     <div class="cv-card__body">
+
+      <!-- Tytuł + badge -->
       <div class="cv-card__header">
-        <h4 class="cv-card__title">CV — Frontend Developer</h4>
-        <span class="badge badge--success">Aktywne</span>
+        <h3 class="cv-card__title">{{ cv.title }}</h3>
+        {% if cv.is_active %}
+          <span class="badge badge--active">Aktywne</span>
+        {% else %}
+          <span class="badge badge--inactive">Nieaktywne</span>
+        {% endif %}
       </div>
+
+      <!-- Data edycji -->
       <p class="cv-card__meta">
-        <i data-lucide="clock" aria-hidden="true"></i>
-        Edytowano 2 godz. temu
+        <i data-lucide="clock"></i>
+        Edytowano {{ cv.updated_at|timesince }} temu
       </p>
+
+      <!-- Pasek postępu -->
       <div class="cv-card__progress">
         <div class="cv-card__progress-header">
           <span>Wypełnienie</span>
-          <span>75%</span>
+          <span>{{ cv.progress }}%</span>
         </div>
         <div class="progress">
-          <div class="progress__fill" style="width: 75%;"></div>
+          <div class="progress__fill" style="width: {{ cv.progress }}%;"></div>
         </div>
       </div>
+
+      <!-- Akcje -->
       <div class="cv-card__actions">
-        <a href="#" class="btn btn--accent btn--sm">
-          <i data-lucide="pencil"></i>
-          Edytuj
+        <a href="{% url 'dashboard:edit_cv' cv.id %}" class="btn btn--accent btn--sm">
+            <i data-lucide="pencil"></i> Edytuj
+        </a>
+        <a href="{% url 'dashboard:download_pdf' cv.id %}" class="btn btn--ghost btn--sm">
+          <i data-lucide="download"></i> PDF
         </a>
         <a href="#" class="btn btn--ghost btn--sm">
-          <i data-lucide="download"></i>
-          PDF
+          <i data-lucide="copy"></i> Duplikuj
         </a>
-        <a href="#" class="btn btn--ghost btn--sm">
-          <i data-lucide="copy"></i>
-          Duplikuj
-        </a>
-        <button class="btn btn--danger btn--sm">
+        <a href="#" class="btn btn--danger btn--sm">
           <i data-lucide="trash-2"></i>
-        </button>
+        </a>
       </div>
+
     </div>
   </div>
+  {% endfor %}
 
-  <!-- Karta CV 2 -->
-  <div class="cv-card card">
-    <div class="cv-card__preview cv-card__preview--green">
-      <i data-lucide="file-text" aria-hidden="true"></i>
-      <span class="cv-card__preview-label">CV</span>
-    </div>
-    <div class="cv-card__body">
-      <div class="cv-card__header">
-        <h4 class="cv-card__title">CV — UX Designer</h4>
-        <span class="badge badge--warning">Szkic</span>
-      </div>
-      <p class="cv-card__meta">
-        <i data-lucide="clock" aria-hidden="true"></i>
-        Edytowano 3 dni temu
-      </p>
-      <div class="cv-card__progress">
-        <div class="cv-card__progress-header">
-          <span>Wypełnienie</span>
-          <span>45%</span>
-        </div>
-        <div class="progress">
-          <div class="progress__fill progress__fill--warning" style="width: 45%;"></div>
-        </div>
-      </div>
-      <div class="cv-card__actions">
-        <a href="#" class="btn btn--accent btn--sm">
-          <i data-lucide="pencil"></i>
-          Edytuj
-        </a>
-        <a href="#" class="btn btn--ghost btn--sm">
-          <i data-lucide="download"></i>
-          PDF
-        </a>
-        <a href="#" class="btn btn--ghost btn--sm">
-          <i data-lucide="copy"></i>
-          Duplikuj
-        </a>
-        <button class="btn btn--danger btn--sm">
-          <i data-lucide="trash-2"></i>
-        </button>
-      </div>
-    </div>
+  {% comment %} {% if not cvs %}
+  <!-- Empty state — WEWNĄTRZ gridu -->
+  <div class="cv-card--empty">
+    <i data-lucide="file-x"></i>
+    <h3>Nie masz jeszcze żadnego CV</h3>
+    <p>Stwórz swoje pierwsze CV i zacznij aplikować!</p>
+    <a href="#" class="btn btn--accent">
+      <i data-lucide="plus"></i> Stwórz CV
+    </a>
   </div>
+  {% endif %} {% endcomment %}
 
-  <!-- Karta CV 3 -->
-  <div class="cv-card card">
-    <div class="cv-card__preview cv-card__preview--orange">
-      <i data-lucide="file-text" aria-hidden="true"></i>
-      <span class="cv-card__preview-label">CV</span>
-    </div>
-    <div class="cv-card__body">
-      <div class="cv-card__header">
-        <h4 class="cv-card__title">CV — Project Manager</h4>
-        <span class="badge badge--accent">Nowe</span>
-      </div>
-      <p class="cv-card__meta">
-        <i data-lucide="clock" aria-hidden="true"></i>
-        Edytowano wczoraj
-      </p>
-      <div class="cv-card__progress">
-        <div class="cv-card__progress-header">
-          <span>Wypełnienie</span>
-          <span>90%</span>
-        </div>
-        <div class="progress">
-          <div class="progress__fill progress__fill--success" style="width: 90%;"></div>
-        </div>
-      </div>
-      <div class="cv-card__actions">
-        <a href="#" class="btn btn--accent btn--sm">
-          <i data-lucide="pencil"></i>
-          Edytuj
-        </a>
-        <a href="#" class="btn btn--ghost btn--sm">
-          <i data-lucide="download"></i>
-          PDF
-        </a>
-        <a href="#" class="btn btn--ghost btn--sm">
-          <i data-lucide="copy"></i>
-          Duplikuj
-        </a>
-        <button class="btn btn--danger btn--sm">
-          <i data-lucide="trash-2"></i>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Karta "Dodaj nowe CV" -->
-  <a href="#" class="cv-card cv-card--add">
+  <!-- Karta "Nowe CV" — zawsze na końcu -->
+  <a href="{% url 'dashboard:create_cv' %}" class="cv-card--add">
     <div class="cv-card--add__inner">
       <div class="cv-card--add__icon">
         <i data-lucide="plus"></i>
@@ -244,10 +192,24 @@
 
 </div>
 
+
+{% comment %} {% if not cvs %}
+<!-- Empty state — gdy user nie ma jeszcze żadnego CV -->
+<div class="empty-state">
+    <i data-lucide="file-x"></i>
+    <h3>Nie masz jeszcze żadnego CV</h3>
+    <p>Stwórz swoje pierwsze CV i zacznij aplikować!</p>
+    <a href="#" class="btn btn--primary">
+        <i data-lucide="plus"></i> Stwórz CV
+    </a>
+</div>
+{% endif %} {% endcomment %}
+
+
 <!-- ============================================================
      SEKCJA 4 — SZABLONY
 ============================================================ -->
-<div class="section-header" style="margin-top: 48px;">
+<div class="`-header" style="margin-top: 48px;">
   <h3 class="section-header__title">
     <i data-lucide="layout-template"></i>
     Wybierz szablon

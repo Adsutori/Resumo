@@ -1,0 +1,304 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ cv.title }}</title>
+  <style>
+    @font-face {
+      font-family: 'DejaVu';
+      src: url("{{ font_regular }}");
+    }
+    @font-face {
+      font-family: 'DejaVu';
+      src: url("{{ font_bold }}");
+      font-weight: bold;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    @page {
+    size: A4;
+    margin: 0;
+    }
+
+    body {
+    font-family: 'DejaVu', sans-serif;
+    font-size: 10pt;
+    color: #222;
+    background: #fff;
+    line-height: 1.5;
+    }
+
+    .cv-header {
+    background-color: #6C63FF;
+    color: #ffffff;
+    padding: 24px 30px 20px 30px;
+    }
+
+    .cv-header__name {
+      font-size: 24pt;
+      font-weight: bold;
+      color: #ffffff;
+    }
+
+    .cv-header__position {
+      font-size: 12pt;
+      color: #ffffff;
+      margin-top: 5px;
+    }
+
+    .cv-header__contact {
+      margin-top: 10px;
+      font-size: 9.5pt;
+      color: #ffffff;
+    }
+
+    .cv-header__contact td {
+      padding-right: 20px;
+      color: #ffffff;
+      font-size: 9.5pt;
+    }
+
+    .cv-body {
+    padding: 20px 30px;
+    }
+
+    .section {
+      margin-bottom: 20px;
+    }
+
+    .section__title {
+      font-size: 9pt;
+      font-weight: bold;
+      color: #6C63FF;
+      border-bottom: 2px solid #6C63FF;
+      padding-bottom: 4px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .summary__text {
+      font-size: 10.5pt;
+      color: #444444;
+      line-height: 1.7;
+    }
+
+    .entry {
+      margin-bottom: 14px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .entry__title {
+      font-size: 11pt;
+      font-weight: bold;
+      color: #111111;
+    }
+
+    .entry__dates {
+      font-size: 9pt;
+      color: #888888;
+      text-align: right;
+    }
+
+    .entry__subtitle {
+      font-size: 10pt;
+      color: #6C63FF;
+      margin-top: 2px;
+    }
+
+    .entry__desc {
+      font-size: 10pt;
+      color: #555555;
+      margin-top: 5px;
+      line-height: 1.6;
+    }
+
+    .skill-tag {
+      background-color: #f0efff;
+      color: #6C63FF;
+      border: 1px solid #d4d0ff;
+      padding: 2px 8px;
+      font-size: 9.5pt;
+      margin-right: 5px;
+      margin-bottom: 5px;
+    }
+
+    .language-item {
+      font-size: 10.5pt;
+      padding-right: 20px;
+    }
+
+    .language-level {
+      color: #888888;
+      font-size: 9.5pt;
+    }
+
+    .link-item {
+      font-size: 10pt;
+      color: #6C63FF;
+      margin-bottom: 3px;
+    }
+
+    .link-label {
+      color: #888888;
+      font-size: 9pt;
+    }
+
+    .cv-footer {
+      font-size: 8pt;
+      color: #cccccc;
+      text-align: right;
+      padding: 8px 40px;
+    }
+
+    .entry__desc,
+    .summary__text,
+    .sidebar__contact-item,
+    .link-item,
+    .link-sidebar {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    }
+
+    td {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    }
+
+  </style>
+</head>
+<body>
+<div style="width: 794px; overflow: hidden;">
+
+{% with p=content.personal %}
+
+<!-- NAGŁÓWEK -->
+<div class="cv-header">
+  <div class="cv-header__name">{{ p.first_name }} {{ p.last_name }}</div>
+  {% if p.position %}
+    <div class="cv-header__position">{{ p.position }}</div>
+  {% endif %}
+  <table class="cv-header__contact" cellpadding="0" cellspacing="0">
+    <tr>
+      {% if p.email %}<td>{{ p.email }}</td>{% endif %}
+      {% if p.phone %}<td>{{ p.phone }}</td>{% endif %}
+      {% if p.city  %}<td>{{ p.city }}</td>{% endif %}
+    </tr>
+  </table>
+</div>
+
+<!-- TREŚĆ -->
+<div class="cv-body">
+
+  {% if content.summary %}
+  <div class="section">
+    <div class="section__title">Podsumowanie zawodowe</div>
+    <p class="summary__text">{{ content.summary }}</p>
+  </div>
+  {% endif %}
+
+  {% if content.experience %}
+  <div class="section">
+    <div class="section__title">Doświadczenie zawodowe</div>
+    {% for exp in content.experience %}
+      {% if exp.company or exp.position %}
+      <div class="entry">
+        <table width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td class="entry__title">{{ exp.position }}</td>
+            <td class="entry__dates">
+              {{ exp.start_date }}{% if exp.end_date or exp.current %} — {% if exp.current %}obecnie{% else %}{{ exp.end_date }}{% endif %}{% endif %}
+            </td>
+          </tr>
+        </table>
+        <div class="entry__subtitle">{{ exp.company }}</div>
+        {% if exp.description %}
+          <div class="entry__desc">{{ exp.description }}</div>
+        {% endif %}
+      </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if content.education %}
+  <div class="section">
+    <div class="section__title">Wykształcenie</div>
+    {% for edu in content.education %}
+      {% if edu.school %}
+      <div class="entry">
+        <table width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td class="entry__title">{{ edu.school }}</td>
+            <td class="entry__dates">
+              {{ edu.start_date }}{% if edu.end_date %} — {{ edu.end_date }}{% endif %}
+            </td>
+          </tr>
+        </table>
+        {% if edu.degree or edu.field %}
+          <div class="entry__subtitle">
+            {{ edu.degree }}{% if edu.degree and edu.field %}, {% endif %}{{ edu.field }}
+          </div>
+        {% endif %}
+        {% if edu.description %}
+          <div class="entry__desc">{{ edu.description }}</div>
+        {% endif %}
+      </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if content.skills %}
+  <div class="section">
+    <div class="section__title">Umiejętności</div>
+    {% for skill in content.skills %}
+      {% if skill %}<span class="skill-tag">{{ skill }}</span>{% endif %}
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if content.languages %}
+  <div class="section">
+    <div class="section__title">Języki</div>
+    <table cellpadding="0" cellspacing="0">
+      <tr>
+        {% for lang in content.languages %}
+          {% if lang.name %}
+          <td class="language-item">
+            <strong>{{ lang.name }}</strong>
+            {% if lang.level %}
+              <span class="language-level"> — {{ lang.level }}</span>
+            {% endif %}
+          </td>
+          {% endif %}
+        {% endfor %}
+      </tr>
+    </table>
+  </div>
+  {% endif %}
+
+  {% with links=content.links %}
+  {% if links.linkedin or links.github or links.portfolio or links.other %}
+  <div class="section">
+    <div class="section__title">Linki</div>
+    {% if links.linkedin  %}<div class="link-item"><span class="link-label">LinkedIn: </span>{{ links.linkedin }}</div>{% endif %}
+    {% if links.github    %}<div class="link-item"><span class="link-label">GitHub: </span>{{ links.github }}</div>{% endif %}
+    {% if links.portfolio %}<div class="link-item"><span class="link-label">Portfolio: </span>{{ links.portfolio }}</div>{% endif %}
+    {% if links.other     %}<div class="link-item"><span class="link-label">Inne: </span>{{ links.other }}</div>{% endif %}
+  </div>
+  {% endif %}
+  {% endwith %}
+
+</div>
+
+<div class="cv-footer">Resumo.app</div>
+
+{% endwith %}
+</div>
+</body>
+</html>

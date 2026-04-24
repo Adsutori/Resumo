@@ -1,0 +1,1974 @@
+{% extends 'dashboard-layout.html' %}
+{% load static %}
+
+{% block title %}Edytor CV — {{ cv.title }} — Resumo{% endblock %}
+{% block page_title %}Edytor CV{% endblock %}
+
+{% block content %}
+
+<!-- Dane CV przekazane do JS -->
+<script>
+  const CV_DATA     = {{ cv_content|safe }};
+  const CV_TEMPLATE = "{{ cv.template }}";
+  const SAVE_URL    = "{% url 'dashboard:edit_cv' cv.id %}";
+  const CSRF_TOKEN  = "{{ csrf_token }}";
+</script>
+
+<!-- ============================================================
+     TOPBAR EDYTORA
+============================================================ -->
+<div class="editor-topbar">
+
+  <!-- Lewa strona: tytuł + status -->
+  <div class="editor-topbar__left">
+    <a href="{% url 'dashboard:dashboard' %}" class="btn btn--ghost btn--sm editor-topbar__back">
+      <i data-lucide="arrow-left"></i>
+      <span class="editor-topbar__back-label">Dashboard</span>
+    </a>
+    <div class="editor-topbar__title-wrap">
+      <input
+        type="text"
+        id="cvTitleInput"
+        class="editor-topbar__title-input"
+        value="{{ cv.title }}"
+        maxlength="200"
+        aria-label="Tytuł CV"
+      >
+      <i data-lucide="pencil" class="editor-topbar__title-icon"></i>
+    </div>
+  </div>
+
+  <!-- Środek: postęp -->
+  <div class="editor-topbar__progress">
+    <div class="editor-topbar__progress-bar">
+      <div class="editor-topbar__progress-fill" id="topbarProgressFill" style="width: {{ cv.progress }}%;"></div>
+    </div>
+    <span class="editor-topbar__progress-label" id="topbarProgressLabel">{{ cv.progress }}%</span>
+  </div>
+
+  <!-- Prawa strona: status + przyciski -->
+  <div class="editor-topbar__right">
+    <span class="editor-topbar__save-status" id="saveStatus">
+      <i data-lucide="check-circle" id="saveStatusIcon"></i>
+      <span id="saveStatusText">Wszystko zapisane</span>
+    </span>
+    <a href="{% url 'dashboard:download_pdf' cv.id %}" class="btn btn--ghost btn--sm" id="previewPdfBtn">
+        <i data-lucide="file-down"></i>
+        PDF
+    </a>
+  </div>
+
+</div>
+
+<!-- ============================================================
+     GŁÓWNY LAYOUT EDYTORA
+============================================================ -->
+<div class="editor-layout">
+
+  <!-- ══════════════════════════════════════════
+       PANEL LEWY — Formularz
+  ══════════════════════════════════════════ -->
+  <div class="editor-panel editor-panel--form" id="editorFormPanel">
+
+    <!-- ── SEKCJA 1: Dane osobowe ── -->
+    <div class="editor-section" id="section-personal">
+      <button class="editor-section__header" type="button" aria-expanded="true" data-section="personal">
+        <div class="editor-section__header-left">
+          <span class="editor-section__icon" style="background: rgba(108,99,255,0.15); color: var(--color-accent);">
+            <i data-lucide="user"></i>
+          </span>
+          <span class="editor-section__title">Dane osobowe</span>
+        </div>
+        <div class="editor-section__header-right">
+          <span class="editor-section__badge" id="badge-personal">0/6</span>
+          <i data-lucide="chevron-down" class="editor-section__chevron"></i>
+        </div>
+      </button>
+      <div class="editor-section__body" id="body-personal">
+        <div class="form-grid form-grid--2">
+          <div class="form-field">
+            <label class="form-label" for="personal_first_name">Imię</label>
+            <input type="text" id="personal_first_name" name="personal_first_name"
+                   class="form-input" placeholder="Jan" autocomplete="given-name">
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="personal_last_name">Nazwisko</label>
+            <input type="text" id="personal_last_name" name="personal_last_name"
+                   class="form-input" placeholder="Kowalski" autocomplete="family-name">
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="personal_position">Stanowisko / Tytuł zawodowy</label>
+          <input type="text" id="personal_position" name="personal_position"
+                 class="form-input" placeholder="np. Frontend Developer">
+        </div>
+        <div class="form-grid form-grid--2">
+          <div class="form-field">
+            <label class="form-label" for="personal_email">Email</label>
+            <div class="form-input-wrap">
+              <i data-lucide="mail" class="form-input-icon"></i>
+              <input type="email" id="personal_email" name="personal_email"
+                     class="form-input form-input--icon" placeholder="jan@example.com" autocomplete="email">
+            </div>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="personal_phone">Telefon</label>
+            <div class="form-input-wrap">
+              <i data-lucide="phone" class="form-input-icon"></i>
+              <input type="tel" id="personal_phone" name="personal_phone"
+                     class="form-input form-input--icon" placeholder="+48 500 000 000" autocomplete="tel">
+            </div>
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="personal_city">Miasto</label>
+          <div class="form-input-wrap">
+            <i data-lucide="map-pin" class="form-input-icon"></i>
+            <input type="text" id="personal_city" name="personal_city"
+                   class="form-input form-input--icon" placeholder="Warszawa" autocomplete="address-level2">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SEKCJA 2: Podsumowanie ── -->
+    <div class="editor-section" id="section-summary">
+      <button class="editor-section__header" type="button" aria-expanded="false" data-section="summary">
+        <div class="editor-section__header-left">
+          <span class="editor-section__icon" style="background: rgba(16,185,129,0.15); color: #10b981;">
+            <i data-lucide="align-left"></i>
+          </span>
+          <span class="editor-section__title">Podsumowanie zawodowe</span>
+        </div>
+        <div class="editor-section__header-right">
+          <span class="editor-section__badge" id="badge-summary">0/500</span>
+          <i data-lucide="chevron-down" class="editor-section__chevron"></i>
+        </div>
+      </button>
+      <div class="editor-section__body editor-section__body--collapsed" id="body-summary">
+        <p class="form-hint">
+          <i data-lucide="lightbulb"></i>
+          Napisz 3–5 zdań o sobie i swoich celach zawodowych.
+        </p>
+        <div class="form-field">
+          <div class="form-textarea-wrap">
+            <textarea id="summary_text" name="summary_text" class="form-textarea"
+                      placeholder="Jestem doświadczonym programistą z 5-letnim stażem..."
+                      maxlength="500" rows="5"></textarea>
+            <span class="form-textarea-counter"><span id="summaryCount">0</span>/500</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SEKCJA 3: Doświadczenie ── -->
+    <div class="editor-section" id="section-experience">
+      <button class="editor-section__header" type="button" aria-expanded="false" data-section="experience">
+        <div class="editor-section__header-left">
+          <span class="editor-section__icon" style="background: rgba(245,158,11,0.15); color: #f59e0b;">
+            <i data-lucide="briefcase"></i>
+          </span>
+          <span class="editor-section__title">Doświadczenie zawodowe</span>
+        </div>
+        <div class="editor-section__header-right">
+          <span class="editor-section__badge" id="badge-experience">0 wpisów</span>
+          <i data-lucide="chevron-down" class="editor-section__chevron"></i>
+        </div>
+      </button>
+      <div class="editor-section__body editor-section__body--collapsed" id="body-experience">
+        <div id="experience-list" class="entries-list"></div>
+        <button type="button" class="btn btn--ghost btn--sm entries-add-btn" onclick="addEntry('experience')">
+          <i data-lucide="plus"></i>
+          Dodaj doświadczenie
+        </button>
+      </div>
+    </div>
+
+    <!-- ── SEKCJA 4: Wykształcenie ── -->
+    <div class="editor-section" id="section-education">
+      <button class="editor-section__header" type="button" aria-expanded="false" data-section="education">
+        <div class="editor-section__header-left">
+          <span class="editor-section__icon" style="background: rgba(99,179,237,0.15); color: #63b3ed;">
+            <i data-lucide="graduation-cap"></i>
+          </span>
+          <span class="editor-section__title">Wykształcenie</span>
+        </div>
+        <div class="editor-section__header-right">
+          <span class="editor-section__badge" id="badge-education">0 wpisów</span>
+          <i data-lucide="chevron-down" class="editor-section__chevron"></i>
+        </div>
+      </button>
+      <div class="editor-section__body editor-section__body--collapsed" id="body-education">
+        <div id="education-list" class="entries-list"></div>
+        <button type="button" class="btn btn--ghost btn--sm entries-add-btn" onclick="addEntry('education')">
+          <i data-lucide="plus"></i>
+          Dodaj wykształcenie
+        </button>
+      </div>
+    </div>
+
+    <!-- ── SEKCJA 5: Umiejętności ── -->
+    <div class="editor-section" id="section-skills">
+      <button class="editor-section__header" type="button" aria-expanded="false" data-section="skills">
+        <div class="editor-section__header-left">
+          <span class="editor-section__icon" style="background: rgba(236,72,153,0.15); color: #ec4899;">
+            <i data-lucide="zap"></i>
+          </span>
+          <span class="editor-section__title">Umiejętności</span>
+        </div>
+        <div class="editor-section__header-right">
+          <span class="editor-section__badge" id="badge-skills">0 tagów</span>
+          <i data-lucide="chevron-down" class="editor-section__chevron"></i>
+        </div>
+      </button>
+      <div class="editor-section__body editor-section__body--collapsed" id="body-skills">
+        <p class="form-hint">
+          <i data-lucide="info"></i>
+          Wpisz umiejętność i naciśnij Enter lub przecinek, aby dodać tag.
+        </p>
+        <div class="skills-tags" id="skillsTags"></div>
+        <div class="form-input-wrap" style="margin-top: 10px;">
+          <i data-lucide="tag" class="form-input-icon"></i>
+          <input type="text" id="skillInput" class="form-input form-input--icon"
+                 placeholder="np. Python, React, Photoshop...">
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SEKCJA 6: Języki ── -->
+    <div class="editor-section" id="section-languages">
+      <button class="editor-section__header" type="button" aria-expanded="false" data-section="languages">
+        <div class="editor-section__header-left">
+          <span class="editor-section__icon" style="background: rgba(167,139,250,0.15); color: #a78bfa;">
+            <i data-lucide="languages"></i>
+          </span>
+          <span class="editor-section__title">Języki</span>
+        </div>
+        <div class="editor-section__header-right">
+          <span class="editor-section__badge" id="badge-languages">0 wpisów</span>
+          <i data-lucide="chevron-down" class="editor-section__chevron"></i>
+        </div>
+      </button>
+      <div class="editor-section__body editor-section__body--collapsed" id="body-languages">
+        <div id="languages-list" class="entries-list"></div>
+        <button type="button" class="btn btn--ghost btn--sm entries-add-btn" onclick="addEntry('languages')">
+          <i data-lucide="plus"></i>
+          Dodaj język
+        </button>
+      </div>
+    </div>
+
+    <!-- ── SEKCJA 7: Linki ── -->
+    <div class="editor-section" id="section-links">
+      <button class="editor-section__header" type="button" aria-expanded="false" data-section="links">
+        <div class="editor-section__header-left">
+          <span class="editor-section__icon" style="background: rgba(52,211,153,0.15); color: #34d399;">
+            <i data-lucide="link"></i>
+          </span>
+          <span class="editor-section__title">Linki</span>
+        </div>
+        <div class="editor-section__header-right">
+          <span class="editor-section__badge" id="badge-links">0 linków</span>
+          <i data-lucide="chevron-down" class="editor-section__chevron"></i>
+        </div>
+      </button>
+      <div class="editor-section__body editor-section__body--collapsed" id="body-links">
+        <div class="form-field">
+          <label class="form-label" for="link_linkedin">LinkedIn</label>
+          <div class="form-input-wrap">
+            <i data-lucide="linkedin" class="form-input-icon"></i>
+            <input type="url" id="link_linkedin" name="link_linkedin"
+                   class="form-input form-input--icon" placeholder="https://linkedin.com/in/...">
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="link_github">GitHub</label>
+          <div class="form-input-wrap">
+            <i data-lucide="github" class="form-input-icon"></i>
+            <input type="url" id="link_github" name="link_github"
+                   class="form-input form-input--icon" placeholder="https://github.com/...">
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="link_portfolio">Portfolio</label>
+          <div class="form-input-wrap">
+            <i data-lucide="globe" class="form-input-icon"></i>
+            <input type="url" id="link_portfolio" name="link_portfolio"
+                   class="form-input form-input--icon" placeholder="https://...">
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="link_other">Inne</label>
+          <div class="form-input-wrap">
+            <i data-lucide="external-link" class="form-input-icon"></i>
+            <input type="url" id="link_other" name="link_other"
+                   class="form-input form-input--icon" placeholder="https://...">
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /.editor-panel--form -->
+
+  <!-- ══════════════════════════════════════════
+       PANEL PRAWY — Live Preview
+  ══════════════════════════════════════════ -->
+  <div class="editor-panel editor-panel--preview" id="editorPreviewPanel">
+    <div class="preview-header">
+      <span class="preview-header__label">
+        <i data-lucide="eye"></i>
+        Podgląd na żywo
+      </span>
+      <span class="preview-header__template">
+        {{ cv.get_template_display }}
+      </span>
+    </div>
+    <div class="preview-viewport">
+      <div class="preview-page" id="previewPage">
+        <!-- Wypełniane przez JS -->
+        <div class="preview-empty">
+          <i data-lucide="file-text"></i>
+          <p>Zacznij wypełniać formularz, aby zobaczyć podgląd CV</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /.editor-layout -->
+
+
+<!-- ============================================================
+     STYLE EDYTORA
+============================================================ -->
+<style>
+
+  /* ── Topbar edytora ── */
+  .editor-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 0 20px;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .editor-topbar__left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .editor-topbar__back {
+    flex-shrink: 0;
+  }
+
+  .editor-topbar__title-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .editor-topbar__title-input {
+    width: 100%;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+    font-size: 16px;
+    font-weight: 700;
+    font-family: inherit;
+    padding: 6px 32px 6px 8px;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    box-sizing: border-box;
+  }
+
+  .editor-topbar__title-input:hover {
+    border-color: var(--color-border);
+    background: var(--color-surface);
+  }
+
+  .editor-topbar__title-input:focus {
+    border-color: var(--color-accent);
+    background: var(--color-surface);
+    box-shadow: 0 0 0 3px var(--color-accent-glow);
+  }
+
+  .editor-topbar__title-icon {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 13px;
+    height: 13px;
+    color: var(--color-text-muted);
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  /* Pasek postępu w topbarze */
+  .editor-topbar__progress {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .editor-topbar__progress-bar {
+    width: 140px;
+    height: 6px;
+    background: var(--color-surface-2, #2a2a3e);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .editor-topbar__progress-fill {
+    height: 100%;
+    background: var(--color-accent);
+    border-radius: 99px;
+    transition: width 0.5s ease;
+  }
+
+  .editor-topbar__progress-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--color-accent);
+    min-width: 36px;
+  }
+
+  /* Status autosave */
+  .editor-topbar__right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .editor-topbar__save-status {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+  }
+
+  .editor-topbar__save-status i {
+    width: 14px;
+    height: 14px;
+  }
+
+  .save-status--saving  { color: #f59e0b; }
+  .save-status--saved   { color: #10b981; }
+  .save-status--unsaved { color: var(--color-text-muted); }
+  .save-status--error   { color: #ef4444; }
+
+  /* ── Layout edytora ── */
+  .editor-layout {
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 24px;
+    align-items: start;
+  }
+
+  /* ── Panel formularz ── */
+  .editor-panel--form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  /* ── Panel podgląd ── */
+  .editor-panel--preview {
+    position: sticky;
+    top: 24px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+  }
+
+  .preview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 12px;
+  }
+
+  .preview-header__label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .preview-header__label i { width: 13px; height: 13px; }
+
+  .preview-header__template {
+    color: var(--color-accent);
+    font-weight: 600;
+    font-size: 11px;
+    background: var(--color-accent-glow);
+    padding: 2px 8px;
+    border-radius: 99px;
+  }
+
+  .preview-viewport {
+    padding: 16px;
+    background: #e8e8e8;
+    min-height: 500px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  /* A4 w skali 0.55 */
+  .preview-page {
+    width: 794px;
+    min-height: 1123px;
+    background: #fff;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+    transform-origin: top center;
+    transform: scale(0.55);
+    margin-top: 0;
+    position: relative;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: #222;
+    flex-shrink: 0;
+  }
+
+  .preview-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    height: 400px;
+    color: #aaa;
+    text-align: center;
+    font-size: 14px;
+  }
+
+  .preview-empty i { width: 40px; height: 40px; opacity: 0.4; }
+
+  /* ── Sekcje formularza (accordion) ── */
+  .editor-section {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .editor-section:focus-within {
+    border-color: var(--color-accent);
+  }
+
+  .editor-section__header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text);
+    font-family: inherit;
+    transition: background 0.15s;
+  }
+
+  .editor-section__header:hover {
+    background: var(--color-surface-2, rgba(255,255,255,0.03));
+  }
+
+  .editor-section__header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .editor-section__header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .editor-section__icon {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .editor-section__icon i { width: 16px; height: 16px; }
+
+  .editor-section__title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .editor-section__badge {
+    font-size: 11px;
+    color: var(--color-text-muted);
+    background: var(--color-surface-2, rgba(255,255,255,0.05));
+    padding: 2px 8px;
+    border-radius: 99px;
+  }
+
+  .editor-section__chevron {
+    width: 16px;
+    height: 16px;
+    color: var(--color-text-muted);
+    transition: transform 0.25s ease;
+    flex-shrink: 0;
+  }
+
+  .editor-section__header[aria-expanded="true"] .editor-section__chevron {
+    transform: rotate(180deg);
+  }
+
+  /* Ciało sekcji */
+  .editor-section__body {
+    padding: 0 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .editor-section__body--collapsed {
+    display: none;
+  }
+
+  /* ── Pola formularza ── */
+  .form-grid {
+    display: grid;
+    gap: 12px;
+  }
+
+  .form-grid--2 {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .form-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .form-input-wrap {
+    position: relative;
+  }
+
+  .form-input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 15px;
+    height: 15px;
+    color: var(--color-text-muted);
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--color-surface-2, rgba(255,255,255,0.04));
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+    font-size: 13.5px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+  }
+
+  .form-input--icon {
+    padding-left: 38px;
+  }
+
+  .form-input:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-accent-glow);
+  }
+
+  .form-input::placeholder { color: var(--color-text-muted); opacity: 0.5; }
+
+  .form-textarea {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--color-surface-2, rgba(255,255,255,0.04));
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+    font-size: 13.5px;
+    font-family: inherit;
+    outline: none;
+    resize: vertical;
+    min-height: 100px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+    line-height: 1.6;
+  }
+
+  .form-textarea:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-accent-glow);
+  }
+
+  .form-textarea::placeholder { color: var(--color-text-muted); opacity: 0.5; }
+
+  .form-textarea-wrap {
+    position: relative;
+  }
+
+  .form-textarea-counter {
+    position: absolute;
+    bottom: 8px;
+    right: 10px;
+    font-size: 11px;
+    color: var(--color-text-muted);
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .form-select {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--color-surface-2, rgba(255,255,255,0.04));
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+    font-size: 13.5px;
+    font-family: inherit;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 32px;
+  }
+
+  .form-select:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-accent-glow);
+  }
+
+  .form-hint {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    font-size: 12px;
+    color: var(--color-text-muted);
+    background: var(--color-surface-2, rgba(255,255,255,0.03));
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 8px 12px;
+    line-height: 1.5;
+    margin: 4px 0 0;
+  }
+
+  .form-hint i { width: 13px; height: 13px; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── Wpisy dynamiczne (experience, education, languages) ── */
+  .entries-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .entry-card {
+    background: var(--color-surface-2, rgba(255,255,255,0.03));
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 14px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .entry-card__remove {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-md);
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    font-family: inherit;
+  }
+
+  .entry-card__remove:hover {
+    background: rgba(239,68,68,0.1);
+    border-color: rgba(239,68,68,0.3);
+    color: #ef4444;
+  }
+
+  .entry-card__remove i { width: 14px; height: 14px; }
+
+  .entry-card__number {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
+  }
+
+  .entries-add-btn {
+    align-self: flex-start;
+    margin-top: 4px;
+  }
+
+  /* Checkbox "Obecnie pracuję" */
+  .form-checkbox-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .form-checkbox {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--color-accent);
+    cursor: pointer;
+  }
+
+  .form-checkbox-label {
+    font-size: 13px;
+    color: var(--color-text-muted);
+  }
+
+  /* ── Tagi umiejętności ── */
+  .skills-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-height: 32px;
+  }
+
+  .skill-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    background: var(--color-accent-glow);
+    border: 1px solid rgba(108,99,255,0.3);
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-accent);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+    user-select: none;
+  }
+
+  .skill-tag:hover {
+    background: rgba(239,68,68,0.1);
+    border-color: rgba(239,68,68,0.3);
+    color: #ef4444;
+  }
+
+  .skill-tag i { width: 11px; height: 11px; }
+
+  /* ── Responsywność ── */
+  @media (max-width: 1100px) {
+    .editor-layout {
+      grid-template-columns: 1fr 340px;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .editor-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .editor-panel--preview {
+      display: none; /* Schowany na mobile */
+    }
+
+    .editor-topbar__progress-bar {
+      width: 90px;
+    }
+
+    .editor-topbar__back-label {
+      display: none;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .form-grid--2 {
+      grid-template-columns: 1fr;
+    }
+
+    .editor-topbar {
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .editor-topbar__progress {
+      order: 3;
+      width: 100%;
+    }
+
+    .editor-topbar__progress-bar {
+      flex: 1;
+      width: auto;
+    }
+  }
+
+</style>
+
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+'use strict';
+
+// ══════════════════════════════════════════════════════════
+// STAN GLOBALNY
+// ══════════════════════════════════════════════════════════
+
+let saveTimer        = null;   // Timer debounce autosave
+let periodicTimer    = null;   // Timer co 30s
+let lastSaveTime     = null;   // Timestamp ostatniego zapisu
+let isDirty          = false;  // Czy są niezapisane zmiany
+let previewDebounce  = null;   // Timer debounce podglądu
+
+// ══════════════════════════════════════════════════════════
+// GENEROWANIE UUID (bez zewnętrznych bibliotek)
+// ══════════════════════════════════════════════════════════
+
+function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+// ACCORDION — otwieranie/zamykanie sekcji
+// ══════════════════════════════════════════════════════════
+
+document.querySelectorAll('.editor-section__header').forEach(btn => {
+  btn.addEventListener('click', function () {
+    const section  = this.dataset.section;
+    const body     = document.getElementById('body-' + section);
+    const expanded = this.getAttribute('aria-expanded') === 'true';
+
+    this.setAttribute('aria-expanded', String(!expanded));
+    body.classList.toggle('editor-section__body--collapsed', expanded);
+  });
+});
+
+// ══════════════════════════════════════════════════════════
+// ZBIERANIE DANYCH Z FORMULARZA
+// ══════════════════════════════════════════════════════════
+
+function collectFormData() {
+  // ── Dane osobowe ──
+  const personal = {
+    first_name: document.getElementById('personal_first_name').value.trim(),
+    last_name:  document.getElementById('personal_last_name').value.trim(),
+    position:   document.getElementById('personal_position').value.trim(),
+    email:      document.getElementById('personal_email').value.trim(),
+    phone:      document.getElementById('personal_phone').value.trim(),
+    city:       document.getElementById('personal_city').value.trim(),
+  };
+
+  // ── Podsumowanie ──
+  const summary = document.getElementById('summary_text').value.trim();
+
+  // ── Doświadczenie ──
+  const experience = [];
+  document.querySelectorAll('#experience-list .entry-card').forEach(card => {
+    const id = card.dataset.id;
+    experience.push({
+      id:          id,
+      company:     card.querySelector('[data-field="company"]').value.trim(),
+      position:    card.querySelector('[data-field="position"]').value.trim(),
+      start_date:  card.querySelector('[data-field="start_date"]').value,
+      end_date:    card.querySelector('[data-field="end_date"]').value,
+      current:     card.querySelector('[data-field="current"]').checked,
+      description: card.querySelector('[data-field="description"]').value.trim(),
+    });
+  });
+
+  // ── Wykształcenie ──
+  const education = [];
+  document.querySelectorAll('#education-list .entry-card').forEach(card => {
+    const id = card.dataset.id;
+    education.push({
+      id:          id,
+      school:      card.querySelector('[data-field="school"]').value.trim(),
+      degree:      card.querySelector('[data-field="degree"]').value,
+      field:       card.querySelector('[data-field="field"]').value.trim(),
+      start_date:  card.querySelector('[data-field="start_date"]').value,
+      end_date:    card.querySelector('[data-field="end_date"]').value,
+      description: card.querySelector('[data-field="description"]').value.trim(),
+    });
+  });
+
+  // ── Umiejętności ──
+  const skills = Array.from(document.querySelectorAll('.skill-tag'))
+    .map(tag => tag.dataset.skill)
+    .filter(Boolean);
+
+  // ── Języki ──
+  const languages = [];
+  document.querySelectorAll('#languages-list .entry-card').forEach(card => {
+    languages.push({
+      id:    card.dataset.id,
+      name:  card.querySelector('[data-field="name"]').value.trim(),
+      level: card.querySelector('[data-field="level"]').value,
+    });
+  });
+
+  // ── Linki ──
+  const links = {
+    linkedin:  document.getElementById('link_linkedin').value.trim(),
+    github:    document.getElementById('link_github').value.trim(),
+    portfolio: document.getElementById('link_portfolio').value.trim(),
+    other:     document.getElementById('link_other').value.trim(),
+  };
+
+  return { personal, summary, experience, education, skills, languages, links };
+}
+
+// ══════════════════════════════════════════════════════════
+// OBLICZANIE POSTĘPU (ta sama logika co backend)
+// ══════════════════════════════════════════════════════════
+
+function calculateProgress(data) {
+  let score = 0;
+
+  // Dane osobowe (max 20%)
+  const personalFields = ['first_name', 'last_name', 'email', 'phone', 'city', 'position'];
+  const filledPersonal = personalFields.filter(f => (data.personal[f] || '').trim()).length;
+  score += Math.round((filledPersonal / personalFields.length) * 20);
+
+  // Podsumowanie (15%)
+  if (data.summary && data.summary.length > 20) score += 15;
+
+  // Doświadczenie (20%)
+  if (data.experience.some(e => e.company && e.position)) score += 20;
+
+  // Wykształcenie (15%)
+  if (data.education.some(e => e.school)) score += 15;
+
+  // Umiejętności (10%)
+  if (data.skills.filter(s => s.trim()).length >= 3) score += 10;
+
+  // Języki (10%)
+  if (data.languages.some(l => l.name)) score += 10;
+
+  // Linki (10%)
+  const filledLinks = Object.values(data.links).filter(v => v.trim()).length;
+  if (filledLinks >= 1) score += 10;
+
+  return Math.min(score, 100);
+}
+
+// ══════════════════════════════════════════════════════════
+// AKTUALIZACJA UI POSTĘPU
+// ══════════════════════════════════════════════════════════
+
+function updateProgressUI(progress) {
+  document.getElementById('topbarProgressFill').style.width  = progress + '%';
+  document.getElementById('topbarProgressLabel').textContent = progress + '%';
+}
+
+// ══════════════════════════════════════════════════════════
+// AKTUALIZACJA ODZNAK SEKCJI
+// ══════════════════════════════════════════════════════════
+
+function updateBadges(data) {
+  // Dane osobowe
+  const personalFields = ['first_name', 'last_name', 'email', 'phone', 'city', 'position'];
+  const filledP = personalFields.filter(f => (data.personal[f] || '').trim()).length;
+  document.getElementById('badge-personal').textContent = filledP + '/6';
+
+  // Podsumowanie
+  const summaryLen = (data.summary || '').length;
+  document.getElementById('badge-summary').textContent = summaryLen + '/500';
+
+  // Doświadczenie
+  document.getElementById('badge-experience').textContent = data.experience.length + ' wpisów';
+
+  // Wykształcenie
+  document.getElementById('badge-education').textContent = data.education.length + ' wpisów';
+
+  // Umiejętności
+  document.getElementById('badge-skills').textContent = data.skills.length + ' tagów';
+
+  // Języki
+  document.getElementById('badge-languages').textContent = data.languages.length + ' wpisów';
+
+  // Linki
+  const filledLinks = Object.values(data.links).filter(v => v.trim()).length;
+  document.getElementById('badge-links').textContent = filledLinks + ' linków';
+}
+
+// ══════════════════════════════════════════════════════════
+// STATUS AUTOSAVE
+// ══════════════════════════════════════════════════════════
+
+function setSaveStatus(state, message) {
+  const statusEl = document.getElementById('saveStatus');
+  const iconEl   = document.getElementById('saveStatusIcon');
+  const textEl   = document.getElementById('saveStatusText');
+
+  statusEl.className = 'editor-topbar__save-status save-status--' + state;
+  textEl.textContent = message;
+
+  const icons = {
+    saving:  'loader',
+    saved:   'check-circle',
+    unsaved: 'clock',
+    error:   'alert-circle',
+  };
+
+  // Podmień ikonę Lucide
+  iconEl.setAttribute('data-lucide', icons[state] || 'clock');
+  if (window.lucide) lucide.createIcons({ nodes: [iconEl] });
+}
+
+// ══════════════════════════════════════════════════════════
+// AUTOSAVE
+// ══════════════════════════════════════════════════════════
+
+async function saveCV() {
+  const data  = collectFormData();
+  const title = document.getElementById('cvTitleInput').value.trim() || 'Moje CV';
+
+  setSaveStatus('saving', 'Zapisywanie...');
+
+  try {
+    const response = await fetch(SAVE_URL, {
+      method:  'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken':  CSRF_TOKEN,
+      },
+      body: JSON.stringify({ title, content: data }),
+    });
+
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+
+    const result = await response.json();
+
+    if (result.status === 'ok') {
+      lastSaveTime = new Date();
+      isDirty      = false;
+      updateProgressUI(result.progress);
+      setSaveStatus('saved', 'Zapisano ' + lastSaveTime.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' }));
+    } else {
+      throw new Error(result.message || 'Błąd zapisu');
+    }
+  } catch (err) {
+    console.error('Autosave error:', err);
+    setSaveStatus('error', 'Błąd zapisu');
+  }
+}
+
+// Debounce autosave — 2 sekundy po ostatniej zmianie
+function scheduleAutosave() {
+  isDirty = true;
+  setSaveStatus('unsaved', 'Niezapisane zmiany');
+
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    saveCV();
+  }, 2000);
+}
+
+// Fallback — co 30 sekund jeśli są niezapisane zmiany
+periodicTimer = setInterval(() => {
+  if (isDirty) saveCV();
+}, 30000);
+
+// ══════════════════════════════════════════════════════════
+// LIVE PREVIEW
+// ══════════════════════════════════════════════════════════
+
+function escHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function renderPreview(data, template) {
+  const p = data.personal || {};
+  const fullName = [p.first_name, p.last_name].filter(Boolean).join(' ');
+
+  if (template === 'modern') {
+    return renderPreviewModern(data, fullName);
+  } else if (template === 'minimal') {
+    return renderPreviewMinimal(data, fullName);
+  } else {
+    return renderPreviewClassic(data, fullName);
+  }
+}
+
+// ── Podgląd: Klasyczny ──
+function renderPreviewClassic(data, fullName) {
+  const p = data.personal || {};
+  let html = `
+    <div style="background:#6C63FF;padding:32px 40px;color:#fff;">
+      <h1 style="margin:0;font-size:28px;font-weight:800;letter-spacing:-0.5px;">${escHtml(fullName) || '<span style="opacity:0.4">Imię Nazwisko</span>'}</h1>
+      ${p.position ? `<p style="margin:6px 0 0;font-size:14px;opacity:0.85;">${escHtml(p.position)}</p>` : ''}
+      <div style="display:flex;gap:16px;margin-top:12px;font-size:12px;opacity:0.8;flex-wrap:wrap;">
+        ${p.email    ? `<span>✉ ${escHtml(p.email)}</span>` : ''}
+        ${p.phone    ? `<span>📞 ${escHtml(p.phone)}</span>` : ''}
+        ${p.city     ? `<span>📍 ${escHtml(p.city)}</span>`  : ''}
+      </div>
+    </div>
+    <div style="padding:28px 40px;font-size:13px;line-height:1.6;">
+  `;
+
+  if (data.summary) {
+    html += `
+      <div style="margin-bottom:24px;">
+        <h2 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6C63FF;border-bottom:2px solid #6C63FF;padding-bottom:4px;margin-bottom:10px;">Podsumowanie</h2>
+        <p style="margin:0;color:#444;">${escHtml(data.summary)}</p>
+      </div>
+    `;
+  }
+
+  if (data.experience && data.experience.length > 0) {
+    html += `<h2 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6C63FF;border-bottom:2px solid #6C63FF;padding-bottom:4px;margin-bottom:12px;">Doświadczenie</h2>`;
+    data.experience.forEach(exp => {
+      if (!exp.company && !exp.position) return;
+      html += `
+        <div style="margin-bottom:14px;">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;">
+            <strong style="font-size:13.5px;">${escHtml(exp.position)}</strong>
+            <span style="font-size:11px;color:#888;">${escHtml(exp.start_date)} ${exp.end_date || exp.current ? '— ' + (exp.current ? 'obecnie' : escHtml(exp.end_date)) : ''}</span>
+          </div>
+          <div style="color:#6C63FF;font-size:12px;margin:2px 0;">${escHtml(exp.company)}</div>
+          ${exp.description ? `<p style="margin:4px 0 0;color:#555;font-size:12px;">${escHtml(exp.description)}</p>` : ''}
+        </div>
+      `;
+    });
+  }
+
+  if (data.education && data.education.length > 0) {
+    html += `<h2 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6C63FF;border-bottom:2px solid #6C63FF;padding-bottom:4px;margin:20px 0 12px;">Wykształcenie</h2>`;
+    data.education.forEach(edu => {
+      if (!edu.school) return;
+      html += `
+        <div style="margin-bottom:12px;">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;">
+                        <strong style="font-size:13.5px;">${escHtml(edu.school)}</strong>
+            <span style="font-size:11px;color:#888;">${escHtml(edu.start_date)} ${edu.end_date ? '— ' + escHtml(edu.end_date) : ''}</span>
+          </div>
+          <div style="color:#6C63FF;font-size:12px;margin:2px 0;">${[edu.degree, edu.field].filter(Boolean).map(escHtml).join(', ')}</div>
+          ${edu.description ? `<p style="margin:4px 0 0;color:#555;font-size:12px;">${escHtml(edu.description)}</p>` : ''}
+        </div>
+      `;
+    });
+  }
+
+  if (data.skills && data.skills.length > 0) {
+    html += `
+      <h2 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6C63FF;border-bottom:2px solid #6C63FF;padding-bottom:4px;margin:20px 0 12px;">Umiejętności</h2>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;">
+        ${data.skills.map(s => `<span style="background:#f0efff;color:#6C63FF;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:500;">${escHtml(s)}</span>`).join('')}
+      </div>
+    `;
+  }
+
+  if (data.languages && data.languages.length > 0) {
+    html += `
+      <h2 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6C63FF;border-bottom:2px solid #6C63FF;padding-bottom:4px;margin:20px 0 12px;">Języki</h2>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
+        ${data.languages.filter(l => l.name).map(l => `
+          <span style="font-size:12px;color:#333;">
+            <strong>${escHtml(l.name)}</strong>
+            ${l.level ? `<span style="color:#888;"> — ${escHtml(l.level)}</span>` : ''}
+          </span>
+        `).join('<span style="color:#ccc;margin:0 4px;">·</span>')}
+      </div>
+    `;
+  }
+
+  const filledLinks = Object.entries(data.links || {}).filter(([, v]) => v.trim());
+  if (filledLinks.length > 0) {
+    html += `
+      <h2 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6C63FF;border-bottom:2px solid #6C63FF;padding-bottom:4px;margin:20px 0 12px;">Linki</h2>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        ${filledLinks.map(([key, val]) => `
+          <a href="${escHtml(val)}" style="font-size:12px;color:#6C63FF;text-decoration:none;">
+            ${key.charAt(0).toUpperCase() + key.slice(1)}: ${escHtml(val)}
+          </a>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  html += `</div>`; // zamknięcie padding div
+  return html;
+}
+
+// ── Podgląd: Minimalistyczny ──
+function renderPreviewMinimal(data, fullName) {
+  const p = data.personal || {};
+  let html = `
+    <div style="padding:40px 40px 20px;border-bottom:3px solid #10b981;">
+      <h1 style="margin:0;font-size:26px;font-weight:800;color:#111;letter-spacing:-0.5px;">${escHtml(fullName) || '<span style="color:#ccc;">Imię Nazwisko</span>'}</h1>
+      ${p.position ? `<p style="margin:5px 0 0;font-size:14px;color:#10b981;font-weight:500;">${escHtml(p.position)}</p>` : ''}
+      <div style="display:flex;gap:14px;margin-top:10px;font-size:11px;color:#666;flex-wrap:wrap;">
+        ${p.email    ? `<span>${escHtml(p.email)}</span>` : ''}
+        ${p.phone    ? `<span>${escHtml(p.phone)}</span>` : ''}
+        ${p.city     ? `<span>${escHtml(p.city)}</span>`  : ''}
+      </div>
+    </div>
+    <div style="padding:24px 40px;font-size:13px;line-height:1.7;color:#333;">
+  `;
+
+  if (data.summary) {
+    html += `
+      <div style="margin-bottom:22px;">
+        <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#10b981;margin-bottom:8px;">O mnie</h2>
+        <p style="margin:0;color:#444;">${escHtml(data.summary)}</p>
+      </div>
+    `;
+  }
+
+  if (data.experience && data.experience.length > 0) {
+    html += `<h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#10b981;margin-bottom:10px;">Doświadczenie</h2>`;
+    data.experience.forEach(exp => {
+      if (!exp.company && !exp.position) return;
+      html += `
+        <div style="margin-bottom:14px;padding-left:12px;border-left:2px solid #e0e0e0;">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:4px;">
+            <strong style="font-size:13px;">${escHtml(exp.position)}</strong>
+            <span style="font-size:11px;color:#999;">${escHtml(exp.start_date)}${exp.end_date || exp.current ? ' — ' + (exp.current ? 'obecnie' : escHtml(exp.end_date)) : ''}</span>
+          </div>
+          <div style="font-size:12px;color:#555;margin:2px 0;">${escHtml(exp.company)}</div>
+          ${exp.description ? `<p style="margin:4px 0 0;color:#666;font-size:12px;">${escHtml(exp.description)}</p>` : ''}
+        </div>
+      `;
+    });
+  }
+
+  if (data.education && data.education.length > 0) {
+    html += `<h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#10b981;margin:20px 0 10px;">Wykształcenie</h2>`;
+    data.education.forEach(edu => {
+      if (!edu.school) return;
+      html += `
+        <div style="margin-bottom:12px;padding-left:12px;border-left:2px solid #e0e0e0;">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:4px;">
+            <strong style="font-size:13px;">${escHtml(edu.school)}</strong>
+            <span style="font-size:11px;color:#999;">${escHtml(edu.start_date)}${edu.end_date ? ' — ' + escHtml(edu.end_date) : ''}</span>
+          </div>
+          <div style="font-size:12px;color:#555;">${[edu.degree, edu.field].filter(Boolean).map(escHtml).join(', ')}</div>
+        </div>
+      `;
+    });
+  }
+
+  if (data.skills && data.skills.length > 0) {
+    html += `
+      <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#10b981;margin:20px 0 10px;">Umiejętności</h2>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px;">
+        ${data.skills.map(s => `<span style="background:#f0fdf4;color:#059669;border:1px solid #a7f3d0;padding:2px 9px;border-radius:4px;font-size:11px;">${escHtml(s)}</span>`).join('')}
+      </div>
+    `;
+  }
+
+  if (data.languages && data.languages.length > 0) {
+    html += `
+      <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#10b981;margin:20px 0 10px;">Języki</h2>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+        ${data.languages.filter(l => l.name).map(l => `
+          <span style="font-size:12px;color:#333;"><strong>${escHtml(l.name)}</strong>${l.level ? ` <span style="color:#999;">${escHtml(l.level)}</span>` : ''}</span>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  html += `</div>`;
+  return html;
+}
+
+// ── Podgląd: Nowoczesny (dwukolumnowy) ──
+function renderPreviewModern(data, fullName) {
+  const p = data.personal || {};
+
+  const skillsHtml = (data.skills || []).map(s => `
+    <div style="margin-bottom:6px;">
+      <div style="font-size:11px;color:#fff;margin-bottom:2px;">${escHtml(s)}</div>
+      <div style="height:3px;background:rgba(255,255,255,0.2);border-radius:99px;">
+        <div style="height:100%;width:75%;background:#f59e0b;border-radius:99px;"></div>
+      </div>
+    </div>
+  `).join('');
+
+  const langsHtml = (data.languages || []).filter(l => l.name).map(l => `
+    <div style="font-size:11px;color:rgba(255,255,255,0.8);margin-bottom:4px;">
+      <strong style="color:#fff;">${escHtml(l.name)}</strong>${l.level ? ` — ${escHtml(l.level)}` : ''}
+    </div>
+  `).join('');
+
+  const linksHtml = Object.entries(data.links || {})
+    .filter(([, v]) => v.trim())
+    .map(([key, val]) => `<div style="font-size:10px;color:rgba(255,255,255,0.7);word-break:break-all;margin-bottom:3px;">${key}: ${escHtml(val)}</div>`)
+    .join('');
+
+  let mainHtml = '';
+
+  if (data.summary) {
+    mainHtml += `
+      <div style="margin-bottom:18px;">
+        <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#f59e0b;margin-bottom:6px;">O mnie</h2>
+        <p style="margin:0;font-size:12px;color:#444;line-height:1.6;">${escHtml(data.summary)}</p>
+      </div>
+    `;
+  }
+
+  if (data.experience && data.experience.length > 0) {
+    mainHtml += `<h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#f59e0b;margin-bottom:8px;">Doświadczenie</h2>`;
+    data.experience.forEach(exp => {
+      if (!exp.company && !exp.position) return;
+      mainHtml += `
+        <div style="margin-bottom:12px;">
+          <strong style="font-size:12.5px;color:#222;">${escHtml(exp.position)}</strong>
+          <div style="font-size:11px;color:#f59e0b;margin:1px 0;">${escHtml(exp.company)}</div>
+          <div style="font-size:10px;color:#999;">${escHtml(exp.start_date)}${exp.end_date || exp.current ? ' — ' + (exp.current ? 'obecnie' : escHtml(exp.end_date)) : ''}</div>
+          ${exp.description ? `<p style="margin:4px 0 0;font-size:11px;color:#555;">${escHtml(exp.description)}</p>` : ''}
+        </div>
+      `;
+    });
+  }
+
+  if (data.education && data.education.length > 0) {
+    mainHtml += `<h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#f59e0b;margin:16px 0 8px;">Wykształcenie</h2>`;
+    data.education.forEach(edu => {
+      if (!edu.school) return;
+      mainHtml += `
+        <div style="margin-bottom:10px;">
+          <strong style="font-size:12.5px;color:#222;">${escHtml(edu.school)}</strong>
+          <div style="font-size:11px;color:#666;">${[edu.degree, edu.field].filter(Boolean).map(escHtml).join(', ')}</div>
+          <div style="font-size:10px;color:#999;">${escHtml(edu.start_date)}${edu.end_date ? ' — ' + escHtml(edu.end_date) : ''}</div>
+        </div>
+      `;
+    });
+  }
+
+  return `
+    <div style="display:flex;min-height:1123px;">
+
+      <!-- Sidebar -->
+      <div style="width:220px;background:#1e1b4b;padding:28px 20px;flex-shrink:0;display:flex;flex-direction:column;gap:16px;">
+        <!-- Avatar placeholder -->
+        <div style="width:72px;height:72px;border-radius:50%;background:#f59e0b;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#fff;">
+          ${(p.first_name || '?').charAt(0).toUpperCase()}
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:14px;font-weight:800;color:#fff;">${escHtml(fullName) || '<span style="opacity:0.4">Imię Nazwisko</span>'}</div>
+          ${p.position ? `<div style="font-size:11px;color:#f59e0b;margin-top:3px;">${escHtml(p.position)}</div>` : ''}
+        </div>
+
+        ${p.email || p.phone || p.city ? `
+          <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:12px;">
+            ${p.email ? `<div style="font-size:10px;color:rgba(255,255,255,0.7);margin-bottom:4px;word-break:break-all;">✉ ${escHtml(p.email)}</div>` : ''}
+            ${p.phone ? `<div style="font-size:10px;color:rgba(255,255,255,0.7);margin-bottom:4px;">📞 ${escHtml(p.phone)}</div>` : ''}
+            ${p.city  ? `<div style="font-size:10px;color:rgba(255,255,255,0.7);">📍 ${escHtml(p.city)}</div>`  : ''}
+          </div>
+        ` : ''}
+
+        ${skillsHtml ? `
+          <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:12px;">
+            <h3 style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#f59e0b;margin-bottom:8px;">Umiejętności</h3>
+            ${skillsHtml}
+          </div>
+        ` : ''}
+
+        ${langsHtml ? `
+          <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:12px;">
+            <h3 style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#f59e0b;margin-bottom:6px;">Języki</h3>
+            ${langsHtml}
+          </div>
+        ` : ''}
+
+        ${linksHtml ? `
+          <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:12px;">
+            <h3 style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#f59e0b;margin-bottom:6px;">Linki</h3>
+            ${linksHtml}
+          </div>
+        ` : ''}
+      </div>
+
+      <!-- Główna kolumna -->
+      <div style="flex:1;padding:32px 28px;font-size:13px;line-height:1.6;color:#333;">
+        ${mainHtml || '<p style="color:#ccc;font-size:13px;">Zacznij wypełniać formularz...</p>'}
+      </div>
+
+    </div>
+  `;
+}
+
+// ── Aktualizacja podglądu z debounce ──
+function schedulePreviewUpdate() {
+  clearTimeout(previewDebounce);
+  previewDebounce = setTimeout(() => {
+    const data = collectFormData();
+    const page = document.getElementById('previewPage');
+    page.innerHTML = renderPreview(data, CV_TEMPLATE);
+  }, 300);
+}
+
+// ══════════════════════════════════════════════════════════
+// DYNAMICZNE WPISY — Doświadczenie
+// ══════════════════════════════════════════════════════════
+
+function buildExperienceCard(entry) {
+  const id  = entry.id || generateUUID();
+  const div = document.createElement('div');
+  div.className  = 'entry-card';
+  div.dataset.id = id;
+
+  div.innerHTML = `
+    <div class="entry-card__number">Doświadczenie #<span class="entry-num"></span></div>
+    <button type="button" class="entry-card__remove" onclick="removeEntry('experience', '${id}')" title="Usuń">
+      <i data-lucide="trash-2"></i>
+    </button>
+    <div class="form-grid form-grid--2">
+      <div class="form-field">
+        <label class="form-label">Firma</label>
+        <input type="text" class="form-input" data-field="company"
+               value="${escHtml(entry.company || '')}" placeholder="Nazwa firmy">
+      </div>
+      <div class="form-field">
+        <label class="form-label">Stanowisko</label>
+        <input type="text" class="form-input" data-field="position"
+               value="${escHtml(entry.position || '')}" placeholder="np. Frontend Developer">
+      </div>
+    </div>
+    <div class="form-grid form-grid--2">
+      <div class="form-field">
+        <label class="form-label">Data od</label>
+        <input type="month" class="form-input" data-field="start_date"
+               value="${escHtml(entry.start_date || '')}">
+      </div>
+      <div class="form-field" id="end-date-wrap-${id}">
+        <label class="form-label">Data do</label>
+        <input type="month" class="form-input" data-field="end_date"
+               value="${escHtml(entry.end_date || '')}"
+               ${entry.current ? 'disabled style="opacity:0.4"' : ''}>
+      </div>
+    </div>
+    <label class="form-checkbox-wrap">
+      <input type="checkbox" class="form-checkbox" data-field="current"
+             ${entry.current ? 'checked' : ''}
+             onchange="toggleCurrentJob(this, '${id}')">
+      <span class="form-checkbox-label">Obecnie tu pracuję</span>
+    </label>
+    <div class="form-field">
+      <label class="form-label">Opis obowiązków</label>
+      <textarea class="form-textarea" data-field="description"
+                rows="3" placeholder="Opisz swoje obowiązki i osiągnięcia...">${escHtml(entry.description || '')}</textarea>
+    </div>
+  `;
+
+  return div;
+}
+
+function toggleCurrentJob(checkbox, id) {
+  const card    = document.querySelector(`[data-id="${id}"]`);
+  const endInput = card.querySelector('[data-field="end_date"]');
+  if (checkbox.checked) {
+    endInput.disabled = true;
+    endInput.style.opacity = '0.4';
+    endInput.value = '';
+  } else {
+    endInput.disabled = false;
+    endInput.style.opacity = '1';
+  }
+  onFormChange();
+}
+
+// ══════════════════════════════════════════════════════════
+// DYNAMICZNE WPISY — Wykształcenie
+// ══════════════════════════════════════════════════════════
+
+function buildEducationCard(entry) {
+  const id  = entry.id || generateUUID();
+  const div = document.createElement('div');
+  div.className  = 'entry-card';
+  div.dataset.id = id;
+
+  const degrees = ['', 'Licencjat', 'Inżynier', 'Magister', 'Doktor', 'MBA', 'Technikum', 'Szkoła średnia', 'Inne'];
+
+  div.innerHTML = `
+    <div class="entry-card__number">Wykształcenie #<span class="entry-num"></span></div>
+    <button type="button" class="entry-card__remove" onclick="removeEntry('education', '${id}')" title="Usuń">
+      <i data-lucide="trash-2"></i>
+    </button>
+    <div class="form-field">
+      <label class="form-label">Szkoła / Uczelnia</label>
+      <input type="text" class="form-input" data-field="school"
+             value="${escHtml(entry.school || '')}" placeholder="np. Politechnika Warszawska">
+    </div>
+    <div class="form-grid form-grid--2">
+      <div class="form-field">
+        <label class="form-label">Kierunek</label>
+        <input type="text" class="form-input" data-field="field"
+               value="${escHtml(entry.field || '')}" placeholder="np. Informatyka">
+      </div>
+      <div class="form-field">
+        <label class="form-label">Stopień</label>
+        <select class="form-select" data-field="degree">
+          ${degrees.map(d => `<option value="${d}" ${entry.degree === d ? 'selected' : ''}>${d || '— wybierz —'}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div class="form-grid form-grid--2">
+      <div class="form-field">
+        <label class="form-label">Data od</label>
+        <input type="month" class="form-input" data-field="start_date"
+               value="${escHtml(entry.start_date || '')}">
+      </div>
+      <div class="form-field">
+        <label class="form-label">Data do</label>
+        <input type="month" class="form-input" data-field="end_date"
+               value="${escHtml(entry.end_date || '')}">
+      </div>
+    </div>
+    <div class="form-field">
+      <label class="form-label">Dodatkowe informacje</label>
+      <textarea class="form-textarea" data-field="description"
+                rows="2" placeholder="np. specjalizacja, osiągnięcia...">${escHtml(entry.description || '')}</textarea>
+    </div>
+  `;
+
+  return div;
+}
+
+// ══════════════════════════════════════════════════════════
+// DYNAMICZNE WPISY — Języki
+// ══════════════════════════════════════════════════════════
+
+function buildLanguageCard(entry) {
+  const id  = entry.id || generateUUID();
+  const div = document.createElement('div');
+  div.className  = 'entry-card';
+  div.dataset.id = id;
+
+  const levels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'Native'];
+
+  div.innerHTML = `
+    <button type="button" class="entry-card__remove" onclick="removeEntry('languages', '${id}')" title="Usuń">
+      <i data-lucide="trash-2"></i>
+    </button>
+    <div class="form-grid form-grid--2">
+      <div class="form-field">
+        <label class="form-label">Język</label>
+        <input type="text" class="form-input" data-field="name"
+               value="${escHtml(entry.name || '')}" placeholder="np. Angielski">
+      </div>
+      <div class="form-field">
+        <label class="form-label">Poziom</label>
+        <select class="form-select" data-field="level">
+          ${levels.map(l => `<option value="${l}" ${(entry.level || 'B2') === l ? 'selected' : ''}>${l}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+  `;
+
+  return div;
+}
+
+// ══════════════════════════════════════════════════════════
+// DODAWANIE / USUWANIE WPISÓW
+// ══════════════════════════════════════════════════════════
+
+function addEntry(section) {
+  const list = document.getElementById(section + '-list');
+  let card;
+
+  if (section === 'experience') {
+    card = buildExperienceCard({});
+  } else if (section === 'education') {
+    card = buildEducationCard({});
+  } else if (section === 'languages') {
+    card = buildLanguageCard({});
+  }
+
+  if (!card) return;
+
+  list.appendChild(card);
+  updateEntryNumbers(section);
+
+  // Reinicjalizuj ikony Lucide w nowej karcie
+  if (window.lucide) lucide.createIcons({ nodes: [card] });
+
+  // Nasłuchuj zmian w nowej karcie
+  card.querySelectorAll('input, textarea, select').forEach(el => {
+    el.addEventListener('input', onFormChange);
+    el.addEventListener('change', onFormChange);
+  });
+
+  onFormChange();
+}
+
+function removeEntry(section, id) {
+  const card = document.querySelector(`#${section}-list [data-id="${id}"]`);
+  if (card) {
+    card.remove();
+    updateEntryNumbers(section);
+    onFormChange();
+  }
+}
+
+function updateEntryNumbers(section) {
+  const list = document.getElementById(section + '-list');
+  if (!list) return;
+  list.querySelectorAll('.entry-num').forEach((el, i) => {
+    el.textContent = i + 1;
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+// TAGI UMIEJĘTNOŚCI
+// ══════════════════════════════════════════════════════════
+
+function addSkillTag(value) {
+  const skill = value.trim();
+  if (!skill) return;
+
+  // Sprawdź duplikat
+  const existing = Array.from(document.querySelectorAll('.skill-tag'))
+    .map(t => t.dataset.skill.toLowerCase());
+  if (existing.includes(skill.toLowerCase())) return;
+
+  const tag = document.createElement('span');
+  tag.className    = 'skill-tag';
+  tag.dataset.skill = skill;
+  tag.innerHTML    = `${escHtml(skill)} <i data-lucide="x"></i>`;
+  tag.title        = 'Kliknij, aby usunąć';
+
+  tag.addEventListener('click', () => {
+    tag.remove();
+    onFormChange();
+  });
+
+  document.getElementById('skillsTags').appendChild(tag);
+  if (window.lucide) lucide.createIcons({ nodes: [tag] });
+
+  onFormChange();
+}
+
+// Obsługa inputu umiejętności
+document.getElementById('skillInput').addEventListener('keydown', function (e) {
+  if (e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    addSkillTag(this.value);
+    this.value = '';
+  }
+});
+
+document.getElementById('skillInput').addEventListener('blur', function () {
+  if (this.value.trim()) {
+    addSkillTag(this.value);
+    this.value = '';
+  }
+});
+
+// ══════════════════════════════════════════════════════════
+// LICZNIK ZNAKÓW — Podsumowanie
+// ══════════════════════════════════════════════════════════
+
+document.getElementById('summary_text').addEventListener('input', function () {
+  document.getElementById('summaryCount').textContent = this.value.length;
+});
+
+// ══════════════════════════════════════════════════════════
+// NASŁUCHIWANIE ZMIAN W FORMULARZU
+// ══════════════════════════════════════════════════════════
+
+function onFormChange() {
+  const data     = collectFormData();
+  const progress = calculateProgress(data);
+
+  updateProgressUI(progress);
+  updateBadges(data);
+  scheduleAutosave();
+  schedulePreviewUpdate();
+}
+
+// Podpięcie listenerów do statycznych pól
+document.querySelectorAll(
+  '#section-personal input, #section-summary textarea, #section-links input'
+).forEach(el => {
+  el.addEventListener('input', onFormChange);
+  el.addEventListener('change', onFormChange);
+});
+
+// Edytowalny tytuł w topbarze
+document.getElementById('cvTitleInput').addEventListener('input', scheduleAutosave);
+
+// ══════════════════════════════════════════════════════════
+// WYPEŁNIANIE FORMULARZA ISTNIEJĄCYMI DANYMI
+// ══════════════════════════════════════════════════════════
+
+function populateForm(data) {
+  if (!data || typeof data !== 'object') return;
+
+  // ── Dane osobowe ──
+  const p = data.personal || {};
+  const setVal = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.value = val || '';
+  };
+
+  setVal('personal_first_name', p.first_name);
+  setVal('personal_last_name',  p.last_name);
+  setVal('personal_position',   p.position);
+  setVal('personal_email',      p.email);
+  setVal('personal_phone',      p.phone);
+  setVal('personal_city',       p.city);
+
+  // ── Podsumowanie ──
+  const summaryEl = document.getElementById('summary_text');
+  if (summaryEl && data.summary) {
+    summaryEl.value = data.summary;
+    document.getElementById('summaryCount').textContent = data.summary.length;
+  }
+
+  // ── Doświadczenie ──
+  if (Array.isArray(data.experience)) {
+    data.experience.forEach(exp => {
+      const card = buildExperienceCard(exp);
+      document.getElementById('experience-list').appendChild(card);
+      if (window.lucide) lucide.createIcons({ nodes: [card] });
+      card.querySelectorAll('input, textarea, select').forEach(el => {
+        el.addEventListener('input', onFormChange);
+        el.addEventListener('change', onFormChange);
+      });
+    });
+    updateEntryNumbers('experience');
+  }
+
+  // ── Wykształcenie ──
+  if (Array.isArray(data.education)) {
+    data.education.forEach(edu => {
+      const card = buildEducationCard(edu);
+      document.getElementById('education-list').appendChild(card);
+      if (window.lucide) lucide.createIcons({ nodes: [card] });
+      card.querySelectorAll('input, textarea, select').forEach(el => {
+        el.addEventListener('input', onFormChange);
+        el.addEventListener('change', onFormChange);
+      });
+    });
+    updateEntryNumbers('education');
+  }
+
+  // ── Umiejętności ──
+  if (Array.isArray(data.skills)) {
+    data.skills.forEach(s => { if (s) addSkillTag(s); });
+  }
+
+  // ── Języki ──
+  if (Array.isArray(data.languages)) {
+    data.languages.forEach(lang => {
+      const card = buildLanguageCard(lang);
+      document.getElementById('languages-list').appendChild(card);
+      if (window.lucide) lucide.createIcons({ nodes: [card] });
+      card.querySelectorAll('input, select').forEach(el => {
+        el.addEventListener('input', onFormChange);
+        el.addEventListener('change', onFormChange);
+      });
+    });
+  }
+
+  // ── Linki ──
+  const links = data.links || {};
+  setVal('link_linkedin',  links.linkedin);
+  setVal('link_github',    links.github);
+  setVal('link_portfolio', links.portfolio);
+  setVal('link_other',     links.other);
+
+  // Odśwież UI po wczytaniu
+  const progress = calculateProgress(data);
+  updateProgressUI(progress);
+  updateBadges(data);
+  schedulePreviewUpdate();
+}
+
+// ══════════════════════════════════════════════════════════
+// INICJALIZACJA
+// ══════════════════════════════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Wczytaj istniejące dane CV
+  if (CV_DATA && Object.keys(CV_DATA).length > 0) {
+    populateForm(CV_DATA);
+  }
+
+  // Inicjalizuj ikony Lucide
+  if (window.lucide) lucide.createIcons();
+
+  // Pierwszy render podglądu
+  schedulePreviewUpdate();
+
+  // Status początkowy
+  setSaveStatus('saved', 'Wszystko zapisane');
+});
+
+// Zapisz przed zamknięciem zakładki jeśli są niezapisane zmiany
+window.addEventListener('beforeunload', (e) => {
+  if (isDirty) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
+</script>
+{% endblock %}
+

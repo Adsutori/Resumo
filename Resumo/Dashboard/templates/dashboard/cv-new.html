@@ -1,0 +1,525 @@
+{% extends 'dashboard-layout.html' %}
+{% load static %}
+
+{% block title %}Nowe CV — Resumo{% endblock %}
+{% block page_title %}Nowe CV{% endblock %}
+
+{% block content %}
+
+<!-- Nagłówek strony -->
+<div class="welcome">
+  <div class="welcome__text">
+    <h2 class="welcome__heading">Stwórz nowe CV ✨</h2>
+    <p class="welcome__sub">Wybierz szablon i nadaj tytuł — resztą zajmiemy się razem.</p>
+  </div>
+  <a href="{% url 'dashboard:dashboard' %}" class="btn btn--ghost btn--sm">
+    <i data-lucide="arrow-left"></i>
+    Wróć do dashboardu
+  </a>
+</div>
+
+<!-- ============================================================
+     FORMULARZ TWORZENIA CV
+============================================================ -->
+<form method="POST" action="{% url 'dashboard:create_cv' %}" id="createCvForm">
+  {% csrf_token %}
+
+  <!-- Ukryte pole szablonu — wartość ustawiana przez JS po kliknięciu karty -->
+  <input type="hidden" name="template" id="selectedTemplate" value="classic">
+
+  <!-- ── Pole tytułu ── -->
+  <div class="section-header" style="margin-top: 32px;">
+    <h3 class="section-header__title">
+      <i data-lucide="type"></i>
+      Tytuł dokumentu
+    </h3>
+  </div>
+
+  <div class="title-input-wrap">
+    <i data-lucide="file-text" class="title-input-wrap__icon"></i>
+    <input
+      type="text"
+      name="title"
+      id="cvTitle"
+      class="title-input"
+      placeholder="Moje CV"
+      maxlength="200"
+      autocomplete="off"
+    >
+  </div>
+
+  <!-- ── Wybór szablonu ── -->
+  <div class="section-header" style="margin-top: 40px;">
+    <h3 class="section-header__title">
+      <i data-lucide="layout-template"></i>
+      Wybierz szablon
+    </h3>
+    <span class="section-header__hint">Możesz zmienić szablon później</span>
+  </div>
+
+  <div class="template-picker">
+
+    <!-- ── Klasyczny ── -->
+    <div class="tpick-card tpick-card--selected" data-template="classic" tabindex="0" role="button" aria-pressed="true">
+
+      <div class="tpick-card__check">
+        <i data-lucide="check"></i>
+      </div>
+
+      <div class="tpick-card__badge">
+        <span class="badge badge--accent">
+          <i data-lucide="star"></i>
+          Popularny
+        </span>
+      </div>
+
+      <!-- Mockup podglądu -->
+      <div class="tpick-card__preview tpick-card__preview--classic">
+        <div class="cv-mock">
+          <div class="cv-mock__header cv-mock__header--classic"></div>
+          <div class="cv-mock__body">
+            <div class="cv-mock__line cv-mock__line--long"></div>
+            <div class="cv-mock__line cv-mock__line--medium"></div>
+            <div class="cv-mock__divider"></div>
+            <div class="cv-mock__line cv-mock__line--short"></div>
+            <div class="cv-mock__line cv-mock__line--long"></div>
+            <div class="cv-mock__line cv-mock__line--medium"></div>
+            <div class="cv-mock__divider"></div>
+            <div class="cv-mock__line cv-mock__line--short"></div>
+            <div class="cv-mock__line cv-mock__line--long"></div>
+            <div class="cv-mock__line cv-mock__line--medium"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tpick-card__info">
+        <h4 class="tpick-card__name">Klasyczny</h4>
+        <p class="tpick-card__desc">Sprawdzony układ dla każdej branży. Czytelny i profesjonalny.</p>
+        <button type="submit" class="btn btn--accent btn--sm tpick-card__btn">
+          <i data-lucide="arrow-right"></i>
+          Użyj szablonu
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ── Minimalistyczny ── -->
+    <div class="tpick-card" data-template="minimal" tabindex="0" role="button" aria-pressed="false">
+
+      <div class="tpick-card__check">
+        <i data-lucide="check"></i>
+      </div>
+
+      <div class="tpick-card__badge">
+        <span class="badge badge--success">
+          <i data-lucide="trending-up"></i>
+          Polecany
+        </span>
+      </div>
+
+      <div class="tpick-card__preview tpick-card__preview--minimal">
+        <div class="cv-mock">
+          <div class="cv-mock__header cv-mock__header--minimal"></div>
+          <div class="cv-mock__body">
+            <div class="cv-mock__line cv-mock__line--medium" style="background: rgba(16,185,129,0.5);"></div>
+            <div class="cv-mock__line cv-mock__line--long"></div>
+            <div class="cv-mock__line cv-mock__line--long"></div>
+            <div class="cv-mock__spacer"></div>
+            <div class="cv-mock__line cv-mock__line--medium" style="background: rgba(16,185,129,0.5);"></div>
+            <div class="cv-mock__line cv-mock__line--long"></div>
+            <div class="cv-mock__line cv-mock__line--short"></div>
+            <div class="cv-mock__spacer"></div>
+            <div class="cv-mock__line cv-mock__line--medium" style="background: rgba(16,185,129,0.5);"></div>
+            <div class="cv-mock__line cv-mock__line--long"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tpick-card__info">
+        <h4 class="tpick-card__name">Minimalistyczny</h4>
+        <p class="tpick-card__desc">Czysty, nowoczesny design bez zbędnych ozdób.</p>
+        <button type="submit" class="btn btn--sm tpick-card__btn tpick-card__btn--green">
+          <i data-lucide="arrow-right"></i>
+          Użyj szablonu
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ── Nowoczesny ── -->
+    <div class="tpick-card" data-template="modern" tabindex="0" role="button" aria-pressed="false">
+
+      <div class="tpick-card__check">
+        <i data-lucide="check"></i>
+      </div>
+
+      <div class="tpick-card__badge">
+        <span class="badge badge--warning">
+          <i data-lucide="sparkles"></i>
+          Nowy
+        </span>
+      </div>
+
+      <div class="tpick-card__preview tpick-card__preview--modern">
+        <div class="cv-mock cv-mock--modern">
+          <div class="cv-mock__sidebar-col">
+            <div class="cv-mock__avatar"></div>
+            <div class="cv-mock__line cv-mock__line--short" style="background: rgba(245,158,11,0.5); margin: 6px auto; width: 60%;"></div>
+            <div class="cv-mock__line cv-mock__line--short" style="width: 80%; margin: 4px auto;"></div>
+            <div class="cv-mock__spacer"></div>
+            <div class="cv-mock__skill-bar"></div>
+            <div class="cv-mock__skill-bar cv-mock__skill-bar--short"></div>
+            <div class="cv-mock__skill-bar cv-mock__skill-bar--medium"></div>
+          </div>
+          <div class="cv-mock__main-col">
+            <div class="cv-mock__line cv-mock__line--long" style="background: rgba(245,158,11,0.5);"></div>
+            <div class="cv-mock__line cv-mock__line--medium"></div>
+            <div class="cv-mock__spacer"></div>
+            <div class="cv-mock__line cv-mock__line--short" style="background: rgba(245,158,11,0.3);"></div>
+            <div class="cv-mock__line cv-mock__line--long"></div>
+            <div class="cv-mock__line cv-mock__line--medium"></div>
+            <div class="cv-mock__spacer"></div>
+            <div class="cv-mock__line cv-mock__line--short" style="background: rgba(245,158,11,0.3);"></div>
+            <div class="cv-mock__line cv-mock__line--long"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tpick-card__info">
+        <h4 class="tpick-card__name">Nowoczesny</h4>
+        <p class="tpick-card__desc">Dwukolumnowy układ z awatarem. Wyróżnij się z tłumu.</p>
+        <button type="submit" class="btn btn--sm tpick-card__btn tpick-card__btn--yellow">
+          <i data-lucide="arrow-right"></i>
+          Użyj szablonu
+        </button>
+      </div>
+
+    </div>
+
+  </div><!-- /.template-picker -->
+
+</form>
+
+<!-- ============================================================
+     STYLE STRONY
+============================================================ -->
+<style>
+
+  /* ── Pole tytułu ── */
+  .title-input-wrap {
+    position: relative;
+    max-width: 480px;
+  }
+
+  .title-input-wrap__icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: var(--color-text-muted);
+    pointer-events: none;
+  }
+
+  .title-input {
+    width: 100%;
+    padding: 12px 16px 12px 42px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    color: var(--color-text);
+    font-size: 15px;
+    font-weight: 500;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+  }
+
+  .title-input::placeholder {
+    color: var(--color-text-muted);
+    opacity: 0.6;
+  }
+
+  .title-input:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-accent-glow);
+  }
+
+  /* ── Hint w nagłówku sekcji ── */
+  .section-header__hint {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    opacity: 0.7;
+  }
+
+  /* ── Siatka wyboru szablonu ── */
+  .template-picker {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  /* ── Karta szablonu ── */
+  .tpick-card {
+    position: relative;
+    background: var(--color-surface);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+
+  .tpick-card:hover {
+    border-color: var(--color-surface-3);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .tpick-card--selected {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-accent-glow);
+  }
+
+  /* Ikona "zaznaczony" ── */
+  .tpick-card__check {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 3;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0.6);
+    transition: opacity 0.2s, transform 0.2s;
+  }
+
+  .tpick-card__check i {
+    width: 13px;
+    height: 13px;
+    color: #fff;
+  }
+
+  .tpick-card--selected .tpick-card__check {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Badge ── */
+  .tpick-card__badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+  }
+
+  /* Podgląd mockupu ── */
+  .tpick-card__preview {
+    height: 190px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .tpick-card__preview--classic {
+    background: linear-gradient(160deg, #1e1e2e 0%, #16162a 100%);
+  }
+
+  .tpick-card__preview--minimal {
+    background: linear-gradient(160deg, #1a2e26 0%, #162620 100%);
+  }
+
+  .tpick-card__preview--modern {
+    background: linear-gradient(160deg, #2e2a1a 0%, #261e10 100%);
+  }
+
+  /* Info pod podglądem ── */
+  .tpick-card__info {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .tpick-card__name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .tpick-card__desc {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    margin: 0 0 6px 0;
+  }
+
+  /* Przyciski w kartach ── */
+  .tpick-card__btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .tpick-card__btn--green {
+    background: rgba(16,185,129,0.15);
+    color: #10b981;
+    border: 1px solid rgba(16,185,129,0.3);
+  }
+
+  .tpick-card__btn--green:hover {
+    background: rgba(16,185,129,0.25);
+  }
+
+  .tpick-card__btn--yellow {
+    background: rgba(245,158,11,0.15);
+    color: #f59e0b;
+    border: 1px solid rgba(245,158,11,0.3);
+  }
+
+  .tpick-card__btn--yellow:hover {
+    background: rgba(245,158,11,0.25);
+  }
+
+  /* ── Mockup CV (skopiowane z dashboard.html) ── */
+  .cv-mock {
+    width: 110px;
+    height: 148px;
+    background: #fff;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cv-mock__header         { height: 32px; flex-shrink: 0; }
+  .cv-mock__header--classic { background: var(--color-accent); }
+  .cv-mock__header--minimal { height: 12px; background: #10b981; }
+
+  .cv-mock__body {
+    padding: 6px 7px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+  }
+
+  .cv-mock__line            { height: 4px; border-radius: 2px; background: #e0e0e0; }
+  .cv-mock__line--long      { width: 100%; }
+  .cv-mock__line--medium    { width: 70%; }
+  .cv-mock__line--short     { width: 45%; }
+  .cv-mock__divider         { height: 1px; background: #e8e8e8; margin: 2px 0; }
+  .cv-mock__spacer          { height: 4px; }
+
+  .cv-mock--modern          { flex-direction: row; }
+
+  .cv-mock__sidebar-col {
+    width: 38px;
+    background: rgba(245,158,11,0.15);
+    padding: 6px 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    flex-shrink: 0;
+  }
+
+  .cv-mock__main-col {
+    flex: 1;
+    padding: 6px 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .cv-mock__avatar {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(245,158,11,0.6);
+    margin-bottom: 4px;
+    flex-shrink: 0;
+  }
+
+  .cv-mock__skill-bar        { height: 3px; border-radius: 2px; background: rgba(245,158,11,0.5); width: 80%; }
+  .cv-mock__skill-bar--short  { width: 55%; }
+  .cv-mock__skill-bar--medium { width: 70%; }
+
+  /* ── Responsywność ── */
+  @media (max-width: 900px) {
+    .template-picker {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .title-input-wrap {
+      max-width: 100%;
+    }
+  }
+
+</style>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  /**
+   * Obsługa wyboru szablonu:
+   * - kliknięcie karty ustawia wartość hidden inputu
+   * - kliknięcie przycisku "Użyj szablonu" submituje formularz
+   */
+  const cards          = document.querySelectorAll('.tpick-card');
+  const hiddenTemplate = document.getElementById('selectedTemplate');
+
+  cards.forEach(card => {
+    // Kliknięcie w kartę (nie w przycisk) — tylko zaznacza
+    card.addEventListener('click', function (e) {
+      // Jeśli kliknięto przycisk submit — nie blokuj, pozwól na submit
+      if (e.target.closest('button[type="submit"]')) return;
+
+      // Odznacz wszystkie
+      cards.forEach(c => {
+        c.classList.remove('tpick-card--selected');
+        c.setAttribute('aria-pressed', 'false');
+      });
+
+      // Zaznacz klikniętą
+      this.classList.add('tpick-card--selected');
+      this.setAttribute('aria-pressed', 'true');
+
+      // Ustaw wartość hidden inputu
+      hiddenTemplate.value = this.dataset.template;
+    });
+
+    // Obsługa klawiatury (Enter / Space)
+    card.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        this.click();
+      }
+    });
+
+    // Kliknięcie przycisku submit — najpierw ustaw szablon, potem submit
+    const submitBtn = card.querySelector('button[type="submit"]');
+    if (submitBtn) {
+      submitBtn.addEventListener('click', function (e) {
+        // Ustaw szablon z karty-rodzica
+        hiddenTemplate.value = card.dataset.template;
+        // Formularz zostanie normalnie wysłany
+      });
+    }
+  });
+</script>
+{% endblock %}
