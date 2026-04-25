@@ -6,11 +6,13 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from .models import CV
 from django.http import HttpResponse
-from xhtml2pdf import pisa
-import io
+from weasyprint import HTML
 from django.template.loader import render_to_string
-import os
+from django.template.loader import render_to_string
 from django.conf import settings
+from django.db.models import F
+
+
 
 
 # ──────────────────────────────────────────────
@@ -185,28 +187,10 @@ def edit_cv(request, cv_id):
     return render(request, 'dashboard/cv-editor.html', context)
 
 
-def link_callback(uri, rel):
-    """
-    Zamienia URL-e statyczne na absolutne ścieżki do plików.
-    Wymagane przez xhtml2pdf do ładowania fontów i obrazków.
-    """
-    static_url  = settings.STATIC_URL   # '/static/'
-    static_root = settings.STATICFILES_DIRS[0]  # D:\...\static
-
-    if uri.startswith(static_url):
-        path = os.path.join(static_root, uri[len(static_url):])
-        path = os.path.normpath(path)
-        if os.path.isfile(path):
-            return path
-
-    return uri
-
-
 @login_required
 def download_pdf(request, cv_id):
     cv = get_object_or_404(CV, id=cv_id, user=request.user)
-    cv.download_count += 1
-    cv.save(update_fields=['download_count'])
+    CV.objects.filter(id=cv_id).update(download_count=F('download_count') + 1)
 
     template_map = {
         'classic': 'dashboard/pdf/cv-classic.html',
@@ -220,14 +204,10 @@ def download_pdf(request, cv_id):
         'content': cv.content or {},
     }, request=request)
 
-    buffer = io.BytesIO()
-    pisa.CreatePDF(
-        io.StringIO(html_string),
-        dest=buffer,
-        link_callback=link_callback,
-    )
-    pdf = buffer.getvalue()
-    buffer.close()
+    pdf = HTML(
+        string=html_string,
+        base_url=request.build_absolute_uri('/')
+    ).write_pdf()
 
     safe_title = cv.title.replace(' ', '_').replace('/', '-')[:50]
     response = HttpResponse(pdf, content_type='application/pdf')
