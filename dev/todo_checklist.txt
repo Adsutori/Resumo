@@ -1,3 +1,8 @@
+FIX:
+- podglad classic - sidebar po lewej nie jest do konca strony, ale renderuje sie dobrze
+- podglad minimal - po wyborze dwoch kolumn widac still jedną, ale renderuje sie dobrze
+
+
 🔗 UDOSTĘPNIANIE CV
 
 [ ] Dodać pole share_token do modelu CV (UUID)
