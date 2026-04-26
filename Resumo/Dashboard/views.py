@@ -217,6 +217,14 @@ def download_pdf(request, cv_id):
     }
     template_name = template_map.get(cv.template, 'dashboard/pdf/cv-classic.html')
 
+    from .models import DEFAULT_DESIGN
+
+    # Scal DEFAULT_DESIGN z zapisanym — tak samo jak w edit_cv GET
+    merged_design = {**DEFAULT_DESIGN, **(cv.design or {})}
+
+    # Podmień design na scalony (tylko w pamięci, NIE zapisujemy do bazy)
+    cv.design = merged_design
+
     html_string = render_to_string(template_name, {
         'cv':      cv,
         'content': cv.content or {},

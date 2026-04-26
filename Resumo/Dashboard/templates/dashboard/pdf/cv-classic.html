@@ -152,7 +152,7 @@
     <div class="header-name">{{ p.first_name|default:"" }} {{ p.last_name|default:"" }}</div>
     {% if p.position %}<div class="header-position">{{ p.position }}</div>{% endif %}
     <div class="header-contact">
-      {% if p.email %}<span>{{ p.email }}</span>{% endif %}
+      {% if p.email %}<span>✉ {{ p.email }}</span>{% endif %}
       {% if p.phone %}<span>• {{ p.phone }}</span>{% endif %}
       {% if p.city  %}<span>• {{ p.city }}</span>{% endif %}
     </div>
@@ -296,10 +296,11 @@
         <div class="section">
           <div class="section-title">Linki</div>
           <div class="links-wrap">
-            {% if links.linkedin  %}<a class="link-item" href="{{ links.linkedin }}">LinkedIn</a>{% endif %}
-            {% if links.github    %}<a class="link-item" href="{{ links.github }}">GitHub</a>{% endif %}
-            {% if links.portfolio %}<a class="link-item" href="{{ links.portfolio }}">Portfolio</a>{% endif %}
-            {% if links.other     %}<a class="link-item" href="{{ links.other }}">Inne</a>{% endif %}
+          {% if links.linkedin  %}<a class="link-item" href="{{ links.linkedin }}">LinkedIn: {{ links.linkedin }}</a>{% endif %}
+          {% if links.github    %}<a class="link-item" href="{{ links.github }}">GitHub: {{ links.github }}</a>{% endif %}
+          {% if links.portfolio %}<a class="link-item" href="{{ links.portfolio }}">Portfolio: {{ links.portfolio }}</a>{% endif %}
+          {% if links.other     %}<a class="link-item" href="{{ links.other }}">Inne: {{ links.other }}</a>{% endif %}
+
           </div>
         </div>
         {% endif %}{% endif %}{% endwith %}

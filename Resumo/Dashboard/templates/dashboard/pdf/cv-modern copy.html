@@ -1,0 +1,399 @@
+{% load static %}
+
+{% with d=cv.design %}
+{% with accent=d.accent_color|default:'#6C63FF' %}
+{% with font=d.font|default:'Inter' %}
+{% with heading_size=d.heading_size|default:'M' %}
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family={{ font|urlencode }}:wght@400;500;600;700;800&display=swap');
+
+  :root {
+    --accent: {{ accent }};
+  }
+
+  body {
+    font-family: '{{ font }}', 'DejaVu Sans', sans-serif;
+  }
+
+  .header {
+    background: {{ accent }} !important;
+  }
+
+  .header-name {
+    font-size: {% if heading_size == 'S' %}22px{% elif heading_size == 'L' %}34px{% else %}28px{% endif %};
+    font-weight: {% if d.bold_name %}800{% else %}400{% endif %};
+  }
+
+  .section-title {
+    color: {{ accent }} !important;
+    {% if d.show_dividers %}
+      border-bottom: 2px solid {{ accent }};
+    {% else %}
+      border-bottom: none;
+    {% endif %}
+  }
+
+  .entry-subtitle {
+    color: {{ accent }} !important;
+  }
+
+  .skill-tag {
+    color: {{ accent }} !important;
+  }
+
+  .link-item {
+    color: {{ accent }} !important;
+  }
+
+  p.summary-text {
+    font-style: {% if d.italic_summary %}italic{% else %}normal{% endif %};
+  }
+</style>
+
+
+{% endwith %}{% endwith %}{% endwith %}{% endwith %}
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ cv.title }}</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'DejaVu Sans', sans-serif;
+      font-size: 10pt;
+      color: #222;
+      background: #fff;
+      line-height: 1.5;
+      width: 794px;
+    }
+
+    /* ══════════════════════════════
+       DWUKOLUMNOWY LAYOUT
+    ══════════════════════════════ */
+    .cv-wrap {
+      display: flex;
+      width: 794px;
+      min-height: 1123px; /* A4 w px przy 96dpi */
+    }
+
+    /* ── SIDEBAR ── */
+    .cv-sidebar {
+      width: 200px;
+      min-width: 200px;
+      background-color: #1e1b4b;
+      padding: 28px 16px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar__avatar {
+      width: 68px;
+      height: 68px;
+      background-color: #f59e0b;
+      border-radius: 50%;
+      text-align: center;
+      font-size: 26pt;
+      font-weight: bold;
+      color: #ffffff;
+      line-height: 68px;
+      margin: 0 auto 10px auto;
+    }
+
+    .sidebar__name {
+      font-size: 12pt;
+      font-weight: bold;
+      color: #ffffff;
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    .sidebar__position {
+      font-size: 9pt;
+      color: #f59e0b;
+      text-align: center;
+      margin-top: 4px;
+    }
+
+    .sidebar__section-title {
+      font-size: 7.5pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #f59e0b;
+      margin-top: 20px;
+      margin-bottom: 8px;
+      padding-top: 12px;
+      border-top: 1px solid #2d2a5e;
+    }
+
+    .sidebar__contact-item {
+      font-size: 8.5pt;
+      color: #b0aed0;
+      margin-bottom: 5px;
+      word-break: break-all;
+    }
+
+    /* Skill bar */
+    .skill-name {
+      font-size: 9pt;
+      color: #ffffff;
+      margin-bottom: 3px;
+    }
+
+    .skill-bar-bg {
+      height: 4px;
+      background-color: #2d2a5e;
+      border-radius: 2px;
+      margin-bottom: 8px;
+    }
+
+    .skill-bar-fill {
+      height: 4px;
+      width: 75%;
+      background-color: #f59e0b;
+      border-radius: 2px;
+    }
+
+    /* Języki */
+    .lang-item {
+      font-size: 9pt;
+      color: #b0aed0;
+      margin-bottom: 5px;
+    }
+
+    .lang-item strong {
+      color: #ffffff;
+    }
+
+    /* Linki */
+    .link-sidebar {
+      font-size: 8pt;
+      color: #b0aed0;
+      word-break: break-all;
+      margin-bottom: 4px;
+    }
+
+    /* ── GŁÓWNA KOLUMNA ── */
+    .cv-main {
+      flex: 1;
+      padding: 32px 28px;
+    }
+
+    .section {
+      margin-bottom: 22px;
+    }
+
+    .section__title {
+      font-size: 9pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #f59e0b;
+      border-bottom: 2px solid #f59e0b;
+      padding-bottom: 4px;
+      margin-bottom: 12px;
+    }
+
+    .summary__text {
+      font-size: 10.5pt;
+      color: #444444;
+      line-height: 1.7;
+    }
+
+    /* Wpisy (doświadczenie / edukacja) */
+    .entry {
+      margin-bottom: 14px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .entry:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .entry__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .entry__title {
+      font-size: 11pt;
+      font-weight: bold;
+      color: #111111;
+    }
+
+    .entry__dates {
+      font-size: 9pt;
+      color: #999999;
+      white-space: nowrap;
+      margin-left: 12px;
+    }
+
+    .entry__subtitle {
+      font-size: 10pt;
+      color: #f59e0b;
+      margin-top: 2px;
+    }
+
+    .entry__desc {
+      font-size: 10pt;
+      color: #555555;
+      margin-top: 5px;
+      line-height: 1.6;
+    }
+
+    /* Footer */
+    .cv-footer {
+      font-size: 8pt;
+      color: #dddddd;
+      text-align: right;
+      padding: 8px 28px;
+      background: #fff;
+    }
+  </style>
+</head>
+<body>
+
+{% with p=content.personal %}
+
+<div class="cv-wrap">
+
+  <!-- ══════════════════════════════
+       SIDEBAR
+  ══════════════════════════════ -->
+  <div class="cv-sidebar">
+
+    <!-- Avatar -->
+    <div class="sidebar__avatar">{{ p.first_name|first|upper|default:"?" }}</div>
+    <div class="sidebar__name">{{ p.first_name|default:"" }} {{ p.last_name|default:"" }}</div>
+    {% if p.position %}
+      <div class="sidebar__position">{{ p.position }}</div>
+    {% endif %}
+
+    <!-- Kontakt -->
+    {% if p.email or p.phone or p.city %}
+    <div class="sidebar__section-title">Kontakt</div>
+    {% if p.email %}<div class="sidebar__contact-item">{{ p.email }}</div>{% endif %}
+    {% if p.phone %}<div class="sidebar__contact-item">{{ p.phone }}</div>{% endif %}
+    {% if p.city  %}<div class="sidebar__contact-item">{{ p.city }}</div>{% endif %}
+    {% endif %}
+
+    <!-- Umiejętności -->
+    {% if content.skills %}
+    <div class="sidebar__section-title">Umiejętności</div>
+    {% for skill in content.skills %}
+      {% if skill %}
+      <div class="skill-name">{{ skill }}</div>
+      <div class="skill-bar-bg">
+        <div class="skill-bar-fill"></div>
+      </div>
+      {% endif %}
+    {% endfor %}
+    {% endif %}
+
+    <!-- Języki -->
+    {% if content.languages %}
+    <div class="sidebar__section-title">Języki</div>
+    {% for lang in content.languages %}
+      {% if lang.name %}
+      <div class="lang-item">
+        <strong>{{ lang.name }}</strong>
+        {% if lang.level %} — {{ lang.level }}{% endif %}
+      </div>
+      {% endif %}
+    {% endfor %}
+    {% endif %}
+
+    <!-- Linki -->
+    {% with links=content.links %}
+    {% if links %}
+    {% if links.linkedin or links.github or links.portfolio or links.other %}
+    <div class="sidebar__section-title">Linki</div>
+    {% if links.linkedin  %}<div class="link-sidebar">{{ links.linkedin }}</div>{% endif %}
+    {% if links.github    %}<div class="link-sidebar">{{ links.github }}</div>{% endif %}
+    {% if links.portfolio %}<div class="link-sidebar">{{ links.portfolio }}</div>{% endif %}
+    {% if links.other     %}<div class="link-sidebar">{{ links.other }}</div>{% endif %}
+    {% endif %}
+    {% endif %}
+    {% endwith %}
+
+  </div>
+
+  <!-- ══════════════════════════════
+       GŁÓWNA KOLUMNA
+  ══════════════════════════════ -->
+  <div class="cv-main">
+
+    {% if content.summary %}
+    <div class="section">
+      <div class="section__title">O mnie</div>
+      <p class="summary__text">{{ content.summary }}</p>
+    </div>
+    {% endif %}
+
+    {% if content.experience %}
+    <div class="section">
+      <div class="section__title">Doświadczenie zawodowe</div>
+      {% for exp in content.experience %}
+        {% if exp.company or exp.position %}
+        <div class="entry">
+          <div class="entry__header">
+            <span class="entry__title">{{ exp.position|default:"" }}</span>
+            <span class="entry__dates">{{ exp.start_date|default:"" }}{% if exp.current %} — obecnie{% elif exp.end_date %} — {{ exp.end_date }}{% endif %}</span>
+          </div>
+          <div class="entry__subtitle">{{ exp.company|default:"" }}</div>
+          {% if exp.description %}
+            <div class="entry__desc">{{ exp.description }}</div>
+          {% endif %}
+        </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if content.education %}
+    <div class="section">
+      <div class="section__title">Wykształcenie</div>
+      {% for edu in content.education %}
+        {% if edu.school %}
+        <div class="entry">
+          <div class="entry__header">
+            <span class="entry__title">{{ edu.school }}</span>
+            <span class="entry__dates">{{ edu.start_date|default:"" }}{% if edu.end_date %} — {{ edu.end_date }}{% endif %}</span>
+          </div>
+          {% if edu.degree or edu.field %}
+            <div class="entry__subtitle">{{ edu.degree|default:"" }}{% if edu.degree and edu.field %}, {% endif %}{{ edu.field|default:"" }}</div>
+          {% endif %}
+          {% if edu.description %}
+            <div class="entry__desc">{{ edu.description }}</div>
+          {% endif %}
+        </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+
+{% comment %} <div class="cv-footer">Resumo.app</div> {% endcomment %}
+
+{% endwith %}
+</body>
+</html>

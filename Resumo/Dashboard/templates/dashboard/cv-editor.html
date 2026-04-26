@@ -65,6 +65,17 @@
     PANEL DESIGN — kontrolki personalizacji
 ============================================================ -->
 
+<!-- TABS — tylko mobile -->
+<div class="editor-tabs" id="editorTabs">
+  <button class="editor-tab editor-tab--active" data-tab="form" onclick="switchTab('form')">
+    <i data-lucide="edit-3"></i>
+    Edytuj
+  </button>
+  <button class="editor-tab" data-tab="preview" onclick="switchTab('preview')">
+    <i data-lucide="eye"></i>
+    Podgląd
+  </button>
+</div>
 
 <!-- ============================================================
      GŁÓWNY LAYOUT EDYTORA
@@ -174,11 +185,6 @@
                 <input type="checkbox" id="toggle_bold_name" checked>
                 <span class="toggle-switch__track"></span>
                 <span class="toggle-switch__label">Pogrubione imię i nazwisko</span>
-              </label>
-              <label class="toggle-switch">
-                <input type="checkbox" id="toggle_italic_summary">
-                <span class="toggle-switch__track"></span>
-                <span class="toggle-switch__label">Kursywa w podsumowaniu</span>
               </label>
               <label class="toggle-switch">
                 <input type="checkbox" id="toggle_show_dividers" checked>
@@ -592,9 +598,10 @@
   /* ── Layout edytora ── */
   .editor-layout {
     display: grid;
-    grid-template-columns: 1fr 420px;
+    grid-template-columns: 1fr 460px;
     gap: 24px;
     align-items: start;
+    min-width: 0;
   }
 
   /* ── Panel formularz ── */
@@ -646,8 +653,9 @@
   }
 
   .preview-viewport {
-    padding: 16px;
+    padding: 16px 8px;
     background: #e8e8e8;
+    height: 640px; 
     min-height: 500px;
     display: flex;
     align-items: flex-start;
@@ -663,11 +671,11 @@
     box-shadow: 0 4px 24px rgba(0,0,0,0.3);
     transform-origin: top center;
     transform: scale(0.55);
-    margin-top: 0;
     position: relative;
     font-family: 'Segoe UI', Arial, sans-serif;
     color: #222;
     flex-shrink: 0;
+    overflow: hidden;
   }
 
   .preview-empty {
@@ -1036,7 +1044,13 @@
   /* ── Responsywność ── */
   @media (max-width: 1100px) {
     .editor-layout {
-      grid-template-columns: 1fr 340px;
+      grid-template-columns: 1fr 380px;
+    }
+    .preview-page {
+      transform: scale(0.44);
+    }
+    .preview-viewport {
+      height: 530px;
     }
   }
 
@@ -1422,6 +1436,90 @@
     color: var(--color-text-muted);
   }
 
+  /* ── Tabs mobile ── */
+  .editor-tabs {
+    display: none;
+  }
+
+  @media (max-width: 900px) {
+    .editor-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: 6px;
+    }
+
+    .editor-tab {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 10px;
+      border: none;
+      border-radius: var(--radius-lg);
+      background: transparent;
+      color: var(--color-text-muted);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .editor-tab i {
+      width: 15px;
+      height: 15px;
+    }
+
+    .editor-tab--active {
+      background: var(--color-accent);
+      color: #fff;
+    }
+
+    /* Na mobile layout jednokolumnowy */
+    .editor-layout {
+      grid-template-columns: 1fr;
+    }
+
+    /* Panel podglądu na mobile — domyślnie ukryty */
+    .editor-panel--preview {
+      display: none;
+    }
+
+    /* Gdy aktywna zakładka preview */
+    .editor-panel--preview.tab-visible {
+      display: block;
+    }
+
+    /* Ukryj formularz gdy aktywny preview */
+    .editor-panel--form.tab-hidden {
+      display: none;
+    }
+
+    /* Skala podglądu na mobile */
+    .preview-page {
+      transform: scale(0.38);
+    }
+
+    .preview-viewport {
+      height: 460px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .preview-page {
+      transform: scale(0.32);
+    }
+
+    .preview-viewport {
+      height: 390px;
+    }
+  }
+
 
 </style>
 
@@ -1728,7 +1826,6 @@ function renderPreviewClassic(data, fullName, d) {
   const font    = (d && d.font)           || 'Inter';
   const hSize   = ({ S: '22px', M: '28px', L: '34px' }[(d && d.heading_size)]) || '28px';
   const bold    = (d && d.bold_name)      ? '800' : '400';
-  const italic  = (d && d.italic_summary) ? 'italic' : 'normal';
   const divider = d && d.show_dividers;
   const isDouble = d && d.layout === 'double';
 
@@ -1752,10 +1849,11 @@ function renderPreviewClassic(data, fullName, d) {
   // ── Sekcja helper ──
   function section(title, content) {
     return `
-      <div style="margin-bottom:20px;">
-        <h2 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;
-                   color:${accent};${divider ? `border-bottom:2px solid ${accent};` : ''}
-                   padding-bottom:4px;margin-bottom:10px;">${title}</h2>
+      <div style="margin-bottom:20px;margin-top:0;">
+        <h2 style="margin:0 0 10px 0;font-size:13px;font-weight:700;text-transform:uppercase;
+                  letter-spacing:1px;color:${accent};
+                  ${divider ? `border-bottom:2px solid ${accent};` : ''}
+                  padding-bottom:4px;">${title}</h2>
         ${content}
       </div>
     `;
@@ -1765,7 +1863,7 @@ function renderPreviewClassic(data, fullName, d) {
   let summaryHtml = '';
   if (data.summary) {
     summaryHtml = section('Podsumowanie',
-      `<p style="margin:0;color:#444;font-size:13px;font-style:${italic};">${escHtml(data.summary)}</p>`
+      `<p style="margin:0;color:#444;font-size:13px;font-style:normal;">${escHtml(data.summary)}</p>`
     );
   }
 
@@ -1860,7 +1958,7 @@ function renderPreviewClassic(data, fullName, d) {
       <div style="display:flex;min-height:900px;">
 
         <!-- Lewa kolumna (sidebar) -->
-        <div style="width:240px;flex-shrink:0;background:#f8f7ff;padding:24px 20px;border-right:1px solid #ede9fe;">
+        <div style="width:240px;flex-shrink:0;background:#f8f7ff;padding:24px 20px 24px 20px;border-right:1px solid #ede9fe;box-sizing:border-box;">
           ${summaryHtml}
           ${skillsHtml}
           ${langsHtml}
@@ -1907,7 +2005,7 @@ function renderPreviewMinimal(data, fullName, d) {
     html += `
       <div style="margin-bottom:22px;">
         <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:${accent};margin-bottom:8px;">O mnie</h2>
-        <p style="margin:0;color:#444;font-style:${italic};">${escHtml(data.summary)}</p>
+        <p style="margin:0;color:#444;font-style:normal;">${escHtml(data.summary)}</p>
       </div>
     `;
   }
@@ -1971,49 +2069,111 @@ function renderPreviewMinimal(data, fullName, d) {
 
 
 // ── Podgląd: Nowoczesny (dwukolumnowy) ──
-function renderPreviewMinimal(data, fullName, d) {
-  const accent   = (d && d.accent_color)   || '#10b981';
-  const font     = (d && d.font)           || 'Inter';
+// ── Podgląd: Nowoczesny ──
+function renderPreviewModern(data, fullName, d) {
+  const accent   = (d && d.accent_color) || '#6C63FF';
+  const font     = (d && d.font)         || 'Inter';
   const hSize    = ({ S: '20px', M: '26px', L: '32px' }[(d && d.heading_size)]) || '26px';
-  const bold     = (d && d.bold_name)      ? '800' : '400';
-  const italic   = (d && d.italic_summary) ? 'italic' : 'normal';
+  const bold     = (d && d.bold_name)    ? '800' : '400';
   const divider  = d && d.show_dividers;
   const isDouble = d && d.layout === 'double';
 
   const p = data.personal || {};
 
+  // ── Ciemny nagłówek z gradientem ──
   const headerHtml = `
-    <div style="padding:40px 40px 20px;${divider ? `border-bottom:3px solid ${accent};` : ''}font-family:'${font}',sans-serif;">
-      <h1 style="margin:0;font-size:${hSize};font-weight:${bold};color:#111;letter-spacing:-0.5px;">
-        ${escHtml(fullName) || '<span style="color:#ccc;">Imię Nazwisko</span>'}
+    <div style="background:linear-gradient(135deg,#1a1a2e 0%,${accent} 100%);
+                padding:36px 40px;color:#fff;font-family:'${font}',sans-serif;
+                position:relative;overflow:hidden;">
+      <div style="position:absolute;top:-40px;right:-40px;width:180px;height:180px;
+                  border-radius:50%;background:rgba(255,255,255,0.05);"></div>
+      <div style="position:absolute;bottom:-20px;right:60px;width:100px;height:100px;
+                  border-radius:50%;background:rgba(255,255,255,0.05);"></div>
+      <h1 style="margin:0;font-size:${hSize};font-weight:${bold};letter-spacing:-0.5px;
+                 position:relative;z-index:1;">
+        ${escHtml(fullName) || '<span style="opacity:0.4">Imię Nazwisko</span>'}
       </h1>
-      ${p.position ? `<p style="margin:5px 0 0;font-size:14px;color:${accent};font-weight:500;">${escHtml(p.position)}</p>` : ''}
-      <div style="display:flex;gap:14px;margin-top:10px;font-size:11px;color:#666;flex-wrap:wrap;">
-        ${p.email ? `<span>${escHtml(p.email)}</span>` : ''}
-        ${p.phone ? `<span>${escHtml(p.phone)}</span>` : ''}
-        ${p.city  ? `<span>${escHtml(p.city)}</span>`  : ''}
+      ${p.position ? `
+        <p style="margin:6px 0 0;font-size:13px;font-weight:500;opacity:0.75;
+                  text-transform:uppercase;letter-spacing:2px;position:relative;z-index:1;">
+          ${escHtml(p.position)}
+        </p>` : ''}
+      <div style="display:flex;gap:16px;margin-top:16px;font-size:11px;
+                  opacity:0.7;flex-wrap:wrap;position:relative;z-index:1;">
+        ${p.email    ? `<span>${escHtml(p.email)}</span>`    : ''}
+        ${p.phone    ? `<span>${escHtml(p.phone)}</span>`    : ''}
+        ${p.city     ? `<span>${escHtml(p.city)}</span>`     : ''}
       </div>
     </div>
   `;
 
-  function section(title, content) {
+  // ── Helper sekcji ──
+  function section(title, content, light) {
+    const titleColor = light ? accent : '#fff';
+    const borderColor = light ? accent : 'rgba(255,255,255,0.2)';
     return `
-      <div style="margin-bottom:20px;">
-        <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;
-                   color:${accent};margin-bottom:8px;">${title}</h2>
+      <div style="margin-bottom:22px;">
+        <h2 style="margin:0 0 10px 0;font-size:11px;font-weight:700;
+                   text-transform:uppercase;letter-spacing:1.5px;
+                   color:${titleColor};
+                   ${divider ? `padding-bottom:6px;border-bottom:1px solid ${borderColor};` : ''}">
+          ${title}
+        </h2>
         ${content}
       </div>
     `;
   }
 
-  function entryStyle() {
-    return `margin-bottom:12px;padding-left:12px;${divider ? `border-left:2px solid ${accent};` : ''}`;
-  }
-
+  // ── Sekcje ──
   let summaryHtml = '';
   if (data.summary) {
     summaryHtml = section('O mnie',
-      `<p style="margin:0;color:#444;font-size:13px;font-style:${italic};">${escHtml(data.summary)}</p>`
+      `<p style="margin:0;font-size:12px;line-height:1.7;opacity:0.85;">${escHtml(data.summary)}</p>`
+    );
+  }
+
+  let skillsHtml = '';
+  if (data.skills && data.skills.length > 0) {
+    skillsHtml = section('Umiejętności',
+      `<div style="display:flex;flex-wrap:wrap;gap:5px;">
+        ${data.skills.map(s =>
+          `<span style="background:rgba(255,255,255,0.12);color:#fff;
+                        padding:3px 9px;border-radius:4px;font-size:10px;
+                        font-weight:500;border:1px solid rgba(255,255,255,0.2);">
+            ${escHtml(s)}
+          </span>`
+        ).join('')}
+      </div>`
+    );
+  }
+
+  let langsHtml = '';
+  if (data.languages && data.languages.some(l => l.name)) {
+    langsHtml = section('Języki',
+      `<div style="display:flex;flex-direction:column;gap:6px;">
+        ${data.languages.filter(l => l.name).map(l => `
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:12px;font-weight:600;">${escHtml(l.name)}</span>
+            ${l.level ? `<span style="font-size:10px;background:rgba(255,255,255,0.15);
+                                      padding:1px 7px;border-radius:99px;">${escHtml(l.level)}</span>` : ''}
+          </div>
+        `).join('')}
+      </div>`
+    );
+  }
+
+  let linksHtml = '';
+  const filledLinks = Object.entries(data.links || {}).filter(([, v]) => v.trim());
+  if (filledLinks.length > 0) {
+    linksHtml = section('Linki',
+      `<div style="display:flex;flex-direction:column;gap:5px;">
+        ${filledLinks.map(([key, val]) =>
+          `<a href="${escHtml(val)}" style="font-size:11px;color:rgba(255,255,255,0.7);
+                                            text-decoration:none;word-break:break-all;">
+            ${key.charAt(0).toUpperCase() + key.slice(1)}: ${escHtml(val)}
+          </a>`
+        ).join('')}
+      </div>`
     );
   }
 
@@ -2023,17 +2183,36 @@ function renderPreviewMinimal(data, fullName, d) {
     data.experience.forEach(exp => {
       if (!exp.company && !exp.position) return;
       items += `
-        <div style="${entryStyle()}">
+        <div style="margin-bottom:16px;padding-left:14px;
+                    ${divider ? `border-left:3px solid ${accent};` : ''}">
           <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;">
-            <strong style="font-size:13px;">${escHtml(exp.position)}</strong>
-            <span style="font-size:11px;color:#999;">${escHtml(exp.start_date)}${exp.end_date || exp.current ? ' — ' + (exp.current ? 'obecnie' : escHtml(exp.end_date)) : ''}</span>
+            <strong style="font-size:13px;color:#111;">${escHtml(exp.position)}</strong>
+            <span style="font-size:11px;color:#999;background:#f5f5f5;
+                         padding:1px 8px;border-radius:99px;">
+              ${escHtml(exp.start_date)}${exp.end_date || exp.current
+                ? ' — ' + (exp.current ? 'obecnie' : escHtml(exp.end_date)) : ''}
+            </span>
           </div>
-          <div style="font-size:12px;color:#555;margin:2px 0;">${escHtml(exp.company)}</div>
-          ${exp.description ? `<p style="margin:4px 0 0;color:#666;font-size:12px;">${escHtml(exp.description)}</p>` : ''}
+          <div style="font-size:12px;color:${accent};font-weight:600;margin:3px 0;">
+            ${escHtml(exp.company)}
+          </div>
+          ${exp.description
+            ? `<p style="margin:5px 0 0;color:#555;font-size:12px;line-height:1.6;">
+                ${escHtml(exp.description)}
+               </p>` : ''}
         </div>
       `;
     });
-    expHtml = section('Doświadczenie', items);
+    expHtml = `
+      <div style="margin-bottom:24px;">
+        <h2 style="margin:0 0 14px 0;font-size:11px;font-weight:700;text-transform:uppercase;
+                   letter-spacing:1.5px;color:${accent};
+                   ${divider ? `padding-bottom:6px;border-bottom:2px solid ${accent};` : ''}">
+          Doświadczenie
+        </h2>
+        ${items}
+      </div>
+    `;
   }
 
   let eduHtml = '';
@@ -2042,64 +2221,98 @@ function renderPreviewMinimal(data, fullName, d) {
     data.education.forEach(edu => {
       if (!edu.school) return;
       items += `
-        <div style="${entryStyle()}">
+        <div style="margin-bottom:14px;padding-left:14px;
+                    ${divider ? `border-left:3px solid ${accent};` : ''}">
           <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;">
-            <strong style="font-size:13px;">${escHtml(edu.school)}</strong>
-            <span style="font-size:11px;color:#999;">${escHtml(edu.start_date)}${edu.end_date ? ' — ' + escHtml(edu.end_date) : ''}</span>
+            <strong style="font-size:13px;color:#111;">${escHtml(edu.school)}</strong>
+            <span style="font-size:11px;color:#999;background:#f5f5f5;
+                         padding:1px 8px;border-radius:99px;">
+              ${escHtml(edu.start_date)}${edu.end_date ? ' — ' + escHtml(edu.end_date) : ''}
+            </span>
           </div>
-          <div style="font-size:12px;color:#555;">${[edu.degree, edu.field].filter(Boolean).map(escHtml).join(', ')}</div>
+          <div style="font-size:12px;color:${accent};font-weight:500;margin:2px 0;">
+            ${[edu.degree, edu.field].filter(Boolean).map(escHtml).join(' · ')}
+          </div>
         </div>
       `;
     });
-    eduHtml = section('Wykształcenie', items);
-  }
-
-  let skillsHtml = '';
-  if (data.skills && data.skills.length > 0) {
-    skillsHtml = section('Umiejętności',
-      `<div style="display:flex;flex-wrap:wrap;gap:5px;">
-        ${data.skills.map(s => `<span style="background:#f0fdf4;color:${accent};border:1px solid ${accent}40;padding:2px 9px;border-radius:4px;font-size:11px;">${escHtml(s)}</span>`).join('')}
-      </div>`
-    );
-  }
-
-  let langsHtml = '';
-  if (data.languages && data.languages.some(l => l.name)) {
-    langsHtml = section('Języki',
-      `<div style="display:flex;flex-wrap:wrap;gap:12px;">
-        ${data.languages.filter(l => l.name).map(l =>
-          `<span style="font-size:12px;color:#333;"><strong>${escHtml(l.name)}</strong>${l.level ? ` <span style="color:#999;">${escHtml(l.level)}</span>` : ''}</span>`
-        ).join('')}
-      </div>`
-    );
-  }
-
-  if (!isDouble) {
-    return `
-      ${headerHtml}
-      <div style="padding:24px 40px;font-family:'${font}',sans-serif;">
-        ${summaryHtml}${expHtml}${eduHtml}${skillsHtml}${langsHtml}
+    eduHtml = `
+      <div style="margin-bottom:24px;">
+        <h2 style="margin:0 0 14px 0;font-size:11px;font-weight:700;text-transform:uppercase;
+                   letter-spacing:1.5px;color:${accent};
+                   ${divider ? `padding-bottom:6px;border-bottom:2px solid ${accent};` : ''}">
+          Wykształcenie
+        </h2>
+        ${items}
       </div>
     `;
   }
 
-  // Dwie kolumny
-  return `
-    <div style="font-family:'${font}',sans-serif;">
-      ${headerHtml}
-      <div style="display:flex;min-height:900px;">
-        <div style="width:220px;flex-shrink:0;padding:24px 20px;border-right:2px solid ${accent}30;">
-          ${summaryHtml}${skillsHtml}${langsHtml}
-        </div>
-        <div style="flex:1;padding:24px 28px;">
+  // ══ JEDNA KOLUMNA ══
+  if (!isDouble) {
+    return `
+      <div style="font-family:'${font}',sans-serif;">
+        ${headerHtml}
+        <div style="padding:28px 40px;background:#fff;">
+          ${summaryHtml ? `
+            <div style="margin-bottom:24px;">
+              <h2 style="margin:0 0 8px 0;font-size:11px;font-weight:700;text-transform:uppercase;
+                         letter-spacing:1.5px;color:${accent};
+                         ${divider ? `padding-bottom:6px;border-bottom:2px solid ${accent};` : ''}">
+                O mnie
+              </h2>
+              <p style="margin:0;font-size:13px;color:#444;line-height:1.7;">
+                ${escHtml(data.summary)}
+              </p>
+            </div>` : ''}
           ${expHtml}${eduHtml}
+          ${data.skills && data.skills.length > 0 ? `
+            <div style="margin-bottom:20px;">
+              <h2 style="margin:0 0 10px 0;font-size:11px;font-weight:700;text-transform:uppercase;
+                         letter-spacing:1.5px;color:${accent};
+                         ${divider ? `padding-bottom:6px;border-bottom:2px solid ${accent};` : ''}">
+                Umiejętności
+              </h2>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                ${data.skills.map(s =>
+                  `<span style="background:#f0efff;color:${accent};border:1px solid ${accent}30;
+                                padding:3px 10px;border-radius:4px;font-size:11px;font-weight:500;">
+                    ${escHtml(s)}
+                  </span>`
+                ).join('')}
+              </div>
+            </div>` : ''}
         </div>
+      </div>
+    `;
+  }
+
+  // ══ DWIE KOLUMNY ══
+  return `
+    <div style="font-family:'${font}',sans-serif;display:flex;flex-direction:column;min-height:1123px;">
+      ${headerHtml}
+      <div style="display:flex;flex:1;">
+
+        <!-- Ciemny sidebar -->
+        <div style="width:230px;flex-shrink:0;
+                    background:linear-gradient(180deg,#1a1a2e 0%,#16213e 100%);
+                    padding:28px 20px;color:#fff;box-sizing:border-box;">
+          ${summaryHtml}
+          ${skillsHtml}
+          ${langsHtml}
+          ${linksHtml}
+        </div>
+
+        <!-- Jasna prawa kolumna -->
+        <div style="flex:1;padding:28px 28px;background:#fff;min-width:0;">
+          ${expHtml}
+          ${eduHtml}
+        </div>
+
       </div>
     </div>
   `;
 }
-
-
 
 // ── Aktualizacja podglądu z debounce ──
 function schedulePreviewUpdate() {
@@ -2535,7 +2748,6 @@ let currentDesign = {
   layout:         'single',
   heading_size:   'M',
   bold_name:      true,
-  italic_summary: false,
   show_dividers:  true,
   ...CV_DESIGN,
 };
@@ -2581,7 +2793,6 @@ function applyDesignToUI() {
 
   // Toggles
   document.getElementById('toggle_bold_name').checked      = currentDesign.bold_name;
-  document.getElementById('toggle_italic_summary').checked = currentDesign.italic_summary;
   document.getElementById('toggle_show_dividers').checked  = currentDesign.show_dividers;
 }
 
@@ -2614,9 +2825,7 @@ document.querySelectorAll('.size-btn').forEach(btn => {
 document.getElementById('toggle_bold_name').addEventListener('change', function () {
   updateDesign('bold_name', this.checked);
 });
-document.getElementById('toggle_italic_summary').addEventListener('change', function () {
-  updateDesign('italic_summary', this.checked);
-});
+
 document.getElementById('toggle_show_dividers').addEventListener('change', function () {
   updateDesign('show_dividers', this.checked);
 });
@@ -2625,6 +2834,29 @@ document.getElementById('toggle_show_dividers').addEventListener('change', funct
 document.addEventListener('DOMContentLoaded', () => {
   applyDesignToUI();
 });
+
+// ══════════════════════════════════════════════════════════
+// TABS — mobile
+// ══════════════════════════════════════════════════════════
+
+function switchTab(tab) {
+  const formPanel    = document.getElementById('editorFormPanel');
+  const previewPanel = document.getElementById('editorPreviewPanel');
+
+  document.querySelectorAll('.editor-tab').forEach(btn => {
+    btn.classList.toggle('editor-tab--active', btn.dataset.tab === tab);
+  });
+
+  if (tab === 'preview') {
+    formPanel.classList.add('tab-hidden');
+    previewPanel.classList.add('tab-visible');
+    // Odśwież podgląd przy przełączeniu
+    schedulePreviewUpdate();
+  } else {
+    formPanel.classList.remove('tab-hidden');
+    previewPanel.classList.remove('tab-visible');
+  }
+}
 
 </script>
 {% endblock %}

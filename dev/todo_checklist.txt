@@ -1,22 +1,13 @@
-🎨 SZABLONY CV
-
-[ ] Podpiąć przyciski Użyj szablonu → redirect do tworzenia CV z wybranym templatem
-[ ] Stworzyć 3 szablony HTML do renderowania/PDF:
-
-[ ] cv-template-classic.html
-[ ] cv-template-minimal.html
-[ ] cv-template-modern.html
-
-
 🔗 UDOSTĘPNIANIE CV
 
 [ ] Dodać pole share_token do modelu CV (UUID)
 share_token = models.UUIDField(default=uuid.uuid4, unique=True)
 
 
-[ ] Widok publiczny CV: cv/share/<token>/
+[ ] Widok publiczny CV: cv/share/<token>/ 
 [ ] Przycisk Udostępnij generuje link i kopiuje do schowka (JS)
-[ ] Opcja włącz/wyłącz udostępnianie
+[ ] Opcja włącz/wyłącz udostępnianie dla każdego cv osobno - jeśli jest wyłączone to tylko user który je stworzył może je zobaczyć
+
 
 
 📊 STATYSTYKI
@@ -65,14 +56,79 @@ share_token = models.UUIDField(default=uuid.uuid4, unique=True)
 
 
 
-📋 Kolejność realizacji (sugerowana)
-1. Model CV + migracje
-2. Dashboard z dynamicznymi danymi
-3. Tworzenie CV (formularz)
-4. Edytor CV
-5. Generowanie PDF
-6. Duplikowanie / usuwanie
-7. Udostępnianie przez link
-8. Statystyki
-9. Ustawienia konta
-10. Powiadomienia
+
+
+
+
+Jesteś doświadczonym Django developerem. Zaimplementuj funkcję udostępniania CV w istniejącej aplikacji Django. Poniżej masz pełny kontekst i wymagania.
+
+ISTNIEJĄCY MODEL CV
+class CV(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    template = models.CharField(max_length=50, default='classic')
+    content = models.JSONField(default=dict, blank=True)
+    design = models.JSONField(default=dict, blank=True)
+    progress = models.IntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    download_count = models.IntegerField(default=0)
+    view_count = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    # share_token i is_shared już istnieją lub trzeba dodać
+
+ISTNIEJĄCE URLS (namespace: dashboard)
+path('cv/<int:cv_id>/edit/',     views.edit_cv,      name='edit_cv'),
+path('cv/<int:cv_id>/download/', views.download_pdf,  name='download_pdf'),
+path('cv/<int:cv_id>/delete/',   views.delete_cv,     name='delete_cv'),
+path('cv/<int:cv_id>/duplicate/',views.duplicate_cv,  name='duplicate_cv'),
+
+
+CO MASZ ZAIMPLEMENTOWAĆ
+1. Model (models.py)
+Dodaj do modelu CV:
+share_token = models.UUIDField(default=uuid.uuid4, unique=True)
+is_shared = models.BooleanField(default=False)
+
+Podaj też komendę migracji.
+2. URL publiczny
+cv/share/<uuid:token>/
+
+
+Dostępny bez logowania
+Jeśli is_shared=False → zwróć 404
+Jeśli is_shared=True → renderuj CV jako HTML (użyj istniejących templatek PDF: dashboard/pdf/cv-classic.html itd.)
+Inkrementuj view_count przy każdym wejściu
+
+3. Widok toggle (POST)
+cv/<int:cv_id>/toggle-share/
+
+
+Wymaga logowania, tylko właściciel
+Przełącza is_shared (True/False)
+Zwraca JsonResponse z { "is_shared": true/false, "share_url": "..." }
+
+4. Przycisk w dashboard.html
+W każdej karcie CV (cv-card__actions) dodaj przycisk:
+<button class="btn btn--ghost btn--sm" onclick="toggleShare({{ cv.id }}, '{{ cv.share_token }}', {{ cv.is_shared|yesno:'true,false' }})">
+  <i data-lucide="share-2"></i>
+  Udostępnij
+</button>
+
+5. JavaScript (dashboard.html — blok extra_js)
+Funkcja toggleShare(cvId, token, isShared):
+
+Wysyła POST na /dashboard/cv/<id>/toggle-share/ z CSRF tokenem
+Jeśli is_shared staje się true → kopiuje link do schowka (navigator.clipboard) i pokazuje toast "Link skopiowany!"
+Jeśli is_shared staje się false → pokazuje toast "Udostępnianie wyłączone"
+Aktualizuje ikonę/tekst przycisku bez przeładowania strony
+
+
+WYMAGANIA TECHNICZNE
+
+Widok publiczny CV ma wyglądać identycznie jak PDF (użyj tych samych templatek), ale bez przycisku pobierania
+Toast notification: prosty div wstrzykiwany do DOM, znika po 3 sekundach
+Styl toastu zgodny z istniejącym systemem (dark theme, var(--color-accent), var(--color-surface))
+Nie używaj żadnych zewnętrznych bibliotek JS
+
+
