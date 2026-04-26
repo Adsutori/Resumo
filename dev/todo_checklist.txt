@@ -1,21 +1,9 @@
-📄 GENEROWANIE PDF
-
-[ ] Zainstalować weasyprint lub xhtml2pdf
-pip install weasyprint
-
-
-[ ] Widok download_pdf_view — generuje PDF z danych CV
-[ ] Osobny szablon HTML dla każdego z 3 designów CV (czysty, bez sidebar/topbar)
-[ ] URL: dashboard/cv/<id>/pdf/
-[ ] Podpiąć przycisk Pobierz PDF w kartach CV
-
-
 🔁 OPERACJE NA CV
 
 [ ] Duplikowanie — duplicate_cv_view kopiuje obiekt CV
 [ ] Usuwanie — delete_cv_view z potwierdzeniem (modal)
 [ ] Edytowanie — edit_cv_view ładuje dane do edytora
-[ ] Zabezpieczenie: sprawdzać czy cv.user == request.user (żeby user nie edytował cudzego CV)
+[ ] Zabezpieczenia: sprawdzać czy cv.user == request.user (żeby user nie edytował cudzego CV)
 
 
 🎨 SZABLONY CV
@@ -26,8 +14,6 @@ pip install weasyprint
 [ ] cv-template-classic.html
 [ ] cv-template-minimal.html
 [ ] cv-template-modern.html
-
-
 
 
 🔗 UDOSTĘPNIANIE CV

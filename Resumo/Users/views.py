@@ -99,7 +99,7 @@ def login_view(request):
 
 
                 # Respect ?next= redirect param
-                next_url = request.GET.get('next') or '/'
+                next_url = request.GET.get('next') or 'dashboard:dashboard'
                 return redirect(next_url)
 
     return render(request, 'users/login.html', {'form': form})
