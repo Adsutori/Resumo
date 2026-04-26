@@ -25,7 +25,7 @@
   {% csrf_token %}
 
   <!-- Ukryte pole szablonu — wartość ustawiana przez JS po kliknięciu karty -->
-  <input type="hidden" name="template" id="selectedTemplate" value="classic">
+<input type="hidden" name="template" id="selectedTemplate" value="{{ preselected_template }}">
 
   <!-- ── Pole tytułu ── -->
   <div class="section-header" style="margin-top: 32px;">
@@ -54,7 +54,7 @@
       <i data-lucide="layout-template"></i>
       Wybierz szablon
     </h3>
-    <span class="section-header__hint">Możesz zmienić szablon później</span>
+    {% comment %} <span class="section-header__hint">Możesz zmienić szablon później</span> {% endcomment %}
   </div>
 
   <div class="template-picker">
@@ -480,6 +480,16 @@
    * - kliknięcie karty ustawia wartość hidden inputu
    * - kliknięcie przycisku "Użyj szablonu" submituje formularz
    */
+  const preselected = "{{ preselected_template }}";
+  document.querySelectorAll('.tpick-card').forEach(card => {
+    card.classList.remove('tpick-card--selected');
+    card.setAttribute('aria-pressed', 'false');
+    if (card.dataset.template === preselected) {
+      card.classList.add('tpick-card--selected');
+      card.setAttribute('aria-pressed', 'true');
+    }
+  });
+
   const cards          = document.querySelectorAll('.tpick-card');
   const hiddenTemplate = document.getElementById('selectedTemplate');
 

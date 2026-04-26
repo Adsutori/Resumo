@@ -21,7 +21,7 @@ def register_view(request):
     POST — validate, create inactive user, send verification email
     """
     if request.user.is_authenticated:
-        return redirect('/')
+        return redirect('dashboard:dashboard')
 
     form = RegisterForm(request.POST or None)
 

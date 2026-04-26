@@ -1,11 +1,3 @@
-🔁 OPERACJE NA CV
-
-[ ] Duplikowanie — duplicate_cv_view kopiuje obiekt CV
-[ ] Usuwanie — delete_cv_view z potwierdzeniem (modal)
-[ ] Edytowanie — edit_cv_view ładuje dane do edytora
-[ ] Zabezpieczenia: sprawdzać czy cv.user == request.user (żeby user nie edytował cudzego CV)
-
-
 🎨 SZABLONY CV
 
 [ ] Podpiąć przyciski Użyj szablonu → redirect do tworzenia CV z wybranym templatem
@@ -54,6 +46,11 @@ share_token = models.UUIDField(default=uuid.uuid4, unique=True)
 [ ] Analiza CV przez AI — badge "Wkrótce", docelowo integracja z OpenAI API
 [ ] Śledzenie aplikacji — tabela z aplikacjami o pracę (firma, stanowisko, status)
 [ ] Import z LinkedIn — wymaga LinkedIn API lub parsowania PDF eksportu
+
+
+✅ REGULAMIN I POLITYKA PRYWATNOŚCI
+
+[ ] Dodać podstrony
 
 
 🧹 PORZĄDKI TECHNICZNE

@@ -11,8 +11,8 @@ from django.template.loader import render_to_string
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.db.models import F
-
-
+from django.contrib import messages
+from django.views.decorators.http import require_POST
 
 
 # ──────────────────────────────────────────────
@@ -111,6 +111,7 @@ def create_cv(request):
     GET  → strona wyboru szablonu
     POST → tworzy CV i przekierowuje do edytora
     """
+    
     if request.method == 'POST':
         title    = request.POST.get('title', '').strip()
         template = request.POST.get('template', 'classic')
@@ -130,7 +131,13 @@ def create_cv(request):
         )
         return redirect('dashboard:edit_cv', cv_id=cv.id)
 
-    return render(request, 'dashboard/cv-new.html')
+    # GET — opcjonalny pre-selected template z query param
+    preselected = request.GET.get('template', 'classic')
+    if preselected not in ['classic', 'modern', 'minimal']:
+        preselected = 'classic'
+
+    return render(request, 'dashboard/cv-new.html', {'preselected_template': preselected})
+
 
 
 # ──────────────────────────────────────────────
@@ -213,3 +220,39 @@ def download_pdf(request, cv_id):
     response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="{safe_title}.pdf"'
     return response
+
+
+# ──────────────────────────────────────────────
+# WIDOK — Duplikowanie CV
+# ──────────────────────────────────────────────
+
+@login_required
+@require_POST
+def duplicate_cv(request, cv_id):
+    cv = get_object_or_404(CV, id=cv_id, user=request.user)
+
+    cv.pk           = None          # Django utworzy nowy obiekt
+    cv.title        = f'Kopia — {cv.title}'
+    cv.share_token  = uuid.uuid4()  # nowy unikalny token
+    cv.is_shared    = False
+    cv.download_count = 0
+    cv.view_count   = 0
+    cv.save()
+
+    messages.success(request, f'CV zostało zduplikowane jako „{cv.title}".')
+    return redirect('dashboard:dashboard')
+
+
+# ──────────────────────────────────────────────
+# WIDOK — Usuwanie CV
+# ──────────────────────────────────────────────
+
+@login_required
+@require_POST
+def delete_cv(request, cv_id):
+    cv = get_object_or_404(CV, id=cv_id, user=request.user)
+    title = cv.title
+    cv.delete()
+
+    messages.success(request, f'CV „{title}" zostało usunięte.')
+    return redirect('dashboard:dashboard')
