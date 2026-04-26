@@ -12,6 +12,7 @@
   const CV_TEMPLATE = "{{ cv.template }}";
   const SAVE_URL    = "{% url 'dashboard:edit_cv' cv.id %}";
   const CSRF_TOKEN  = "{{ csrf_token }}";
+  const CV_DESIGN   = {{ cv_design|safe }};
 </script>
 
 <!-- ============================================================
@@ -61,6 +62,11 @@
 </div>
 
 <!-- ============================================================
+    PANEL DESIGN — kontrolki personalizacji
+============================================================ -->
+
+
+<!-- ============================================================
      GŁÓWNY LAYOUT EDYTORA
 ============================================================ -->
 <div class="editor-layout">
@@ -69,6 +75,122 @@
        PANEL LEWY — Formularz
   ══════════════════════════════════════════ -->
   <div class="editor-panel editor-panel--form" id="editorFormPanel">
+
+    <div class="design-panel" id="designPanel">
+
+      <button class="design-panel__toggle" id="designToggle" type="button">
+        <i data-lucide="palette"></i>
+        <span>Wygląd CV</span>
+        <i data-lucide="chevron-down" id="designToggleChevron"></i>
+      </button>
+
+      <div class="design-panel__body" id="designPanelBody">
+
+        <div class="design-controls">
+
+          <!-- ── Kolor akcentu ── -->
+          <div class="design-control">
+            <label class="design-control__label">
+              <i data-lucide="palette"></i>
+              Kolor akcentu
+            </label>
+            <div class="design-control__colors">
+              <button class="color-swatch" data-color="#6C63FF" style="background:#6C63FF;" title="Fioletowy"></button>
+              <button class="color-swatch" data-color="#10b981" style="background:#10b981;" title="Zielony"></button>
+              <button class="color-swatch" data-color="#f59e0b" style="background:#f59e0b;" title="Żółty"></button>
+              <button class="color-swatch" data-color="#ef4444" style="background:#ef4444;" title="Czerwony"></button>
+              <button class="color-swatch" data-color="#0ea5e9" style="background:#0ea5e9;" title="Niebieski"></button>
+              <button class="color-swatch" data-color="#8b5cf6" style="background:#8b5cf6;" title="Purpurowy"></button>
+              <button class="color-swatch" data-color="#ec4899" style="background:#ec4899;" title="Różowy"></button>
+              <button class="color-swatch" data-color="#1e293b" style="background:#1e293b;" title="Granatowy"></button>
+              <!-- Custom color picker -->
+              <label class="color-swatch color-swatch--custom" title="Własny kolor">
+                <i data-lucide="pipette"></i>
+                <input type="color" id="accentColorPicker" value="#6C63FF">
+              </label>
+            </div>
+          </div>
+
+          <!-- ── Czcionka ── -->
+          <div class="design-control">
+            <label class="design-control__label">
+              <i data-lucide="type"></i>
+              Czcionka
+            </label>
+            <div class="design-control__fonts">
+              <button class="font-btn" data-font="Inter"      style="font-family:'Inter';">Inter</button>
+              <button class="font-btn" data-font="Roboto"     style="font-family:'Roboto';">Roboto</button>
+              <button class="font-btn" data-font="Lato"       style="font-family:'Lato';">Lato</button>
+              <button class="font-btn" data-font="Playfair Display" style="font-family:'Playfair Display';">Playfair</button>
+              <button class="font-btn" data-font="Montserrat" style="font-family:'Montserrat';">Montserrat</button>
+              <button class="font-btn" data-font="Raleway"    style="font-family:'Raleway';">Raleway</button>
+            </div>
+          </div>
+
+          <!-- ── Układ ── -->
+          <div class="design-control">
+            <label class="design-control__label">
+              <i data-lucide="layout"></i>
+              Układ strony
+            </label>
+            <div class="design-control__layouts">
+              <button class="layout-btn" data-layout="single">
+                <div class="layout-btn__preview layout-btn__preview--single">
+                  <div></div><div></div><div></div>
+                </div>
+                <span>Jedna kolumna</span>
+              </button>
+              <button class="layout-btn" data-layout="double">
+                <div class="layout-btn__preview layout-btn__preview--double">
+                  <div class="layout-btn__sidebar"></div>
+                  <div class="layout-btn__main"><div></div><div></div><div></div></div>
+                </div>
+                <span>Dwie kolumny</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- ── Rozmiar nagłówka ── -->
+          <div class="design-control">
+            <label class="design-control__label">
+              <i data-lucide="heading"></i>
+              Rozmiar nagłówka
+            </label>
+            <div class="design-control__sizes">
+              <button class="size-btn" data-size="S">S</button>
+              <button class="size-btn" data-size="M">M</button>
+              <button class="size-btn" data-size="L">L</button>
+            </div>
+          </div>
+
+          <!-- ── Opcje typografii ── -->
+          <div class="design-control">
+            <label class="design-control__label">
+              <i data-lucide="text"></i>
+              Typografia
+            </label>
+            <div class="design-control__toggles">
+              <label class="toggle-switch">
+                <input type="checkbox" id="toggle_bold_name" checked>
+                <span class="toggle-switch__track"></span>
+                <span class="toggle-switch__label">Pogrubione imię i nazwisko</span>
+              </label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="toggle_italic_summary">
+                <span class="toggle-switch__track"></span>
+                <span class="toggle-switch__label">Kursywa w podsumowaniu</span>
+              </label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="toggle_show_dividers" checked>
+                <span class="toggle-switch__track"></span>
+                <span class="toggle-switch__label">Linie oddzielające sekcje</span>
+              </label>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
 
     <!-- ── SEKCJA 1: Dane osobowe ── -->
     <div class="editor-section" id="section-personal">
@@ -957,6 +1079,350 @@
     }
   }
 
+  /* ══════════════════════════════════════════
+    PANEL DESIGN
+  ══════════════════════════════════════════ */
+  .design-panel {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+
+  .design-panel__toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background 0.15s;
+  }
+
+  .design-panel__toggle:hover {
+    background: var(--color-surface-2);
+  }
+
+  .design-panel__toggle i {
+    width: 16px;
+    height: 16px;
+    color: var(--color-accent);
+  }
+
+  .design-panel__toggle i:last-child {
+    margin-left: auto;
+    color: var(--color-text-muted);
+    transition: transform 0.25s ease;
+  }
+
+  .design-panel__toggle.open i:last-child {
+    transform: rotate(180deg);
+  }
+
+  .design-panel__body {
+    display: none;
+    border-top: 1px solid var(--color-border);
+    padding: 20px 16px;
+  }
+
+  .design-panel__body.open {
+    display: block;
+  }
+
+  .design-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* ── Pojedyncza kontrolka ── */
+  .design-control__label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+    margin-bottom: 10px;
+  }
+
+  .design-control__label i {
+    width: 13px;
+    height: 13px;
+  }
+
+  /* ── Kolory ── */
+  .design-control__colors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .color-swatch {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 0.15s, border-color 0.15s;
+    flex-shrink: 0;
+  }
+
+  .color-swatch:hover {
+    transform: scale(1.15);
+  }
+
+  .color-swatch--active {
+    border-color: #fff;
+    box-shadow: 0 0 0 2px var(--color-accent);
+    transform: scale(1.1);
+  }
+
+  .color-swatch--custom {
+    background: var(--color-surface-2);
+    border: 2px dashed var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .color-swatch--custom i {
+    width: 13px;
+    height: 13px;
+    pointer-events: none;
+  }
+
+  .color-swatch--custom input[type="color"] {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  /* ── Czcionki ── */
+  .design-control__fonts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .font-btn {
+    padding: 6px 14px;
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text-muted);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+
+  .font-btn:hover {
+    border-color: var(--color-accent);
+    color: var(--color-text);
+  }
+
+  .font-btn--active {
+    background: var(--color-accent-glow);
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  /* ── Układ ── */
+  .design-control__layouts {
+    display: flex;
+    gap: 12px;
+  }
+
+  .layout-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    background: var(--color-surface-2);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 12px;
+    color: var(--color-text-muted);
+    font-family: inherit;
+  }
+
+  .layout-btn:hover {
+    border-color: var(--color-accent);
+    color: var(--color-text);
+  }
+
+  .layout-btn--active {
+    border-color: var(--color-accent);
+    background: var(--color-accent-glow);
+    color: var(--color-accent);
+  }
+
+  .layout-btn__preview {
+    width: 48px;
+    height: 36px;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .layout-btn__preview--single {
+    background: #fff;
+    padding: 4px 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .layout-btn__preview--single div {
+    height: 3px;
+    background: #ddd;
+    border-radius: 2px;
+  }
+
+  .layout-btn__preview--single div:first-child { width: 100%; background: #6C63FF; }
+  .layout-btn__preview--single div:nth-child(2) { width: 80%; }
+  .layout-btn__preview--single div:nth-child(3) { width: 60%; }
+
+  .layout-btn__preview--double {
+    background: #fff;
+    display: flex;
+  }
+
+  .layout-btn__sidebar {
+    width: 14px;
+    background: #6C63FF;
+    opacity: 0.7;
+    flex-shrink: 0;
+  }
+
+  .layout-btn__main {
+    flex: 1;
+    padding: 4px 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .layout-btn__main div {
+    height: 3px;
+    background: #ddd;
+    border-radius: 2px;
+  }
+
+  .layout-btn__main div:first-child { width: 100%; }
+  .layout-btn__main div:nth-child(2) { width: 75%; }
+  .layout-btn__main div:nth-child(3) { width: 55%; }
+
+  /* ── Rozmiar nagłówka ── */
+  .design-control__sizes {
+    display: flex;
+    gap: 8px;
+  }
+
+  .size-btn {
+    width: 44px;
+    height: 36px;
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 700;
+    transition: all 0.15s;
+  }
+
+  .size-btn:nth-child(1) { font-size: 11px; }
+  .size-btn:nth-child(2) { font-size: 14px; }
+  .size-btn:nth-child(3) { font-size: 17px; }
+
+  .size-btn:hover {
+    border-color: var(--color-accent);
+    color: var(--color-text);
+  }
+
+  .size-btn--active {
+    background: var(--color-accent-glow);
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  /* ── Toggle switch ── */
+  .design-control__toggles {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .toggle-switch {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+
+  .toggle-switch input {
+    display: none;
+  }
+
+  .toggle-switch__track {
+    width: 36px;
+    height: 20px;
+    background: var(--color-surface-3);
+    border-radius: 99px;
+    position: relative;
+    flex-shrink: 0;
+    transition: background 0.2s;
+    border: 1px solid var(--color-border);
+  }
+
+  .toggle-switch__track::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background: #fff;
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.2s;
+  }
+
+  .toggle-switch input:checked + .toggle-switch__track {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  .toggle-switch input:checked + .toggle-switch__track::after {
+    transform: translateX(16px);
+  }
+
+  .toggle-switch__label {
+    font-size: 13px;
+    color: var(--color-text-muted);
+  }
+
+
 </style>
 
 {% endblock %}
@@ -1192,7 +1658,7 @@ async function saveCV() {
         'Content-Type': 'application/json',
         'X-CSRFToken':  CSRF_TOKEN,
       },
-      body: JSON.stringify({ title, content: data }),
+      body: JSON.stringify({ title, content: data, design: currentDesign }),
     });
 
     if (!response.ok) throw new Error('HTTP ' + response.status);
@@ -1242,150 +1708,216 @@ function escHtml(str) {
     .replace(/"/g, '&quot;');
 }
 
-function renderPreview(data, template) {
+function renderPreview(data, template, design) {
   const p = data.personal || {};
   const fullName = [p.first_name, p.last_name].filter(Boolean).join(' ');
+  const d = design || currentDesign;
 
   if (template === 'modern') {
-    return renderPreviewModern(data, fullName);
+    return renderPreviewModern(data, fullName, d);
   } else if (template === 'minimal') {
-    return renderPreviewMinimal(data, fullName);
+    return renderPreviewMinimal(data, fullName, d);
   } else {
-    return renderPreviewClassic(data, fullName);
+    return renderPreviewClassic(data, fullName, d);
   }
 }
 
 // ── Podgląd: Klasyczny ──
-function renderPreviewClassic(data, fullName) {
+function renderPreviewClassic(data, fullName, d) {
+  const accent  = (d && d.accent_color)   || '#6C63FF';
+  const font    = (d && d.font)           || 'Inter';
+  const hSize   = ({ S: '22px', M: '28px', L: '34px' }[(d && d.heading_size)]) || '28px';
+  const bold    = (d && d.bold_name)      ? '800' : '400';
+  const italic  = (d && d.italic_summary) ? 'italic' : 'normal';
+  const divider = d && d.show_dividers;
+  const isDouble = d && d.layout === 'double';
+
   const p = data.personal || {};
-  let html = `
-    <div style="background:#6C63FF;padding:32px 40px;color:#fff;">
-      <h1 style="margin:0;font-size:28px;font-weight:800;letter-spacing:-0.5px;">${escHtml(fullName) || '<span style="opacity:0.4">Imię Nazwisko</span>'}</h1>
+
+  // ── Wspólny nagłówek ──
+  const headerHtml = `
+    <div style="background:${accent};padding:32px 40px;color:#fff;font-family:'${font}',sans-serif;">
+      <h1 style="margin:0;font-size:${hSize};font-weight:${bold};letter-spacing:-0.5px;">
+        ${escHtml(fullName) || '<span style="opacity:0.4">Imię Nazwisko</span>'}
+      </h1>
       ${p.position ? `<p style="margin:6px 0 0;font-size:14px;opacity:0.85;">${escHtml(p.position)}</p>` : ''}
       <div style="display:flex;gap:16px;margin-top:12px;font-size:12px;opacity:0.8;flex-wrap:wrap;">
-        ${p.email    ? `<span>✉ ${escHtml(p.email)}</span>` : ''}
-        ${p.phone    ? `<span>📞 ${escHtml(p.phone)}</span>` : ''}
-        ${p.city     ? `<span>📍 ${escHtml(p.city)}</span>`  : ''}
+        ${p.email ? `<span>${escHtml(p.email)}</span>` : ''}
+        ${p.phone ? `<span>• ${escHtml(p.phone)}</span>` : ''}
+        ${p.city  ? `<span>• ${escHtml(p.city)}</span>`  : ''}
       </div>
     </div>
-    <div style="padding:28px 40px;font-size:13px;line-height:1.6;">
   `;
 
-  if (data.summary) {
-    html += `
-      <div style="margin-bottom:24px;">
-        <h2 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6C63FF;border-bottom:2px solid #6C63FF;padding-bottom:4px;margin-bottom:10px;">Podsumowanie</h2>
-        <p style="margin:0;color:#444;">${escHtml(data.summary)}</p>
+  // ── Sekcja helper ──
+  function section(title, content) {
+    return `
+      <div style="margin-bottom:20px;">
+        <h2 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;
+                   color:${accent};${divider ? `border-bottom:2px solid ${accent};` : ''}
+                   padding-bottom:4px;margin-bottom:10px;">${title}</h2>
+        ${content}
       </div>
     `;
   }
 
-  if (data.experience && data.experience.length > 0) {
-    html += `<h2 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6C63FF;border-bottom:2px solid #6C63FF;padding-bottom:4px;margin-bottom:12px;">Doświadczenie</h2>`;
+  // ── Buduj treść sekcji ──
+  let summaryHtml = '';
+  if (data.summary) {
+    summaryHtml = section('Podsumowanie',
+      `<p style="margin:0;color:#444;font-size:13px;font-style:${italic};">${escHtml(data.summary)}</p>`
+    );
+  }
+
+  let expHtml = '';
+  if (data.experience && data.experience.some(e => e.company || e.position)) {
+    let items = '';
     data.experience.forEach(exp => {
       if (!exp.company && !exp.position) return;
-      html += `
-        <div style="margin-bottom:14px;">
-          <div style="display:flex;justify-content:space-between;align-items:baseline;">
-            <strong style="font-size:13.5px;">${escHtml(exp.position)}</strong>
-            <span style="font-size:11px;color:#888;">${escHtml(exp.start_date)} ${exp.end_date || exp.current ? '— ' + (exp.current ? 'obecnie' : escHtml(exp.end_date)) : ''}</span>
+      items += `
+        <div style="margin-bottom:12px;">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;">
+            <strong style="font-size:13px;">${escHtml(exp.position)}</strong>
+            <span style="font-size:11px;color:#888;">${escHtml(exp.start_date)}${exp.end_date || exp.current ? ' — ' + (exp.current ? 'obecnie' : escHtml(exp.end_date)) : ''}</span>
           </div>
-          <div style="color:#6C63FF;font-size:12px;margin:2px 0;">${escHtml(exp.company)}</div>
+          <div style="color:${accent};font-size:12px;margin:2px 0;">${escHtml(exp.company)}</div>
           ${exp.description ? `<p style="margin:4px 0 0;color:#555;font-size:12px;">${escHtml(exp.description)}</p>` : ''}
         </div>
       `;
     });
+    expHtml = section('Doświadczenie', items);
   }
 
-  if (data.education && data.education.length > 0) {
-    html += `<h2 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6C63FF;border-bottom:2px solid #6C63FF;padding-bottom:4px;margin:20px 0 12px;">Wykształcenie</h2>`;
+  let eduHtml = '';
+  if (data.education && data.education.some(e => e.school)) {
+    let items = '';
     data.education.forEach(edu => {
       if (!edu.school) return;
-      html += `
+      items += `
         <div style="margin-bottom:12px;">
-          <div style="display:flex;justify-content:space-between;align-items:baseline;">
-                        <strong style="font-size:13.5px;">${escHtml(edu.school)}</strong>
-            <span style="font-size:11px;color:#888;">${escHtml(edu.start_date)} ${edu.end_date ? '— ' + escHtml(edu.end_date) : ''}</span>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;">
+            <strong style="font-size:13px;">${escHtml(edu.school)}</strong>
+            <span style="font-size:11px;color:#888;">${escHtml(edu.start_date)}${edu.end_date ? ' — ' + escHtml(edu.end_date) : ''}</span>
           </div>
-          <div style="color:#6C63FF;font-size:12px;margin:2px 0;">${[edu.degree, edu.field].filter(Boolean).map(escHtml).join(', ')}</div>
+          <div style="color:${accent};font-size:12px;">${[edu.degree, edu.field].filter(Boolean).map(escHtml).join(', ')}</div>
           ${edu.description ? `<p style="margin:4px 0 0;color:#555;font-size:12px;">${escHtml(edu.description)}</p>` : ''}
         </div>
       `;
     });
+    eduHtml = section('Wykształcenie', items);
   }
 
+  let skillsHtml = '';
   if (data.skills && data.skills.length > 0) {
-    html += `
-      <h2 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6C63FF;border-bottom:2px solid #6C63FF;padding-bottom:4px;margin:20px 0 12px;">Umiejętności</h2>
-      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;">
-        ${data.skills.map(s => `<span style="background:#f0efff;color:#6C63FF;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:500;">${escHtml(s)}</span>`).join('')}
-      </div>
-    `;
+    skillsHtml = section('Umiejętności',
+      `<div style="display:flex;flex-wrap:wrap;gap:6px;">
+        ${data.skills.map(s => `<span style="background:#f0efff;color:${accent};padding:3px 10px;border-radius:99px;font-size:11px;font-weight:500;">${escHtml(s)}</span>`).join('')}
+      </div>`
+    );
   }
 
-  if (data.languages && data.languages.length > 0) {
-    html += `
-      <h2 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6C63FF;border-bottom:2px solid #6C63FF;padding-bottom:4px;margin:20px 0 12px;">Języki</h2>
-      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
-        ${data.languages.filter(l => l.name).map(l => `
-          <span style="font-size:12px;color:#333;">
-            <strong>${escHtml(l.name)}</strong>
-            ${l.level ? `<span style="color:#888;"> — ${escHtml(l.level)}</span>` : ''}
-          </span>
-        `).join('<span style="color:#ccc;margin:0 4px;">·</span>')}
-      </div>
-    `;
+  let langsHtml = '';
+  if (data.languages && data.languages.some(l => l.name)) {
+    langsHtml = section('Języki',
+      `<div style="display:flex;flex-wrap:wrap;gap:8px;">
+        ${data.languages.filter(l => l.name).map(l =>
+          `<span style="font-size:12px;color:#333;"><strong>${escHtml(l.name)}</strong>${l.level ? ` <span style="color:#888;">— ${escHtml(l.level)}</span>` : ''}</span>`
+        ).join('<span style="color:#ccc;margin:0 4px;">·</span>')}
+      </div>`
+    );
   }
 
+  let linksHtml = '';
   const filledLinks = Object.entries(data.links || {}).filter(([, v]) => v.trim());
   if (filledLinks.length > 0) {
-    html += `
-      <h2 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6C63FF;border-bottom:2px solid #6C63FF;padding-bottom:4px;margin:20px 0 12px;">Linki</h2>
-      <div style="display:flex;flex-direction:column;gap:4px;">
-        ${filledLinks.map(([key, val]) => `
-          <a href="${escHtml(val)}" style="font-size:12px;color:#6C63FF;text-decoration:none;">
-            ${key.charAt(0).toUpperCase() + key.slice(1)}: ${escHtml(val)}
-          </a>
-        `).join('')}
+    linksHtml = section('Linki',
+      `<div style="display:flex;flex-direction:column;gap:4px;">
+        ${filledLinks.map(([key, val]) =>
+          `<a href="${escHtml(val)}" style="font-size:12px;color:${accent};text-decoration:none;">${key.charAt(0).toUpperCase() + key.slice(1)}: ${escHtml(val)}</a>`
+        ).join('')}
+      </div>`
+    );
+  }
+
+  // ══════════════════════════════════════
+  // JEDNA KOLUMNA
+  // ══════════════════════════════════════
+  if (!isDouble) {
+    return `
+      ${headerHtml}
+      <div style="padding:28px 40px;font-family:'${font}',sans-serif;">
+        ${summaryHtml}${expHtml}${eduHtml}${skillsHtml}${langsHtml}${linksHtml}
       </div>
     `;
   }
 
-  html += `</div>`; // zamknięcie padding div
-  return html;
-}
+  // ══════════════════════════════════════
+  // DWIE KOLUMNY
+  // ══════════════════════════════════════
+  return `
+    <div style="font-family:'${font}',sans-serif;">
+      ${headerHtml}
+      <div style="display:flex;min-height:900px;">
 
-// ── Podgląd: Minimalistyczny ──
-function renderPreviewMinimal(data, fullName) {
-  const p = data.personal || {};
-  let html = `
-    <div style="padding:40px 40px 20px;border-bottom:3px solid #10b981;">
-      <h1 style="margin:0;font-size:26px;font-weight:800;color:#111;letter-spacing:-0.5px;">${escHtml(fullName) || '<span style="color:#ccc;">Imię Nazwisko</span>'}</h1>
-      ${p.position ? `<p style="margin:5px 0 0;font-size:14px;color:#10b981;font-weight:500;">${escHtml(p.position)}</p>` : ''}
-      <div style="display:flex;gap:14px;margin-top:10px;font-size:11px;color:#666;flex-wrap:wrap;">
-        ${p.email    ? `<span>${escHtml(p.email)}</span>` : ''}
-        ${p.phone    ? `<span>${escHtml(p.phone)}</span>` : ''}
-        ${p.city     ? `<span>${escHtml(p.city)}</span>`  : ''}
+        <!-- Lewa kolumna (sidebar) -->
+        <div style="width:240px;flex-shrink:0;background:#f8f7ff;padding:24px 20px;border-right:1px solid #ede9fe;">
+          ${summaryHtml}
+          ${skillsHtml}
+          ${langsHtml}
+          ${linksHtml}
+        </div>
+
+        <!-- Prawa kolumna (główna) -->
+        <div style="flex:1;padding:24px 28px;">
+          ${expHtml}
+          ${eduHtml}
+        </div>
+
       </div>
     </div>
-    <div style="padding:24px 40px;font-size:13px;line-height:1.7;color:#333;">
+  `;
+}
+
+
+
+// ── Podgląd: Minimalistyczny ──
+function renderPreviewMinimal(data, fullName, d) {
+  const accent  = (d && d.accent_color)   || '#10b981';
+  const font    = (d && d.font)           || 'Inter';
+  const hSize   = ({ S: '20px', M: '26px', L: '32px' }[(d && d.heading_size)]) || '26px';
+  const bold    = (d && d.bold_name)      ? '800' : '400';
+  const italic  = (d && d.italic_summary) ? 'italic' : 'normal';
+  const divider = d && d.show_dividers;
+
+  const p = data.personal || {};
+  let html = `
+    <div style="padding:40px 40px 20px;${divider ? `border-bottom:3px solid ${accent};` : ''}font-family:'${font}',sans-serif;">
+      <h1 style="margin:0;font-size:${hSize};font-weight:${bold};color:#111;letter-spacing:-0.5px;">${escHtml(fullName) || '<span style="color:#ccc;">Imię Nazwisko</span>'}</h1>
+      ${p.position ? `<p style="margin:5px 0 0;font-size:14px;color:${accent};font-weight:500;">${escHtml(p.position)}</p>` : ''}
+      <div style="display:flex;gap:14px;margin-top:10px;font-size:11px;color:#666;flex-wrap:wrap;">
+        ${p.email ? `<span>${escHtml(p.email)}</span>` : ''}
+        ${p.phone ? `<span>${escHtml(p.phone)}</span>` : ''}
+        ${p.city  ? `<span>${escHtml(p.city)}</span>`  : ''}
+      </div>
+    </div>
+    <div style="padding:24px 40px;font-size:13px;line-height:1.7;color:#333;font-family:'${font}',sans-serif;">
   `;
 
   if (data.summary) {
     html += `
       <div style="margin-bottom:22px;">
-        <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#10b981;margin-bottom:8px;">O mnie</h2>
-        <p style="margin:0;color:#444;">${escHtml(data.summary)}</p>
+        <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:${accent};margin-bottom:8px;">O mnie</h2>
+        <p style="margin:0;color:#444;font-style:${italic};">${escHtml(data.summary)}</p>
       </div>
     `;
   }
 
   if (data.experience && data.experience.length > 0) {
-    html += `<h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#10b981;margin-bottom:10px;">Doświadczenie</h2>`;
+    html += `<h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:${accent};margin-bottom:10px;">Doświadczenie</h2>`;
     data.experience.forEach(exp => {
       if (!exp.company && !exp.position) return;
       html += `
-        <div style="margin-bottom:14px;padding-left:12px;border-left:2px solid #e0e0e0;">
+        <div style="margin-bottom:14px;padding-left:12px;${divider ? `border-left:2px solid ${accent};` : ''}">
           <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:4px;">
             <strong style="font-size:13px;">${escHtml(exp.position)}</strong>
             <span style="font-size:11px;color:#999;">${escHtml(exp.start_date)}${exp.end_date || exp.current ? ' — ' + (exp.current ? 'obecnie' : escHtml(exp.end_date)) : ''}</span>
@@ -1398,11 +1930,11 @@ function renderPreviewMinimal(data, fullName) {
   }
 
   if (data.education && data.education.length > 0) {
-    html += `<h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#10b981;margin:20px 0 10px;">Wykształcenie</h2>`;
+    html += `<h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:${accent};margin:20px 0 10px;">Wykształcenie</h2>`;
     data.education.forEach(edu => {
       if (!edu.school) return;
       html += `
-        <div style="margin-bottom:12px;padding-left:12px;border-left:2px solid #e0e0e0;">
+        <div style="margin-bottom:12px;padding-left:12px;${divider ? `border-left:2px solid ${accent};` : ''}">
           <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:4px;">
             <strong style="font-size:13px;">${escHtml(edu.school)}</strong>
             <span style="font-size:11px;color:#999;">${escHtml(edu.start_date)}${edu.end_date ? ' — ' + escHtml(edu.end_date) : ''}</span>
@@ -1415,16 +1947,16 @@ function renderPreviewMinimal(data, fullName) {
 
   if (data.skills && data.skills.length > 0) {
     html += `
-      <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#10b981;margin:20px 0 10px;">Umiejętności</h2>
+      <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:${accent};margin:20px 0 10px;">Umiejętności</h2>
       <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px;">
-        ${data.skills.map(s => `<span style="background:#f0fdf4;color:#059669;border:1px solid #a7f3d0;padding:2px 9px;border-radius:4px;font-size:11px;">${escHtml(s)}</span>`).join('')}
+        ${data.skills.map(s => `<span style="background:#f0fdf4;color:${accent};border:1px solid ${accent}40;padding:2px 9px;border-radius:4px;font-size:11px;">${escHtml(s)}</span>`).join('')}
       </div>
     `;
   }
 
   if (data.languages && data.languages.length > 0) {
     html += `
-      <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#10b981;margin:20px 0 10px;">Języki</h2>
+      <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:${accent};margin:20px 0 10px;">Języki</h2>
       <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
         ${data.languages.filter(l => l.name).map(l => `
           <span style="font-size:12px;color:#333;"><strong>${escHtml(l.name)}</strong>${l.level ? ` <span style="color:#999;">${escHtml(l.level)}</span>` : ''}</span>
@@ -1437,122 +1969,137 @@ function renderPreviewMinimal(data, fullName) {
   return html;
 }
 
+
 // ── Podgląd: Nowoczesny (dwukolumnowy) ──
-function renderPreviewModern(data, fullName) {
+function renderPreviewMinimal(data, fullName, d) {
+  const accent   = (d && d.accent_color)   || '#10b981';
+  const font     = (d && d.font)           || 'Inter';
+  const hSize    = ({ S: '20px', M: '26px', L: '32px' }[(d && d.heading_size)]) || '26px';
+  const bold     = (d && d.bold_name)      ? '800' : '400';
+  const italic   = (d && d.italic_summary) ? 'italic' : 'normal';
+  const divider  = d && d.show_dividers;
+  const isDouble = d && d.layout === 'double';
+
   const p = data.personal || {};
 
-  const skillsHtml = (data.skills || []).map(s => `
-    <div style="margin-bottom:6px;">
-      <div style="font-size:11px;color:#fff;margin-bottom:2px;">${escHtml(s)}</div>
-      <div style="height:3px;background:rgba(255,255,255,0.2);border-radius:99px;">
-        <div style="height:100%;width:75%;background:#f59e0b;border-radius:99px;"></div>
+  const headerHtml = `
+    <div style="padding:40px 40px 20px;${divider ? `border-bottom:3px solid ${accent};` : ''}font-family:'${font}',sans-serif;">
+      <h1 style="margin:0;font-size:${hSize};font-weight:${bold};color:#111;letter-spacing:-0.5px;">
+        ${escHtml(fullName) || '<span style="color:#ccc;">Imię Nazwisko</span>'}
+      </h1>
+      ${p.position ? `<p style="margin:5px 0 0;font-size:14px;color:${accent};font-weight:500;">${escHtml(p.position)}</p>` : ''}
+      <div style="display:flex;gap:14px;margin-top:10px;font-size:11px;color:#666;flex-wrap:wrap;">
+        ${p.email ? `<span>${escHtml(p.email)}</span>` : ''}
+        ${p.phone ? `<span>${escHtml(p.phone)}</span>` : ''}
+        ${p.city  ? `<span>${escHtml(p.city)}</span>`  : ''}
       </div>
     </div>
-  `).join('');
+  `;
 
-  const langsHtml = (data.languages || []).filter(l => l.name).map(l => `
-    <div style="font-size:11px;color:rgba(255,255,255,0.8);margin-bottom:4px;">
-      <strong style="color:#fff;">${escHtml(l.name)}</strong>${l.level ? ` — ${escHtml(l.level)}` : ''}
-    </div>
-  `).join('');
-
-  const linksHtml = Object.entries(data.links || {})
-    .filter(([, v]) => v.trim())
-    .map(([key, val]) => `<div style="font-size:10px;color:rgba(255,255,255,0.7);word-break:break-all;margin-bottom:3px;">${key}: ${escHtml(val)}</div>`)
-    .join('');
-
-  let mainHtml = '';
-
-  if (data.summary) {
-    mainHtml += `
-      <div style="margin-bottom:18px;">
-        <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#f59e0b;margin-bottom:6px;">O mnie</h2>
-        <p style="margin:0;font-size:12px;color:#444;line-height:1.6;">${escHtml(data.summary)}</p>
+  function section(title, content) {
+    return `
+      <div style="margin-bottom:20px;">
+        <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;
+                   color:${accent};margin-bottom:8px;">${title}</h2>
+        ${content}
       </div>
     `;
   }
 
-  if (data.experience && data.experience.length > 0) {
-    mainHtml += `<h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#f59e0b;margin-bottom:8px;">Doświadczenie</h2>`;
+  function entryStyle() {
+    return `margin-bottom:12px;padding-left:12px;${divider ? `border-left:2px solid ${accent};` : ''}`;
+  }
+
+  let summaryHtml = '';
+  if (data.summary) {
+    summaryHtml = section('O mnie',
+      `<p style="margin:0;color:#444;font-size:13px;font-style:${italic};">${escHtml(data.summary)}</p>`
+    );
+  }
+
+  let expHtml = '';
+  if (data.experience && data.experience.some(e => e.company || e.position)) {
+    let items = '';
     data.experience.forEach(exp => {
       if (!exp.company && !exp.position) return;
-      mainHtml += `
-        <div style="margin-bottom:12px;">
-          <strong style="font-size:12.5px;color:#222;">${escHtml(exp.position)}</strong>
-          <div style="font-size:11px;color:#f59e0b;margin:1px 0;">${escHtml(exp.company)}</div>
-          <div style="font-size:10px;color:#999;">${escHtml(exp.start_date)}${exp.end_date || exp.current ? ' — ' + (exp.current ? 'obecnie' : escHtml(exp.end_date)) : ''}</div>
-          ${exp.description ? `<p style="margin:4px 0 0;font-size:11px;color:#555;">${escHtml(exp.description)}</p>` : ''}
+      items += `
+        <div style="${entryStyle()}">
+          <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;">
+            <strong style="font-size:13px;">${escHtml(exp.position)}</strong>
+            <span style="font-size:11px;color:#999;">${escHtml(exp.start_date)}${exp.end_date || exp.current ? ' — ' + (exp.current ? 'obecnie' : escHtml(exp.end_date)) : ''}</span>
+          </div>
+          <div style="font-size:12px;color:#555;margin:2px 0;">${escHtml(exp.company)}</div>
+          ${exp.description ? `<p style="margin:4px 0 0;color:#666;font-size:12px;">${escHtml(exp.description)}</p>` : ''}
         </div>
       `;
     });
+    expHtml = section('Doświadczenie', items);
   }
 
-  if (data.education && data.education.length > 0) {
-    mainHtml += `<h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#f59e0b;margin:16px 0 8px;">Wykształcenie</h2>`;
+  let eduHtml = '';
+  if (data.education && data.education.some(e => e.school)) {
+    let items = '';
     data.education.forEach(edu => {
       if (!edu.school) return;
-      mainHtml += `
-        <div style="margin-bottom:10px;">
-          <strong style="font-size:12.5px;color:#222;">${escHtml(edu.school)}</strong>
-          <div style="font-size:11px;color:#666;">${[edu.degree, edu.field].filter(Boolean).map(escHtml).join(', ')}</div>
-          <div style="font-size:10px;color:#999;">${escHtml(edu.start_date)}${edu.end_date ? ' — ' + escHtml(edu.end_date) : ''}</div>
+      items += `
+        <div style="${entryStyle()}">
+          <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;">
+            <strong style="font-size:13px;">${escHtml(edu.school)}</strong>
+            <span style="font-size:11px;color:#999;">${escHtml(edu.start_date)}${edu.end_date ? ' — ' + escHtml(edu.end_date) : ''}</span>
+          </div>
+          <div style="font-size:12px;color:#555;">${[edu.degree, edu.field].filter(Boolean).map(escHtml).join(', ')}</div>
         </div>
       `;
     });
+    eduHtml = section('Wykształcenie', items);
   }
 
+  let skillsHtml = '';
+  if (data.skills && data.skills.length > 0) {
+    skillsHtml = section('Umiejętności',
+      `<div style="display:flex;flex-wrap:wrap;gap:5px;">
+        ${data.skills.map(s => `<span style="background:#f0fdf4;color:${accent};border:1px solid ${accent}40;padding:2px 9px;border-radius:4px;font-size:11px;">${escHtml(s)}</span>`).join('')}
+      </div>`
+    );
+  }
+
+  let langsHtml = '';
+  if (data.languages && data.languages.some(l => l.name)) {
+    langsHtml = section('Języki',
+      `<div style="display:flex;flex-wrap:wrap;gap:12px;">
+        ${data.languages.filter(l => l.name).map(l =>
+          `<span style="font-size:12px;color:#333;"><strong>${escHtml(l.name)}</strong>${l.level ? ` <span style="color:#999;">${escHtml(l.level)}</span>` : ''}</span>`
+        ).join('')}
+      </div>`
+    );
+  }
+
+  if (!isDouble) {
+    return `
+      ${headerHtml}
+      <div style="padding:24px 40px;font-family:'${font}',sans-serif;">
+        ${summaryHtml}${expHtml}${eduHtml}${skillsHtml}${langsHtml}
+      </div>
+    `;
+  }
+
+  // Dwie kolumny
   return `
-    <div style="display:flex;min-height:1123px;">
-
-      <!-- Sidebar -->
-      <div style="width:220px;background:#1e1b4b;padding:28px 20px;flex-shrink:0;display:flex;flex-direction:column;gap:16px;">
-        <!-- Avatar placeholder -->
-        <div style="width:72px;height:72px;border-radius:50%;background:#f59e0b;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#fff;">
-          ${(p.first_name || '?').charAt(0).toUpperCase()}
+    <div style="font-family:'${font}',sans-serif;">
+      ${headerHtml}
+      <div style="display:flex;min-height:900px;">
+        <div style="width:220px;flex-shrink:0;padding:24px 20px;border-right:2px solid ${accent}30;">
+          ${summaryHtml}${skillsHtml}${langsHtml}
         </div>
-        <div style="text-align:center;">
-          <div style="font-size:14px;font-weight:800;color:#fff;">${escHtml(fullName) || '<span style="opacity:0.4">Imię Nazwisko</span>'}</div>
-          ${p.position ? `<div style="font-size:11px;color:#f59e0b;margin-top:3px;">${escHtml(p.position)}</div>` : ''}
+        <div style="flex:1;padding:24px 28px;">
+          ${expHtml}${eduHtml}
         </div>
-
-        ${p.email || p.phone || p.city ? `
-          <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:12px;">
-            ${p.email ? `<div style="font-size:10px;color:rgba(255,255,255,0.7);margin-bottom:4px;word-break:break-all;">✉ ${escHtml(p.email)}</div>` : ''}
-            ${p.phone ? `<div style="font-size:10px;color:rgba(255,255,255,0.7);margin-bottom:4px;">📞 ${escHtml(p.phone)}</div>` : ''}
-            ${p.city  ? `<div style="font-size:10px;color:rgba(255,255,255,0.7);">📍 ${escHtml(p.city)}</div>`  : ''}
-          </div>
-        ` : ''}
-
-        ${skillsHtml ? `
-          <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:12px;">
-            <h3 style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#f59e0b;margin-bottom:8px;">Umiejętności</h3>
-            ${skillsHtml}
-          </div>
-        ` : ''}
-
-        ${langsHtml ? `
-          <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:12px;">
-            <h3 style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#f59e0b;margin-bottom:6px;">Języki</h3>
-            ${langsHtml}
-          </div>
-        ` : ''}
-
-        ${linksHtml ? `
-          <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:12px;">
-            <h3 style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#f59e0b;margin-bottom:6px;">Linki</h3>
-            ${linksHtml}
-          </div>
-        ` : ''}
       </div>
-
-      <!-- Główna kolumna -->
-      <div style="flex:1;padding:32px 28px;font-size:13px;line-height:1.6;color:#333;">
-        ${mainHtml || '<p style="color:#ccc;font-size:13px;">Zacznij wypełniać formularz...</p>'}
-      </div>
-
     </div>
   `;
 }
+
+
 
 // ── Aktualizacja podglądu z debounce ──
 function schedulePreviewUpdate() {
@@ -1560,7 +2107,7 @@ function schedulePreviewUpdate() {
   previewDebounce = setTimeout(() => {
     const data = collectFormData();
     const page = document.getElementById('previewPage');
-    page.innerHTML = renderPreview(data, CV_TEMPLATE);
+    page.innerHTML = renderPreview(data, CV_TEMPLATE, currentDesign);
   }, 300);
 }
 
@@ -1969,6 +2516,116 @@ window.addEventListener('beforeunload', (e) => {
     e.returnValue = '';
   }
 });
+
+// ══════════════════════════════════════════════════════════
+// DESIGN PANEL
+// ══════════════════════════════════════════════════════════
+
+// Załaduj czcionki Google Fonts dynamicznie
+const FONTS = ['Inter', 'Roboto', 'Lato', 'Playfair+Display', 'Montserrat', 'Raleway'];
+const fontLink = document.createElement('link');
+fontLink.rel  = 'stylesheet';
+fontLink.href = `https://fonts.googleapis.com/css2?${FONTS.map(f => `family=${f}:wght@400;500;600;700;800`).join('&')}&display=swap`;
+document.head.appendChild(fontLink);
+
+// Stan design
+let currentDesign = {
+  accent_color:   '#6C63FF',
+  font:           'Inter',
+  layout:         'single',
+  heading_size:   'M',
+  bold_name:      true,
+  italic_summary: false,
+  show_dividers:  true,
+  ...CV_DESIGN,
+};
+
+// ── Toggle panelu ──
+document.getElementById('designToggle').addEventListener('click', function () {
+  this.classList.toggle('open');
+  document.getElementById('designPanelBody').classList.toggle('open');
+});
+
+// ── Pomocnik: aktualizuj design i odśwież ──
+function updateDesign(key, value) {
+  currentDesign[key] = value;
+  applyDesignToUI();
+  scheduleAutosave();
+  schedulePreviewUpdate();
+}
+
+// ── Aplikuj design do UI kontrolek (zaznaczenia) ──
+function applyDesignToUI() {
+  // Kolory
+  document.querySelectorAll('.color-swatch[data-color]').forEach(sw => {
+    sw.classList.toggle('color-swatch--active',
+      sw.dataset.color.toLowerCase() === currentDesign.accent_color.toLowerCase()
+    );
+  });
+  document.getElementById('accentColorPicker').value = currentDesign.accent_color;
+
+  // Czcionki
+  document.querySelectorAll('.font-btn').forEach(btn => {
+    btn.classList.toggle('font-btn--active', btn.dataset.font === currentDesign.font);
+  });
+
+  // Układ
+  document.querySelectorAll('.layout-btn').forEach(btn => {
+    btn.classList.toggle('layout-btn--active', btn.dataset.layout === currentDesign.layout);
+  });
+
+  // Rozmiar nagłówka
+  document.querySelectorAll('.size-btn').forEach(btn => {
+    btn.classList.toggle('size-btn--active', btn.dataset.size === currentDesign.heading_size);
+  });
+
+  // Toggles
+  document.getElementById('toggle_bold_name').checked      = currentDesign.bold_name;
+  document.getElementById('toggle_italic_summary').checked = currentDesign.italic_summary;
+  document.getElementById('toggle_show_dividers').checked  = currentDesign.show_dividers;
+}
+
+// ── Kolory — kliknięcie swatcha ──
+document.querySelectorAll('.color-swatch[data-color]').forEach(sw => {
+  sw.addEventListener('click', () => updateDesign('accent_color', sw.dataset.color));
+});
+
+// ── Kolor custom — color picker ──
+document.getElementById('accentColorPicker').addEventListener('input', function () {
+  updateDesign('accent_color', this.value);
+});
+
+// ── Czcionki ──
+document.querySelectorAll('.font-btn').forEach(btn => {
+  btn.addEventListener('click', () => updateDesign('font', btn.dataset.font));
+});
+
+// ── Układ ──
+document.querySelectorAll('.layout-btn').forEach(btn => {
+  btn.addEventListener('click', () => updateDesign('layout', btn.dataset.layout));
+});
+
+// ── Rozmiar nagłówka ──
+document.querySelectorAll('.size-btn').forEach(btn => {
+  btn.addEventListener('click', () => updateDesign('heading_size', btn.dataset.size));
+});
+
+// ── Toggles typografii ──
+document.getElementById('toggle_bold_name').addEventListener('change', function () {
+  updateDesign('bold_name', this.checked);
+});
+document.getElementById('toggle_italic_summary').addEventListener('change', function () {
+  updateDesign('italic_summary', this.checked);
+});
+document.getElementById('toggle_show_dividers').addEventListener('change', function () {
+  updateDesign('show_dividers', this.checked);
+});
+
+// ── Inicjalizacja przy starcie ──
+document.addEventListener('DOMContentLoaded', () => {
+  applyDesignToUI();
+});
+
 </script>
 {% endblock %}
 

@@ -1,4 +1,59 @@
 {% load static %}
+
+{% with d=cv.design %}
+{% with accent=d.accent_color|default:'#6C63FF' %}
+{% with font=d.font|default:'Inter' %}
+{% with heading_size=d.heading_size|default:'M' %}
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family={{ font|urlencode }}:wght@400;500;600;700;800&display=swap');
+
+  :root {
+    --accent: {{ accent }};
+  }
+
+  body {
+    font-family: '{{ font }}', 'DejaVu Sans', sans-serif;
+  }
+
+  .header {
+    background: {{ accent }} !important;
+  }
+
+  .header-name {
+    font-size: {% if heading_size == 'S' %}22px{% elif heading_size == 'L' %}34px{% else %}28px{% endif %};
+    font-weight: {% if d.bold_name %}800{% else %}400{% endif %};
+  }
+
+  .section-title {
+    color: {{ accent }} !important;
+    {% if d.show_dividers %}
+      border-bottom: 2px solid {{ accent }};
+    {% else %}
+      border-bottom: none;
+    {% endif %}
+  }
+
+  .entry-subtitle {
+    color: {{ accent }} !important;
+  }
+
+  .skill-tag {
+    color: {{ accent }} !important;
+  }
+
+  .link-item {
+    color: {{ accent }} !important;
+  }
+
+  p.summary-text {
+    font-style: {% if d.italic_summary %}italic{% else %}normal{% endif %};
+  }
+</style>
+
+
+{% endwith %}{% endwith %}{% endwith %}{% endwith %}
+
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -194,7 +249,7 @@
   {% if content.summary %}
   <div class="section">
     <div class="section__title">O mnie</div>
-    <p style="font-size: 10.5pt; color: #444444; line-height: 1.7;">{{ content.summary }}</p>
+    <p class="summary-text" style="font-size: 10.5pt; color: #444444; line-height: 1.7;">{{ content.summary }}</p>
   </div>
   {% endif %}
 

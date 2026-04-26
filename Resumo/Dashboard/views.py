@@ -173,6 +173,11 @@ def edit_cv(request, cv_id):
             if isinstance(new_content, dict):
                 cv.content = new_content
 
+            # Zaktualizuj design
+            new_design = body.get('design', {})
+            if isinstance(new_design, dict) and new_design:
+                cv.design = new_design
+
             # Oblicz postęp
             cv.progress = calculate_progress(cv.content)
             cv.save()
@@ -187,9 +192,15 @@ def edit_cv(request, cv_id):
 
     # ── GET — renderuj edytor ──
     import json as json_module
+    from .models import DEFAULT_DESIGN
+
+    # Scal domyślny design z zapisanym w bazie
+    design = {**DEFAULT_DESIGN, **(cv.design or {})}
+
     context = {
-        'cv':          cv,
-        'cv_content':  json_module.dumps(cv.content if cv.content else {}),
+        'cv':         cv,
+        'cv_content': json_module.dumps(cv.content if cv.content else {}),
+        'cv_design':  json_module.dumps(design),
     }
     return render(request, 'dashboard/cv-editor.html', context)
 

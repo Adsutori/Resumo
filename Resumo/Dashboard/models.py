@@ -3,6 +3,18 @@ from django.db import models
 from django.conf import settings
 
 
+# Na górze pliku, poza klasą
+DEFAULT_DESIGN = {
+    'accent_color':   '#6C63FF',
+    'font':           'Inter',
+    'layout':         'single',   # 'single' | 'double'
+    'heading_size':   'M',        # 'S' | 'M' | 'L'
+    'bold_name':      True,
+    'italic_summary': False,
+    'show_dividers':  True,
+}
+
+
 class CV(models.Model):
 
     TEMPLATE_CHOICES = [
@@ -38,6 +50,10 @@ class CV(models.Model):
     # --- Timestamps ---
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    # --- Design (personalizacja wizualna) ---
+    design = models.JSONField(default=dict, blank=True)
+
 
     class Meta:
         ordering = ['-updated_at']

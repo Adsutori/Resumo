@@ -66,10 +66,15 @@
       <h4 class="quick-card__title">Nowe CV od zera</h4>
       <p class="quick-card__desc">Zacznij z pustym dokumentem i buduj krok po kroku.</p>
     </div>
-    <a href="{% url 'dashboard:create_cv' %}" class="btn btn--accent btn--sm">
-      <i data-lucide="arrow-right"></i>
-      Zacznij
-    </a>
+    <form method="POST" action="{% url 'dashboard:create_cv' %}">
+      {% csrf_token %}
+      <input type="hidden" name="template" value="classic">
+      <input type="hidden" name="title" value="Moje CV">
+      <button type="submit" class="btn btn--accent btn--sm" style='width: 100%;'>
+        <i data-lucide="arrow-right"></i>
+        Zacznij
+      </button>
+    </form>
 
   </div>
 
