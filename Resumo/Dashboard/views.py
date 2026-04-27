@@ -206,10 +206,37 @@ def edit_cv(request, cv_id):
     return render(request, 'dashboard/cv-editor.html', context)
 
 
+def darken_hex(hex_color: str, factor: float) -> str:
+    """Przyciemnia kolor hex. factor: 0.0=czarny, 1.0=oryginalny."""
+    hex_color = hex_color.lstrip('#')
+    if len(hex_color) == 3:
+        hex_color = ''.join(c*2 for c in hex_color)
+    try:
+        r = int(hex_color[0:2], 16)
+        g = int(hex_color[2:4], 16)
+        b = int(hex_color[4:6], 16)
+    except ValueError:
+        return '#1a1a2e'
+    r = round(r * factor)
+    g = round(g * factor)
+    b = round(b * factor)
+    return f'#{r:02x}{g:02x}{b:02x}'
+
+
 @login_required
 def download_pdf(request, cv_id):
-    cv = get_object_or_404(CV, id=cv_id, user=request.user)
-    CV.objects.filter(id=cv_id).update(download_count=F('download_count') + 1)
+    cv = get_object_or_404(CV, pk=cv_id, user=request.user)
+
+    from .models import DEFAULT_DESIGN
+    merged_design = {**DEFAULT_DESIGN, **(cv.design or {})}
+    cv.design = merged_design
+
+    accent = merged_design.get('accent_color', '#6C63FF')
+
+    # Wylicz ciemne odcienie — tak samo jak JS w edytorze
+    dark_base = darken_hex(accent, 0.18)   # gradient nagłówka — lewa strona
+    dark_mid  = darken_hex(accent, 0.25)   # sidebar góra
+    dark_deep = darken_hex(accent, 0.15)   # sidebar dół
 
     template_map = {
         'classic': 'dashboard/pdf/cv-classic.html',
@@ -218,21 +245,16 @@ def download_pdf(request, cv_id):
     }
     template_name = template_map.get(cv.template, 'dashboard/pdf/cv-classic.html')
 
-    from .models import DEFAULT_DESIGN
-
-    # Scal DEFAULT_DESIGN z zapisanym — tak samo jak w edit_cv GET
-    merged_design = {**DEFAULT_DESIGN, **(cv.design or {})}
-
-    # Podmień design na scalony (tylko w pamięci, NIE zapisujemy do bazy)
-    cv.design = merged_design
-
-    html_string = render_to_string(template_name, {
-        'cv':      cv,
-        'content': cv.content or {},
+    html = render_to_string(template_name, {
+        'cv':        cv,
+        'content':   cv.content or {},
+        'dark_base': dark_base,
+        'dark_mid':  dark_mid,
+        'dark_deep': dark_deep,
     }, request=request)
 
     pdf = HTML(
-        string=html_string,
+        string=html,
         base_url=request.build_absolute_uri('/')
     ).write_pdf()
 
@@ -324,10 +346,18 @@ def share_cv(request, token):
     }
     template_name = template_map.get(cv.template, 'dashboard/pdf/cv-classic.html')
 
+    accent    = merged_design.get('accent_color', '#6C63FF')
+    dark_base = darken_hex(accent, 0.18)
+    dark_mid  = darken_hex(accent, 0.25)
+    dark_deep = darken_hex(accent, 0.15)
+
     cv_html = render_to_string(template_name, {
         'cv':        cv,
         'content':   cv.content or {},
         'is_public': True,
+        'dark_base': dark_base,
+        'dark_mid':  dark_mid,
+        'dark_deep': dark_deep,
     }, request=request)
 
     return render(request, 'dashboard/cv-share.html', {
