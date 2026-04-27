@@ -1,13 +1,5 @@
-🔗 UDOSTĘPNIANIE CV
-
-[ ] Dodać pole share_token do modelu CV (UUID)
-share_token = models.UUIDField(default=uuid.uuid4, unique=True)
-
-
-[ ] Widok publiczny CV: cv/share/<token>/ 
-[ ] Przycisk Udostępnij generuje link i kopiuje do schowka (JS)
-[ ] Opcja włącz/wyłącz udostępnianie dla każdego cv osobno - jeśli jest wyłączone to tylko user który je stworzył może je zobaczyć
-
+FIX:
+- cały subpage udostępnianie
 
 
 📊 STATYSTYKI

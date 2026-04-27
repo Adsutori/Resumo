@@ -2,6 +2,7 @@ import uuid
 from django.db import models
 from django.conf import settings
 from django.urls import reverse
+from django.utils import timezone
 
 
 # Na górze pliku, poza klasą
@@ -55,6 +56,26 @@ class CV(models.Model):
     # --- Design (personalizacja wizualna) ---
     design = models.JSONField(default=dict, blank=True)
 
+    # --- Udostępnianie ---
+    is_shared       = models.BooleanField(default=False)
+    share_token     = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    view_count      = models.PositiveIntegerField(default=0)
+    share_expires   = models.DateTimeField(null=True, blank=True)
+
+    def get_share_url(self, request=None):
+        from django.urls import reverse
+        path = reverse('dashboard:share_cv', kwargs={'token': str(self.share_token)})
+        if request:
+            return request.build_absolute_uri(path)
+        return path
+
+    def is_share_active(self):
+        if not self.is_shared:
+            return False
+        if self.share_expires and self.share_expires < timezone.now():
+            return False
+        return True
+
 
     class Meta:
         ordering = ['-updated_at']
@@ -86,3 +107,13 @@ class CV(models.Model):
         self.progress = progress
         self.save(update_fields=['progress'])
         return progress
+
+
+class CVView(models.Model):
+    """Pojedyncze wyświetlenie udostępnionego CV."""
+    cv         = models.ForeignKey(CV, on_delete=models.CASCADE, related_name='views')
+    viewed_at  = models.DateTimeField(auto_now_add=True)
+    ip_hash    = models.CharField(max_length=64, blank=True)  # zahashowane IP
+
+    class Meta:
+        ordering = ['-viewed_at']

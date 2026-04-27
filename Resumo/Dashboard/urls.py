@@ -12,4 +12,8 @@ urlpatterns = [
     path('cv/<int:cv_id>/delete/',      views.delete_cv,        name='delete_cv'),
     path('cv/<int:cv_id>/toggle-share/',views.toggle_share,     name='toggle_share'),
     path('cv/share/<uuid:token>/',      views.share_cv,         name='share_cv'),
+    path('share/',                        views.share_dashboard,  name='share_dashboard'),
+    path('cv/<int:cv_id>/toggle-share/',  views.toggle_share,     name='toggle_share'),
+    path('cv/<int:cv_id>/regenerate/',    views.regenerate_token, name='regenerate_token'),
+    path('cv/<int:cv_id>/stats/',         views.share_stats,      name='share_stats'),
 ]

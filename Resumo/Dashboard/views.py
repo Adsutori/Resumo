@@ -14,6 +14,12 @@ from django.db.models import F
 from django.contrib import messages
 from django.views.decorators.http import require_POST
 from django.urls import reverse
+import hashlib
+from django.db.models import Count
+from django.db.models.functions import TruncDate
+from django.utils import timezone
+from datetime import timedelta
+
 
 
 # ──────────────────────────────────────────────
@@ -363,4 +369,139 @@ def share_cv(request, token):
     return render(request, 'dashboard/cv-share.html', {
         'cv':      cv,
         'cv_html': cv_html,   # ← czysty string, BEZ json.dumps
+    })
+
+
+# ── Strona główna sekcji ──────────────────────────────────
+@login_required
+def share_dashboard(request):
+    """Lista wszystkich CV z opcjami udostępniania."""
+    cvs = CV.objects.filter(user=request.user).order_by('-updated_at')
+
+    # Dla każdego CV policz wyświetlenia z ostatnich 7 dni
+    week_ago = timezone.now() - timedelta(days=7)
+    for cv in cvs:
+        cv.views_week = cv.views.filter(viewed_at__gte=week_ago).count()
+
+    return render(request, 'dashboard/share-dashboard.html', {
+        'cvs': cvs,
+    })
+
+
+# ── Toggle udostępniania ──────────────────────────────────
+@login_required
+@require_POST
+def toggle_share(request, cv_id):
+    cv = get_object_or_404(CV, pk=cv_id, user=request.user)
+    data = json.loads(request.body)
+
+    cv.is_shared = data.get('is_shared', False)
+
+    # Opcjonalna data wygaśnięcia
+    expires = data.get('expires')
+    if expires:
+        cv.share_expires = timezone.datetime.fromisoformat(expires).replace(
+            tzinfo=timezone.get_current_timezone()
+        )
+    else:
+        cv.share_expires = None
+
+    cv.save(update_fields=['is_shared', 'share_expires'])
+
+    return JsonResponse({
+        'status':    'ok',
+        'is_shared': cv.is_shared,
+        'share_url': cv.get_share_url(request),
+        'is_active': cv.is_share_active(),
+    })
+
+
+# ── Regeneracja tokenu ────────────────────────────────────
+@login_required
+@require_POST
+def regenerate_token(request, cv_id):
+    cv = get_object_or_404(CV, pk=cv_id, user=request.user)
+    cv.share_token = uuid.uuid4()
+    cv.save(update_fields=['share_token'])
+
+    return JsonResponse({
+        'status':    'ok',
+        'share_url': cv.get_share_url(request),
+    })
+
+
+# ── Statystyki wyświetleń (JSON) ──────────────────────────
+@login_required
+def share_stats(request, cv_id):
+    cv = get_object_or_404(CV, pk=cv_id, user=request.user)
+
+    # Ostatnie 7 dni
+    week_ago = timezone.now() - timedelta(days=7)
+    daily = (
+        cv.views
+        .filter(viewed_at__gte=week_ago)
+        .annotate(day=TruncDate('viewed_at'))
+        .values('day')
+        .annotate(count=Count('id'))
+        .order_by('day')
+    )
+
+    # Wypełnij brakujące dni zerami
+    days_map = {entry['day'].isoformat(): entry['count'] for entry in daily}
+    labels, values = [], []
+    for i in range(6, -1, -1):
+        day = (timezone.now() - timedelta(days=i)).date()
+        labels.append(day.strftime('%d.%m'))
+        values.append(days_map.get(day.isoformat(), 0))
+
+    return JsonResponse({
+        'total':      cv.view_count,
+        'week_total': sum(values),
+        'labels':     labels,
+        'values':     values,
+    })
+
+
+# ── Publiczny widok CV (już masz, tylko dodaj CVView) ─────
+def share_cv(request, token):
+    cv = get_object_or_404(CV, share_token=token)
+
+    if not cv.is_share_active():
+        raise Http404("Ten link wygasł lub CV nie jest udostępnione.")
+
+    # Zapisz wyświetlenie z zahashowanym IP
+    ip = request.META.get('REMOTE_ADDR', '')
+    ip_hash = hashlib.sha256(ip.encode()).hexdigest()[:32]
+    CVView.objects.create(cv=cv, ip_hash=ip_hash)
+    CV.objects.filter(pk=cv.pk).update(view_count=F('view_count') + 1)
+    cv.refresh_from_db()
+
+    from .models import DEFAULT_DESIGN
+    merged_design = {**DEFAULT_DESIGN, **(cv.design or {})}
+    cv.design = merged_design
+
+    accent    = merged_design.get('accent_color', '#6C63FF')
+    dark_base = darken_hex(accent, 0.18)
+    dark_mid  = darken_hex(accent, 0.25)
+    dark_deep = darken_hex(accent, 0.15)
+
+    template_map = {
+        'classic': 'dashboard/pdf/cv-classic.html',
+        'modern':  'dashboard/pdf/cv-modern.html',
+        'minimal': 'dashboard/pdf/cv-minimal.html',
+    }
+    template_name = template_map.get(cv.template, 'dashboard/pdf/cv-classic.html')
+
+    cv_html = render_to_string(template_name, {
+        'cv':        cv,
+        'content':   cv.content or {},
+        'is_public': True,
+        'dark_base': dark_base,
+        'dark_mid':  dark_mid,
+        'dark_deep': dark_deep,
+    }, request=request)
+
+    return render(request, 'dashboard/cv-share.html', {
+        'cv':      cv,
+        'cv_html': cv_html,
     })

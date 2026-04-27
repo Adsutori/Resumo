@@ -1,0 +1,1060 @@
+{% extends 'dashboard-layout.html' %}
+{% load static %}
+
+{% block title %}Udostępnij CV — Resumo{% endblock %}
+{% block page_title %}Udostępnij CV{% endblock %}
+
+{% block content %}
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<!-- QRCode.js -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+
+<style>
+/* ══════════════════════════════════════════
+   PAGE HEADER
+══════════════════════════════════════════ */
+.share-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.share-page-header__title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--color-text);
+  letter-spacing: -0.4px;
+}
+
+.share-page-header__sub {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+}
+
+/* ══════════════════════════════════════════
+   STATS SUMMARY BAR
+══════════════════════════════════════════ */
+.share-stats-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.share-stat-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.share-stat-card__value {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--color-text);
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.share-stat-card__label {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.share-stat-card__icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.share-stat-card__icon i { width: 16px; height: 16px; }
+
+/* ══════════════════════════════════════════
+   CV CARDS GRID
+══════════════════════════════════════════ */
+.share-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.share-cv-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.share-cv-card--active {
+  border-color: var(--color-accent);
+}
+
+/* ── Card header ── */
+.share-cv-card__header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  flex-wrap: wrap;
+}
+
+.share-cv-card__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-lg);
+  background: var(--color-accent-glow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--color-accent);
+}
+
+.share-cv-card__icon i { width: 20px; height: 20px; }
+
+.share-cv-card__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.share-cv-card__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.share-cv-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.share-cv-card__meta-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.share-cv-card__meta-item i { width: 12px; height: 12px; }
+
+.share-cv-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* ── Toggle switch ── */
+.share-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.share-toggle__track {
+  width: 44px;
+  height: 24px;
+  background: var(--color-surface-2, rgba(255,255,255,0.08));
+  border: 1px solid var(--color-border);
+  border-radius: 99px;
+  position: relative;
+  transition: background 0.2s, border-color 0.2s;
+  flex-shrink: 0;
+}
+
+.share-toggle__track::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+
+.share-toggle--on .share-toggle__track {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.share-toggle--on .share-toggle__track::after {
+  transform: translateX(20px);
+}
+
+.share-toggle__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.share-toggle--on .share-toggle__label {
+  color: var(--color-accent);
+}
+
+/* ── Card body (collapsed by default) ── */
+.share-cv-card__body {
+  border-top: 1px solid var(--color-border);
+  padding: 20px 24px;
+  display: none;
+  flex-direction: column;
+  gap: 20px;
+  background: rgba(255,255,255,0.01);
+}
+
+.share-cv-card__body--visible {
+  display: flex;
+}
+
+/* ── Link row ── */
+.share-link-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.share-link-input {
+  flex: 1;
+  padding: 10px 14px;
+  background: var(--color-surface-2, rgba(255,255,255,0.04));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+  outline: none;
+  cursor: text;
+  min-width: 0;
+}
+
+.share-link-input:focus {
+  border-color: var(--color-accent);
+  color: var(--color-text);
+}
+
+/* ── Sekcje w body ── */
+.share-body-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.share-body-section__label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.share-body-section__label i { width: 13px; height: 13px; }
+
+/* ── Expiry row ── */
+.share-expiry-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.share-expiry-input {
+  padding: 8px 12px;
+  background: var(--color-surface-2, rgba(255,255,255,0.04));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+  color-scheme: dark;
+}
+
+.share-expiry-input:focus {
+  border-color: var(--color-accent);
+}
+
+.share-expiry-clear {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  transition: color 0.15s;
+}
+
+.share-expiry-clear:hover { color: #ef4444; }
+
+/* ── Status badge ── */
+.share-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.share-status-badge--active {
+  background: rgba(16,185,129,0.12);
+  color: #10b981;
+  border: 1px solid rgba(16,185,129,0.25);
+}
+
+.share-status-badge--inactive {
+  background: rgba(255,255,255,0.05);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+}
+
+.share-status-badge--expired {
+  background: rgba(239,68,68,0.1);
+  color: #ef4444;
+  border: 1px solid rgba(239,68,68,0.2);
+}
+
+.share-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* ── QR + chart row ── */
+.share-bottom-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.share-qr-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.share-qr-canvas {
+  border-radius: var(--radius-md);
+  background: #fff;
+  padding: 8px;
+}
+
+.share-chart-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.share-chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.share-chart-total {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--color-text);
+  letter-spacing: -0.5px;
+}
+
+.share-chart-sub {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.share-chart-canvas {
+  height: 80px !important;
+}
+
+/* ── Buttons ── */
+.btn-share-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-decoration: none;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-2, rgba(255,255,255,0.04));
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.btn-share-action:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: var(--color-accent-glow);
+}
+
+.btn-share-action--primary {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
+}
+
+.btn-share-action--primary:hover {
+  opacity: 0.85;
+  color: #fff;
+}
+
+.btn-share-action--danger:hover {
+  border-color: rgba(239,68,68,0.4);
+  color: #ef4444;
+  background: rgba(239,68,68,0.08);
+}
+
+.btn-share-action i { width: 13px; height: 13px; }
+
+/* ── Empty state ── */
+.share-empty {
+  text-align: center;
+  padding: 60px 24px;
+  color: var(--color-text-muted);
+}
+
+.share-empty i { width: 48px; height: 48px; opacity: 0.3; margin-bottom: 12px; }
+.share-empty h3 { font-size: 16px; color: var(--color-text); margin-bottom: 6px; }
+.share-empty p  { font-size: 13px; }
+
+/* ── Toast ── */
+.share-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-accent);
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.25s, transform 0.25s;
+  pointer-events: none;
+}
+
+.share-toast.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.share-toast i { width: 15px; height: 15px; color: var(--color-accent); }
+
+@media (max-width: 640px) {
+  .share-bottom-row {
+    grid-template-columns: 1fr;
+  }
+  .share-qr-wrap {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+</style>
+
+<!-- ══════════════════════════════════════════
+     PAGE HEADER
+══════════════════════════════════════════ -->
+<div class="share-page-header">
+  <div>
+    <h1 class="share-page-header__title">Udostępnij CV</h1>
+    <p class="share-page-header__sub">Zarządzaj publicznymi linkami do swoich dokumentów</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     STATS BAR
+══════════════════════════════════════════ -->
+<div class="share-stats-bar">
+  <div class="share-stat-card">
+    <div class="share-stat-card__icon" style="background:rgba(108,99,255,0.12);color:var(--color-accent);">
+      <i data-lucide="share-2"></i>
+    </div>
+    <div class="share-stat-card__value" id="statShared">
+      {{ cvs|length }}
+    </div>
+    <div class="share-stat-card__label">Dokumentów łącznie</div>
+  </div>
+
+  <div class="share-stat-card">
+    <div class="share-stat-card__icon" style="background:rgba(16,185,129,0.12);color:#10b981;">
+      <i data-lucide="link"></i>
+    </div>
+    <div class="share-stat-card__value" id="statActive">
+      {{ cvs|dictsortreversed:"is_shared"|length }}
+    </div>
+    <div class="share-stat-card__label">Aktywnych linków</div>
+  </div>
+
+  <div class="share-stat-card">
+    <div class="share-stat-card__icon" style="background:rgba(245,158,11,0.12);color:#f59e0b;">
+      <i data-lucide="eye"></i>
+    </div>
+    <div class="share-stat-card__value" id="statViews">
+      {% with total=0 %}
+        {% for cv in cvs %}{{ cv.view_count|add:total }}{% endfor %}
+      {% endwith %}
+    </div>
+    <div class="share-stat-card__label">Wyświetleń łącznie</div>
+  </div>
+
+  <div class="share-stat-card">
+    <div class="share-stat-card__icon" style="background:rgba(99,179,237,0.12);color:#63b3ed;">
+      <i data-lucide="trending-up"></i>
+    </div>
+    <div class="share-stat-card__value" id="statWeek">—</div>
+    <div class="share-stat-card__label">Wyświetleń (7 dni)</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     CV LIST
+══════════════════════════════════════════ -->
+<div class="share-grid" id="shareGrid">
+
+  {% if not cvs %}
+    <div class="share-empty">
+      <i data-lucide="file-x"></i>
+      <h3>Brak dokumentów CV</h3>
+      <p>Utwórz swoje pierwsze CV, aby móc je udostępnić.</p>
+    </div>
+  {% endif %}
+
+  {% for cv in cvs %}
+  <div class="share-cv-card {% if cv.is_share_active %}share-cv-card--active{% endif %}"
+       id="card-{{ cv.id }}"
+       data-cv-id="{{ cv.id }}"
+       data-is-shared="{{ cv.is_shared|yesno:'true,false' }}"
+       data-share-url="{{ cv.get_share_url }}">
+
+    <!-- ── HEADER ── -->
+    <div class="share-cv-card__header">
+
+      <div class="share-cv-card__icon">
+        <i data-lucide="file-text"></i>
+      </div>
+
+      <div class="share-cv-card__info">
+        <div class="share-cv-card__title">{{ cv.title }}</div>
+        <div class="share-cv-card__meta">
+          <span class="share-cv-card__meta-item">
+            <i data-lucide="layout-template"></i>
+            {{ cv.get_template_display }}
+          </span>
+          <span class="share-cv-card__meta-item">
+            <i data-lucide="clock"></i>
+            {{ cv.updated_at|timesince }} temu
+          </span>
+          <span class="share-cv-card__meta-item">
+            <i data-lucide="eye"></i>
+            {{ cv.view_count }} wyświetleń
+          </span>
+          {% if cv.views_week > 0 %}
+          <span class="share-cv-card__meta-item" style="color:#10b981;">
+            <i data-lucide="trending-up"></i>
+            +{{ cv.views_week }} w tym tygodniu
+          </span>
+          {% endif %}
+
+          <!-- Status badge -->
+          <span class="share-status-badge
+            {% if cv.is_share_active %}share-status-badge--active
+            {% elif cv.is_shared %}share-status-badge--expired
+            {% else %}share-status-badge--inactive{% endif %}"
+            id="badge-{{ cv.id }}">
+            <span class="share-status-dot"></span>
+            {% if cv.is_share_active %}Aktywny
+            {% elif cv.is_shared %}Wygasły
+            {% else %}Nieaktywny{% endif %}
+          </span>
+        </div>
+      </div>
+
+      <div class="share-cv-card__actions">
+        <!-- Toggle -->
+        <label class="share-toggle {% if cv.is_share_active %}share-toggle--on{% endif %}"
+               id="toggle-{{ cv.id }}"
+               onclick="handleToggle({{ cv.id }}, this)">
+          <div class="share-toggle__track"></div>
+          <span class="share-toggle__label">
+            {% if cv.is_share_active %}Włączone{% else %}Wyłączone{% endif %}
+          </span>
+        </label>
+
+        <!-- Rozwiń szczegóły -->
+        <button class="btn-share-action"
+                onclick="toggleCardBody({{ cv.id }})"
+                id="expand-btn-{{ cv.id }}"
+                title="Szczegóły">
+          <i data-lucide="chevron-down" id="expand-icon-{{ cv.id }}"></i>
+        </button>
+      </div>
+
+    </div><!-- /.share-cv-card__header -->
+
+    <!-- ── BODY (rozwijane) ── -->
+    <div class="share-cv-card__body {% if cv.is_share_active %}share-cv-card__body--visible{% endif %}"
+         id="body-{{ cv.id }}">
+
+      <!-- Link -->
+      <div class="share-body-section">
+        <div class="share-body-section__label">
+          <i data-lucide="link"></i>
+          Publiczny link
+        </div>
+        <div class="share-link-row">
+          <input type="text"
+                 class="share-link-input"
+                 id="link-input-{{ cv.id }}"
+                 value="{{ cv.get_share_url }}"
+                 readonly
+                 {% if not cv.is_share_active %}disabled{% endif %}>
+          <button class="btn-share-action"
+                  onclick="copyLink({{ cv.id }})"
+                  title="Kopiuj link"
+                  {% if not cv.is_share_active %}disabled{% endif %}>
+            <i data-lucide="copy"></i>
+            Kopiuj
+          </button>
+          <a href="{{ cv.get_share_url }}"
+             target="_blank"
+             class="btn-share-action"
+             title="Otwórz"
+             {% if not cv.is_share_active %}style="pointer-events:none;opacity:0.4;"{% endif %}>
+            <i data-lucide="external-link"></i>
+            Otwórz
+          </a>
+          <button class="btn-share-action btn-share-action--danger"
+                  onclick="regenerateToken({{ cv.id }})"
+                  title="Zresetuj link (stary przestanie działać)">
+            <i data-lucide="refresh-cw"></i>
+            Reset
+          </button>
+        </div>
+      </div>
+
+      <!-- Data wygaśnięcia -->
+      <div class="share-body-section">
+        <div class="share-body-section__label">
+          <i data-lucide="calendar"></i>
+          Data wygaśnięcia linku (opcjonalnie)
+        </div>
+        <div class="share-expiry-row">
+          <input type="datetime-local"
+                 class="share-expiry-input"
+                 id="expiry-{{ cv.id }}"
+                 value="{% if cv.share_expires %}{{ cv.share_expires|date:'Y-m-d' }}T{{ cv.share_expires|date:'H:i' }}{% endif %}"
+                 onchange="saveExpiry({{ cv.id }})">
+          <button class="share-expiry-clear" onclick="clearExpiry({{ cv.id }})">
+            Usuń datę
+          </button>
+          {% if cv.share_expires %}
+          <span style="font-size:12px;color:var(--color-text-muted);">
+            Wygasa {{ cv.share_expires|date:"d.m.Y H:i" }}
+          </span>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- QR + wykres -->
+      <div class="share-bottom-row">
+
+        <!-- QR kod -->
+        <div class="share-qr-wrap">
+          <div class="share-body-section__label">
+            <i data-lucide="qr-code"></i>
+            Kod QR
+          </div>
+          <canvas class="share-qr-canvas"
+                  id="qr-{{ cv.id }}"
+                  width="120" height="120"></canvas>
+          <button class="btn-share-action"
+                  onclick="downloadQR({{ cv.id }}, '{{ cv.title|escapejs }}')"
+                  style="width:100%;">
+            <i data-lucide="download"></i>
+            Pobierz QR
+          </button>
+        </div>
+
+        <!-- Wykres wyświetleń -->
+        <div class="share-chart-wrap">
+          <div class="share-body-section__label">
+            <i data-lucide="bar-chart-2"></i>
+            Wyświetlenia — ostatnie 7 dni
+          </div>
+          <div class="share-chart-header">
+            <div>
+              <div class="share-chart-total" id="chart-total-{{ cv.id }}">
+                {{ cv.view_count }}
+              </div>
+              <div class="share-chart-sub">łącznie wszystkich wyświetleń</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:18px;font-weight:700;color:#10b981;"
+                   id="chart-week-{{ cv.id }}">—</div>
+              <div class="share-chart-sub">w tym tygodniu</div>
+            </div>
+          </div>
+          <canvas id="chart-{{ cv.id }}" class="share-chart-canvas"></canvas>
+        </div>
+
+      </div>
+
+    </div><!-- /.share-cv-card__body -->
+  </div>
+  {% endfor %}
+
+</div>
+
+<!-- Toast -->
+<div class="share-toast" id="shareToast">
+  <i data-lucide="check-circle" id="toastIcon"></i>
+  <span id="toastMsg">Skopiowano!</span>
+</div>
+
+<script>
+'use strict';
+
+const CSRF = '{{ csrf_token }}';
+
+// ══════════════════════════════════════════════════════════
+// TOGGLE — włącz/wyłącz udostępnianie
+// ══════════════════════════════════════════════════════════
+
+async function handleToggle(cvId, labelEl) {
+  const isOn      = labelEl.classList.contains('share-toggle--on');
+  const newState  = !isOn;
+  const expiryEl  = document.getElementById(`expiry-${cvId}`);
+  const expires   = expiryEl ? expiryEl.value || null : null;
+
+  try {
+    const res = await fetch(`/dashboard/cv/${cvId}/toggle-share/`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF },
+      body:    JSON.stringify({ is_shared: newState, expires }),
+    });
+    const data = await res.json();
+
+    if (data.status === 'ok') {
+      updateCardState(cvId, data.is_shared, data.is_active, data.share_url);
+      showToast(
+        data.is_active ? 'CV jest teraz publiczne!' : 'Udostępnianie wyłączone.',
+        data.is_active ? 'check-circle' : 'eye-off'
+      );
+    }
+  } catch {
+    showToast('Błąd — spróbuj ponownie.', 'alert-circle');
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// AKTUALIZACJA STANU KARTY
+// ══════════════════════════════════════════════════════════
+
+function updateCardState(cvId, isShared, isActive, shareUrl) {
+  const card    = document.getElementById(`card-${cvId}`);
+  const toggle  = document.getElementById(`toggle-${cvId}`);
+  const badge   = document.getElementById(`badge-${cvId}`);
+  const linkIn  = document.getElementById(`link-input-${cvId}`);
+
+  // Karta
+  card.classList.toggle('share-cv-card--active', isActive);
+
+  // Toggle
+  toggle.classList.toggle('share-toggle--on', isActive);
+  toggle.querySelector('.share-toggle__label').textContent =
+    isActive ? 'Włączone' : 'Wyłączone';
+
+  // Badge
+  badge.className = `share-status-badge share-status-badge--${
+    isActive ? 'active' : isShared ? 'expired' : 'inactive'
+  }`;
+  badge.querySelector('.share-status-dot').style.background = '';
+  badge.innerHTML = `<span class="share-status-dot"></span>${
+    isActive ? 'Aktywny' : isShared ? 'Wygasły' : 'Nieaktywny'
+  }`;
+
+  // Link input
+  if (linkIn) {
+    linkIn.disabled = !isActive;
+    if (shareUrl) linkIn.value = shareUrl;
+  }
+
+  // Body — pokaż jeśli aktywne
+  const body = document.getElementById(`body-${cvId}`);
+  if (isActive) body.classList.add('share-cv-card__body--visible');
+}
+
+// ══════════════════════════════════════════════════════════
+// ROZWIJANIE KARTY
+// ══════════════════════════════════════════════════════════
+
+function toggleCardBody(cvId) {
+  const body    = document.getElementById(`body-${cvId}`);
+  const icon    = document.getElementById(`expand-icon-${cvId}`);
+  const visible = body.classList.toggle('share-cv-card__body--visible');
+  icon.style.transform = visible ? 'rotate(180deg)' : '';
+}
+
+// ══════════════════════════════════════════════════════════
+// KOPIOWANIE LINKU
+// ══════════════════════════════════════════════════════════
+
+async function copyLink(cvId) {
+  const input = document.getElementById(`link-input-${cvId}`);
+  try {
+    await navigator.clipboard.writeText(input.value);
+    showToast('Link skopiowany do schowka!', 'copy');
+  } catch {
+    input.select();
+    document.execCommand('copy');
+    showToast('Link skopiowany!', 'copy');
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// REGENERACJA TOKENU
+// ══════════════════════════════════════════════════════════
+
+async function regenerateToken(cvId) {
+  if (!confirm('Stary link przestanie działać. Kontynuować?')) return;
+
+  try {
+    const res  = await fetch(`/dashboard/cv/${cvId}/regenerate/`, {
+      method:  'POST',
+      headers: { 'X-CSRFToken': CSRF },
+    });
+    const data = await res.json();
+
+    if (data.status === 'ok') {
+      const input = document.getElementById(`link-input-${cvId}`);
+      if (input) input.value = data.share_url;
+
+      // Odśwież QR
+      generateQR(cvId, data.share_url);
+      showToast('Link został zresetowany!', 'refresh-cw');
+    }
+  } catch {
+    showToast('Błąd resetu linku.', 'alert-circle');
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// DATA WYGAŚNIĘCIA
+// ══════════════════════════════════════════════════════════
+
+async function saveExpiry(cvId) {
+  const expiryEl  = document.getElementById(`expiry-${cvId}`);
+  const toggle    = document.getElementById(`toggle-${cvId}`);
+  const isShared  = toggle.classList.contains('share-toggle--on');
+
+  try {
+    const res = await fetch(`/dashboard/cv/${cvId}/toggle-share/`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF },
+      body:    JSON.stringify({
+        is_shared: isShared,
+        expires:   expiryEl.value || null,
+      }),
+    });
+    const data = await res.json();
+    if (data.status === 'ok') {
+      updateCardState(cvId, data.is_shared, data.is_active, data.share_url);
+      showToast('Data wygaśnięcia zapisana.', 'calendar');
+    }
+  } catch {
+    showToast('Błąd zapisu daty.', 'alert-circle');
+  }
+}
+
+async function clearExpiry(cvId) {
+  const expiryEl = document.getElementById(`expiry-${cvId}`);
+  expiryEl.value = '';
+  await saveExpiry(cvId);
+  showToast('Data wygaśnięcia usunięta.', 'x-circle');
+}
+
+// ══════════════════════════════════════════════════════════
+// QR KOD
+// ══════════════════════════════════════════════════════════
+
+function generateQR(cvId, url) {
+  const canvas = document.getElementById(`qr-${cvId}`);
+  if (!canvas || !url || !window.QRCode) return;
+
+  QRCode.toCanvas(canvas, url, {
+    width:            120,
+    margin:           1,
+    color: {
+      dark:  '#000000',
+      light: '#ffffff',
+    },
+  }, err => {
+    if (err) console.warn('QR error:', err);
+  });
+}
+
+function downloadQR(cvId, title) {
+  const canvas = document.getElementById(`qr-${cvId}`);
+  if (!canvas) return;
+
+  const link    = document.createElement('a');
+  link.download = `QR_${title.replace(/\s+/g, '_')}.png`;
+  link.href     = canvas.toDataURL('image/png');
+  link.click();
+}
+
+// ══════════════════════════════════════════════════════════
+// WYKRES WYŚWIETLEŃ
+// ══════════════════════════════════════════════════════════
+
+async function loadChart(cvId) {
+  try {
+    const res  = await fetch(`/dashboard/cv/${cvId}/stats/`);
+    const data = await res.json();
+
+    // Aktualizuj liczniki
+    const weekEl = document.getElementById(`chart-week-${cvId}`);
+    if (weekEl) weekEl.textContent = `+${data.week_total}`;
+
+    // Wykres
+    const canvas = document.getElementById(`chart-${cvId}`);
+    if (!canvas || !window.Chart) return;
+
+    new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels:   data.labels,
+        datasets: [{
+          data:            data.values,
+          backgroundColor: 'rgba(108,99,255,0.3)',
+          borderColor:     'rgba(108,99,255,0.8)',
+          borderWidth:     1,
+          borderRadius:    4,
+        }],
+      },
+      options: {
+        responsive:          true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: {
+            grid:  { color: 'rgba(255,255,255,0.05)' },
+            ticks: { color: '#888', font: { size: 10 } },
+          },
+          y: {
+            grid:       { color: 'rgba(255,255,255,0.05)' },
+            ticks:      { color: '#888', font: { size: 10 }, stepSize: 1 },
+            beginAtZero: true,
+          },
+        },
+      },
+    });
+
+    return data.week_total;
+  } catch (e) {
+    console.warn('Chart load error:', e);
+    return 0;
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════════════════
+
+let toastTimer = null;
+
+function showToast(msg, icon = 'check-circle') {
+  const toast  = document.getElementById('shareToast');
+  const msgEl  = document.getElementById('toastMsg');
+  const iconEl = document.getElementById('toastIcon');
+
+  msgEl.textContent = msg;
+  iconEl.setAttribute('data-lucide', icon);
+  if (window.lucide) lucide.createIcons({ nodes: [iconEl] });
+
+  toast.classList.add('visible');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('visible'), 3000);
+}
+
+// ══════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', async () => {
+  if (window.lucide) lucide.createIcons();
+
+  let totalWeek = 0;
+
+  // Dla każdej karty — załaduj QR i wykres
+  document.querySelectorAll('.share-cv-card').forEach(async card => {
+    const cvId   = card.dataset.cvId;
+    const url    = card.dataset.shareUrl;
+    const shared = card.dataset.isShared === 'true';
+
+    if (shared && url) {
+      generateQR(cvId, url);
+    }
+
+    const week = await loadChart(cvId);
+    totalWeek += (week || 0);
+  });
+
+  // Zaktualizuj globalny licznik "7 dni"
+  setTimeout(() => {
+    const el = document.getElementById('statWeek');
+    if (el) el.textContent = totalWeek;
+  }, 800);
+});
+</script>
+
+{% endblock %}
