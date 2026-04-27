@@ -10,4 +10,6 @@ urlpatterns = [
     path('cv/<int:cv_id>/pdf/',         views.download_pdf,     name='download_pdf'),
     path('cv/<int:cv_id>/duplicate/',   views.duplicate_cv,     name='duplicate_cv'),
     path('cv/<int:cv_id>/delete/',      views.delete_cv,        name='delete_cv'),
+    path('cv/<int:cv_id>/toggle-share/',views.toggle_share,     name='toggle_share'),
+    path('cv/share/<uuid:token>/',      views.share_cv,         name='share_cv'),
 ]

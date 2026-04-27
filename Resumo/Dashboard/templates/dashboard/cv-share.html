@@ -1,0 +1,781 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ cv.content.personal.first_name }} {{ cv.content.personal.last_name }} — CV</title>
+  <meta name="description" content="{{ cv.content.personal.position }} · {{ cv.content.summary|truncatechars:120 }}">
+  <link rel="icon" type="image/x-icon" href="{% static 'media/logo/favicon.ico' %}">
+
+  <!-- Open Graph -->
+  <meta property="og:title"       content="{{ cv.content.personal.first_name }} {{ cv.content.personal.last_name }} — CV">
+  <meta property="og:description" content="{{ cv.content.personal.position }}">
+  <meta property="og:type"        content="profile">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent:      {{ cv.design.accent_color|default:'#6C63FF' }};
+      --accent-glow: {{ cv.design.accent_color|default:'#6C63FF' }}22;
+      --bg:          #0f0f1a;
+      --bg-2:        #16162a;
+      --surface:     #1e1e35;
+      --border:      rgba(255,255,255,0.08);
+      --text:        #f0f0f8;
+      --text-muted:  #8888aa;
+      --font:        '{{ cv.design.font|default:'Inter' }}', 'Inter', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ══════════════════════════════════════
+    CUSTOM SCROLLBAR
+    ══════════════════════════════════════ */
+
+    /* Firefox */
+    * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent) rgba(255,255,255,0.05);
+    }
+
+    /* Chrome / Safari / Edge */
+    ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.03);
+    border-radius: 99px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 99px;
+    transition: opacity 0.2s;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+    opacity: 0.8;
+    }
+
+    ::-webkit-scrollbar-corner {
+    background: transparent;
+    }
+
+    /* ══════════════════════════════════════
+       ANIMATED BACKGROUND
+    ══════════════════════════════════════ */
+    .bg-orbs {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .bg-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.18;
+      animation: orbFloat 12s ease-in-out infinite;
+    }
+
+    .bg-orb--1 {
+      width: 600px; height: 600px;
+      background: var(--accent);
+      top: -200px; left: -100px;
+      animation-delay: 0s;
+    }
+
+    .bg-orb--2 {
+      width: 400px; height: 400px;
+      background: var(--accent);
+      bottom: -100px; right: -100px;
+      animation-delay: -6s;
+      opacity: 0.12;
+    }
+
+    .bg-orb--3 {
+      width: 300px; height: 300px;
+      background: #fff;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      animation-delay: -3s;
+      opacity: 0.03;
+    }
+
+    @keyframes orbFloat {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50%       { transform: translateY(-40px) scale(1.05); }
+    }
+
+    /* ══════════════════════════════════════
+       TOPBAR
+    ══════════════════════════════════════ */
+    .topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      height: 60px;
+      background: rgba(15,15,26,0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .topbar__brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.3px;
+    }
+
+    .topbar__brand-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+    }
+
+    .topbar__actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .topbar__views {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-muted);
+      padding: 6px 12px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+    }
+
+    .topbar__views i { width: 13px; height: 13px; }
+
+    .btn-download {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 18px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: var(--font);
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.15s;
+      box-shadow: 0 4px 20px color-mix(in srgb, var(--accent) 40%, transparent);
+    }
+
+    .btn-download:hover {
+      opacity: 0.88;
+      transform: translateY(-1px);
+    }
+
+    .btn-download i { width: 15px; height: 15px; }
+
+    /* ══════════════════════════════════════
+       MAIN LAYOUT
+    ══════════════════════════════════════ */
+    .page-wrap {
+      position: relative;
+      z-index: 1;
+      padding: 100px 24px 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+    }
+
+    /* ══════════════════════════════════════
+       HERO — karta z imieniem
+    ══════════════════════════════════════ */
+    .hero {
+      width: 100%;
+      max-width: 794px;
+      background: linear-gradient(135deg, var(--surface) 0%, var(--bg-2) 100%);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 48px 52px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      border-radius: 24px 24px 0 0;
+    }
+
+    .hero__glow {
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0.06;
+      filter: blur(60px);
+      pointer-events: none;
+    }
+
+    .hero__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: var(--accent-glow);
+      border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 20px;
+    }
+
+    .hero__badge i { width: 11px; height: 11px; }
+
+    .hero__name {
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .hero__name span {
+      color: var(--accent);
+    }
+
+    .hero__position {
+      font-size: 16px;
+      color: var(--text-muted);
+      font-weight: 400;
+      margin-bottom: 28px;
+    }
+
+    .hero__meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .hero__meta-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .hero__meta-item i {
+      width: 14px; height: 14px;
+      color: var(--accent);
+      opacity: 0.8;
+      flex-shrink: 0;
+    }
+
+    /* ══════════════════════════════════════
+       CV CARD — właściwy dokument
+    ══════════════════════════════════════ */
+    .cv-wrapper {
+    width: 100%;
+    max-width: 794px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.4);
+    padding: 0;
+    }
+
+    /* Outer = "viewport" — przycina przeskalowany iframe */
+    .cv-frame-outer {
+    width: 100%;
+    overflow: hidden;
+    background: #fff;
+    position: relative;
+    /* wysokość ustawiana przez JS */
+    }
+
+    .cv-wrapper__label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .cv-wrapper__label i { width: 13px; height: 13px; color: var(--accent); }
+
+    .cv-wrapper__label-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 6px #22c55e;
+      margin-left: auto;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.4; }
+    }
+
+    .cv-frame {
+    width: 794px;
+    border: none;
+    display: block;
+    background: #fff;
+    transform-origin: top left;
+    /* transform i height ustawiane przez JS */
+    }
+
+
+    /* ══════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════ */
+    .share-footer {
+      width: 100%;
+      max-width: 794px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding: 20px 28px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+    }
+
+    .share-footer__left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .share-footer__left i { width: 16px; height: 16px; color: var(--accent); }
+
+    .share-footer__left strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .share-footer__right {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-copy {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 600;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-copy:hover {
+      background: rgba(255,255,255,0.09);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .btn-copy i { width: 13px; height: 13px; }
+
+    /* ══════════════════════════════════════
+       TOAST
+    ══════════════════════════════════════ */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px;
+      border-radius: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 500;
+      font-family: var(--font);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      pointer-events: none;
+    }
+
+    .toast.toast--visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast i { width: 15px; height: 15px; color: var(--accent); }
+
+    /* ══════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════ */
+    @media (max-width: 640px) {
+      .topbar { padding: 0 16px; }
+      .topbar__views { display: none; }
+      .hero { padding: 32px 24px; }
+      .page-wrap { padding: 88px 12px 60px; gap: 20px; }
+      .share-footer { flex-direction: column; align-items: flex-start; }
+    }
+
+    @media (max-width: 860px) {
+    .hero, .cv-wrapper, .share-footer {
+        max-width: 100%;
+        border-radius: 16px;
+    }
+
+    .hero {
+        padding: 28px 20px;
+    }
+
+    .hero__name {
+        font-size: clamp(22px, 6vw, 36px);
+    }
+
+    .page-wrap {
+        padding: 80px 12px 60px;
+        gap: 16px;
+    }
+    }
+
+    @media (max-width: 480px) {
+    .topbar {
+        padding: 0 12px;
+    }
+
+    .hero__badge {
+        font-size: 10px;
+    }
+
+    .share-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 16px;
+    }
+
+    .share-footer__right {
+        width: 100%;
+    }
+
+    .share-footer__right .btn-copy,
+    .share-footer__right .btn-download {
+        flex: 1;
+        justify-content: center;
+    }
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- Tło — animowane orby -->
+<div class="bg-orbs">
+  <div class="bg-orb bg-orb--1"></div>
+  <div class="bg-orb bg-orb--2"></div>
+  <div class="bg-orb bg-orb--3"></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TOPBAR
+══════════════════════════════════════ -->
+<header class="topbar">
+  <a href="/" class="topbar__brand">
+    <div class="topbar__brand-dot"></div>
+    Resumo
+  </a>
+
+  <div class="topbar__actions">
+    <div class="topbar__views">
+      <i data-lucide="eye"></i>
+      {{ cv.view_count }} wyświetleń
+    </div>
+    <a href="{% url 'dashboard:download_pdf' cv.id %}" class="btn-download">
+      <i data-lucide="download"></i>
+      Pobierz PDF
+    </a>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════
+     MAIN
+══════════════════════════════════════ -->
+<main class="page-wrap">
+
+  <!-- ── HERO ── -->
+  <div class="hero">
+    <div class="hero__glow"></div>
+
+    <div class="hero__badge">
+      <i data-lucide="file-text"></i>
+      Curriculum Vitae
+    </div>
+
+    <h1 class="hero__name">
+      {% with fn=cv.content.personal.first_name ln=cv.content.personal.last_name %}
+        {% if fn or ln %}
+          {{ fn }} <span>{{ ln }}</span>
+        {% else %}
+          <span style="opacity:0.3">Anonimowy użytkownik</span>
+        {% endif %}
+      {% endwith %}
+    </h1>
+
+    {% if cv.content.personal.position %}
+      <p class="hero__position">{{ cv.content.personal.position }}</p>
+    {% endif %}
+
+    <div class="hero__meta">
+      {% if cv.content.personal.email %}
+        <div class="hero__meta-item">
+          <i data-lucide="mail"></i>
+          {{ cv.content.personal.email }}
+        </div>
+      {% endif %}
+      {% if cv.content.personal.phone %}
+        <div class="hero__meta-item">
+          <i data-lucide="phone"></i>
+          {{ cv.content.personal.phone }}
+        </div>
+      {% endif %}
+      {% if cv.content.personal.city %}
+        <div class="hero__meta-item">
+          <i data-lucide="map-pin"></i>
+          {{ cv.content.personal.city }}
+        </div>
+      {% endif %}
+      <div class="hero__meta-item">
+        <i data-lucide="clock"></i>
+        Zaktualizowano {{ cv.updated_at|date:"d.m.Y" }}
+      </div>
+    </div>
+  </div>
+
+    <!-- ── CV DOCUMENT ── -->
+    <div class="cv-wrapper">
+    <div class="cv-wrapper__label">
+        <i data-lucide="layout-template"></i>
+        Szablon: {{ cv.get_template_display }}
+        <div class="cv-wrapper__label-dot"></div>
+    </div>
+
+    <!-- DODAJ ten wrapper -->
+    <div class="cv-frame-outer" id="cvFrameOuter">
+        <iframe
+        class="cv-frame"
+        id="cvFrame"
+        srcdoc=""
+        scrolling="no"
+        title="Podgląd CV"
+        ></iframe>
+    </div>
+    </div>
+
+  <!-- ── FOOTER ── -->
+  <div class="share-footer">
+    <div class="share-footer__left">
+      <i data-lucide="share-2"></i>
+      <span>Udostępnione przez <strong>{{ cv.user.get_full_name|default:cv.user.username }}</strong> · Resumo</span>
+    </div>
+    <div class="share-footer__right">
+      <button class="btn-copy" onclick="copyLink()">
+        <i data-lucide="copy"></i>
+        Kopiuj link
+      </button>
+      <a href="{% url 'dashboard:download_pdf' cv.id %}" class="btn-download">
+        <i data-lucide="download"></i>
+        Pobierz PDF
+      </a>
+    </div>
+  </div>
+
+</main>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <i data-lucide="check-circle" id="toastIcon"></i>
+  <span id="toastMsg">Link skopiowany!</span>
+</div>
+
+<!-- CV HTML — surowy, bez escape -->
+<template id="cvHtmlData">{{ cv_html }}</template>
+
+<script>
+'use strict';
+
+// ══════════════════════════════════════════════════════════
+// SKALOWANIE IFRAME
+// ══════════════════════════════════════════════════════════
+
+function scaleCvFrame() {
+  const outer = document.getElementById('cvFrameOuter');
+  const frame = document.getElementById('cvFrame');
+  if (!outer || !frame) return;
+
+  const CV_WIDTH  = 794;
+  const available = outer.getBoundingClientRect().width;
+  if (available === 0) return; // jeszcze nie wyrenderowany
+
+  const scale = Math.min(1, available / CV_WIDTH);
+
+  frame.style.transform = `scale(${scale})`;
+  frame.style.width     = CV_WIDTH + 'px';
+
+  const frameHeight     = parseFloat(frame.style.height) || 1123;
+  outer.style.height    = Math.ceil(frameHeight * scale) + 'px';
+}
+
+// ══════════════════════════════════════════════════════════
+// WSTRZYKIWANIE CV DO IFRAME
+// ══════════════════════════════════════════════════════════
+
+function injectCvIntoFrame() {
+  const frame = document.getElementById('cvFrame');
+  const tmpl  = document.getElementById('cvHtmlData');
+  if (!frame || !tmpl) return;
+
+  frame.srcdoc = `<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 0; background: #fff; overflow-x: hidden; }
+  </style>
+</head>
+<body>${tmpl.innerHTML}</body>
+</html>`;
+
+  frame.addEventListener('load', () => {
+    try {
+      const h = frame.contentDocument.documentElement.scrollHeight
+             || frame.contentDocument.body.scrollHeight;
+      frame.style.height = Math.max(h || 900, 900) + 'px';
+    } catch {
+      frame.style.height = '1123px';
+    }
+    scaleCvFrame();
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+// KOPIOWANIE LINKU
+// ══════════════════════════════════════════════════════════
+
+async function copyLink() {
+  try {
+    await navigator.clipboard.writeText(window.location.href);
+    showToast('Link skopiowany do schowka!', 'check-circle');
+  } catch {
+    showToast('Nie udało się skopiować linku.', 'alert-circle');
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════════════════
+
+function showToast(message, icon = 'check-circle') {
+  const toast  = document.getElementById('toast');
+  const msgEl  = document.getElementById('toastMsg');
+  const iconEl = document.getElementById('toastIcon');
+
+  msgEl.textContent = message;
+  iconEl.setAttribute('data-lucide', icon);
+  if (window.lucide) lucide.createIcons({ nodes: [iconEl] });
+
+  toast.classList.add('toast--visible');
+  setTimeout(() => toast.classList.remove('toast--visible'), 3000);
+}
+
+// ══════════════════════════════════════════════════════════
+// INIT — jeden DOMContentLoaded
+// ══════════════════════════════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (window.lucide) lucide.createIcons();
+
+  injectCvIntoFrame();
+
+  // ResizeObserver na outerze
+  const outer = document.getElementById('cvFrameOuter');
+  if (outer && window.ResizeObserver) {
+    new ResizeObserver(() => scaleCvFrame()).observe(outer);
+  }
+
+  window.addEventListener('resize', scaleCvFrame);
+});
+</script>
+
+
+</body>
+</html>

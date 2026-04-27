@@ -1953,12 +1953,14 @@ function renderPreviewClassic(data, fullName, d) {
   // DWIE KOLUMNY
   // ══════════════════════════════════════
   return `
-    <div style="font-family:'${font}',sans-serif;">
+    <div style="font-family:'${font}',sans-serif;display:flex;flex-direction:column;min-height:1123px;">
       ${headerHtml}
-      <div style="display:flex;min-height:900px;">
+      <div style="display:flex;flex:1;min-height:0;">
 
         <!-- Lewa kolumna (sidebar) -->
-        <div style="width:240px;flex-shrink:0;background:#f8f7ff;padding:24px 20px 24px 20px;border-right:1px solid #ede9fe;box-sizing:border-box;">
+        <div style="width:240px;flex-shrink:0;background:#f8f7ff;
+                    padding:24px 20px;border-right:1px solid #ede9fe;
+                    box-sizing:border-box;align-self:stretch;">
           ${summaryHtml}
           ${skillsHtml}
           ${langsHtml}
@@ -1966,7 +1968,7 @@ function renderPreviewClassic(data, fullName, d) {
         </div>
 
         <!-- Prawa kolumna (główna) -->
-        <div style="flex:1;padding:24px 28px;">
+        <div style="flex:1;padding:24px 28px;min-width:0;">
           ${expHtml}
           ${eduHtml}
         </div>
@@ -1984,13 +1986,19 @@ function renderPreviewMinimal(data, fullName, d) {
   const font    = (d && d.font)           || 'Inter';
   const hSize   = ({ S: '20px', M: '26px', L: '32px' }[(d && d.heading_size)]) || '26px';
   const bold    = (d && d.bold_name)      ? '800' : '400';
-  const italic  = (d && d.italic_summary) ? 'italic' : 'normal';
   const divider = d && d.show_dividers;
+  const isDouble = d && d.layout === 'double';
 
   const p = data.personal || {};
-  let html = `
-    <div style="padding:40px 40px 20px;${divider ? `border-bottom:3px solid ${accent};` : ''}font-family:'${font}',sans-serif;">
-      <h1 style="margin:0;font-size:${hSize};font-weight:${bold};color:#111;letter-spacing:-0.5px;">${escHtml(fullName) || '<span style="color:#ccc;">Imię Nazwisko</span>'}</h1>
+
+  // ── Nagłówek ──
+  const headerHtml = `
+    <div style="padding:36px 40px 20px;
+                ${divider ? `border-bottom:3px solid ${accent};` : ''}
+                font-family:'${font}',sans-serif;">
+      <h1 style="margin:0;font-size:${hSize};font-weight:${bold};color:#111;letter-spacing:-0.5px;">
+        ${escHtml(fullName) || '<span style="color:#ccc;">Imię Nazwisko</span>'}
+      </h1>
       ${p.position ? `<p style="margin:5px 0 0;font-size:14px;color:${accent};font-weight:500;">${escHtml(p.position)}</p>` : ''}
       <div style="display:flex;gap:14px;margin-top:10px;font-size:11px;color:#666;flex-wrap:wrap;">
         ${p.email ? `<span>${escHtml(p.email)}</span>` : ''}
@@ -1998,77 +2006,180 @@ function renderPreviewMinimal(data, fullName, d) {
         ${p.city  ? `<span>${escHtml(p.city)}</span>`  : ''}
       </div>
     </div>
-    <div style="padding:24px 40px;font-size:13px;line-height:1.7;color:#333;font-family:'${font}',sans-serif;">
   `;
 
-  if (data.summary) {
-    html += `
-      <div style="margin-bottom:22px;">
-        <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:${accent};margin-bottom:8px;">O mnie</h2>
-        <p style="margin:0;color:#444;font-style:normal;">${escHtml(data.summary)}</p>
+  // ── Sekcja helper ──
+  function section(title, content, light = true) {
+    const color = light ? accent : '#fff';
+    const border = light ? accent : 'rgba(255,255,255,0.2)';
+    return `
+      <div style="margin-bottom:20px;">
+        <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;
+                   color:${color};margin-bottom:8px;
+                   ${divider ? `padding-bottom:5px;border-bottom:2px solid ${border};` : ''}">
+          ${title}
+        </h2>
+        ${content}
       </div>
     `;
   }
 
-  if (data.experience && data.experience.length > 0) {
-    html += `<h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:${accent};margin-bottom:10px;">Doświadczenie</h2>`;
+  // ── Bloki treści ──
+  const summaryBlock = data.summary ? section('O mnie',
+    `<p style="margin:0;color:#444;font-size:12px;line-height:1.7;">${escHtml(data.summary)}</p>`
+  ) : '';
+
+  const skillsBlock = (data.skills && data.skills.length > 0) ? section('Umiejętności',
+    `<div style="display:flex;flex-wrap:wrap;gap:5px;">
+      ${data.skills.map(s =>
+        `<span style=";color:${accent};border:1px solid ${accent}40;
+                      padding:2px 9px;border-radius:4px;font-size:11px;">${escHtml(s)}</span>`
+      ).join('')}
+    </div>`
+  ) : '';
+
+  const langsBlock = (data.languages && data.languages.some(l => l.name)) ? section('Języki',
+    `<div style="display:flex;flex-direction:column;gap:6px;">
+      ${data.languages.filter(l => l.name).map(l => `
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:12px;font-weight:600;color:#333;">${escHtml(l.name)}</span>
+          ${l.level ? `<span style="font-size:10px;color:#888;">${escHtml(l.level)}</span>` : ''}
+        </div>
+      `).join('')}
+    </div>`
+  ) : '';
+
+  const filledLinks = Object.entries(data.links || {}).filter(([, v]) => v.trim());
+  const linksBlock = filledLinks.length > 0 ? section('Linki',
+    `<div style="display:flex;flex-direction:column;gap:4px;">
+      ${filledLinks.map(([key, val]) =>
+        `<span style="font-size:11px;color:${accent};word-break:break-all;">
+          ${key.charAt(0).toUpperCase() + key.slice(1)}: ${escHtml(val)}
+        </span>`
+      ).join('')}
+    </div>`
+  ) : '';
+
+  let expBlock = '';
+  if (data.experience && data.experience.some(e => e.company || e.position)) {
+    let items = '';
     data.experience.forEach(exp => {
       if (!exp.company && !exp.position) return;
-      html += `
-        <div style="margin-bottom:14px;padding-left:12px;${divider ? `border-left:2px solid ${accent};` : ''}">
-          <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:4px;">
-            <strong style="font-size:13px;">${escHtml(exp.position)}</strong>
+      items += `
+        <div style="margin-bottom:14px;padding-left:12px;
+                    ${divider ? `border-left:2px solid ${accent};` : ''}">
+          <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;">
+            <strong style="font-size:13px;color:#111;">${escHtml(exp.position)}</strong>
             <span style="font-size:11px;color:#999;">${escHtml(exp.start_date)}${exp.end_date || exp.current ? ' — ' + (exp.current ? 'obecnie' : escHtml(exp.end_date)) : ''}</span>
           </div>
-          <div style="font-size:12px;color:#555;margin:2px 0;">${escHtml(exp.company)}</div>
+          <div style="font-size:12px;color:${accent};margin:2px 0;">${escHtml(exp.company)}</div>
           ${exp.description ? `<p style="margin:4px 0 0;color:#666;font-size:12px;">${escHtml(exp.description)}</p>` : ''}
         </div>
       `;
     });
+    expBlock = section('Doświadczenie', items);
   }
 
-  if (data.education && data.education.length > 0) {
-    html += `<h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:${accent};margin:20px 0 10px;">Wykształcenie</h2>`;
+  let eduBlock = '';
+  if (data.education && data.education.some(e => e.school)) {
+    let items = '';
     data.education.forEach(edu => {
       if (!edu.school) return;
-      html += `
-        <div style="margin-bottom:12px;padding-left:12px;${divider ? `border-left:2px solid ${accent};` : ''}">
-          <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:4px;">
-            <strong style="font-size:13px;">${escHtml(edu.school)}</strong>
+      items += `
+        <div style="margin-bottom:12px;padding-left:12px;
+                    ${divider ? `border-left:2px solid ${accent};` : ''}">
+          <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;">
+            <strong style="font-size:13px;color:#111;">${escHtml(edu.school)}</strong>
             <span style="font-size:11px;color:#999;">${escHtml(edu.start_date)}${edu.end_date ? ' — ' + escHtml(edu.end_date) : ''}</span>
           </div>
-          <div style="font-size:12px;color:#555;">${[edu.degree, edu.field].filter(Boolean).map(escHtml).join(', ')}</div>
+          <div style="font-size:12px;color:${accent};">${[edu.degree, edu.field].filter(Boolean).map(escHtml).join(' · ')}</div>
         </div>
       `;
     });
+    eduBlock = section('Wykształcenie', items);
   }
 
-  if (data.skills && data.skills.length > 0) {
-    html += `
-      <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:${accent};margin:20px 0 10px;">Umiejętności</h2>
-      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px;">
-        ${data.skills.map(s => `<span style="background:#f0fdf4;color:${accent};border:1px solid ${accent}40;padding:2px 9px;border-radius:4px;font-size:11px;">${escHtml(s)}</span>`).join('')}
+  // ══ JEDNA KOLUMNA ══
+  if (!isDouble) {
+    return `
+      <div style="font-family:'${font}',sans-serif;">
+        ${headerHtml}
+        <div style="padding:24px 40px;font-size:13px;line-height:1.7;color:#333;">
+          ${summaryBlock}
+          ${expBlock}
+          ${eduBlock}
+          ${skillsBlock}
+          ${langsBlock}
+          ${linksBlock}
+        </div>
       </div>
     `;
   }
 
-  if (data.languages && data.languages.length > 0) {
-    html += `
-      <h2 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:${accent};margin:20px 0 10px;">Języki</h2>
-      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
-        ${data.languages.filter(l => l.name).map(l => `
-          <span style="font-size:12px;color:#333;"><strong>${escHtml(l.name)}</strong>${l.level ? ` <span style="color:#999;">${escHtml(l.level)}</span>` : ''}</span>
-        `).join('')}
-      </div>
-    `;
-  }
+  // ══ DWIE KOLUMNY ══
+  return `
+    <div style="font-family:'${font}',sans-serif;display:flex;flex-direction:column;min-height:1123px;">
+      ${headerHtml}
+      <div style="display:flex;flex:1;min-height:0;">
 
-  html += `</div>`;
-  return html;
+        <!-- Sidebar -->
+        <div style="width:220px;flex-shrink:0;
+                    padding:24px 18px;border-right:2px solid ${accent}30;
+                    box-sizing:border-box;align-self:stretch;">
+          ${summaryBlock}
+          ${skillsBlock}
+          ${langsBlock}
+          ${linksBlock}
+        </div>
+
+        <!-- Główna kolumna -->
+        <div style="flex:1;padding:24px 28px;min-width:0;">
+          ${expBlock}
+          ${eduBlock}
+        </div>
+
+      </div>
+    </div>
+  `;
+}
+
+// ══════════════════════════════════════════════════════════
+// POMOCNIK KOLORÓW — ciemny odcień z hex
+// ══════════════════════════════════════════════════════════
+
+function hexToRgb(hex) {
+  const h = hex.replace('#', '');
+  const full = h.length === 3
+    ? h.split('').map(c => c + c).join('')
+    : h;
+  return {
+    r: parseInt(full.slice(0,2), 16),
+    g: parseInt(full.slice(2,4), 16),
+    b: parseInt(full.slice(4,6), 16),
+  };
+}
+
+function darkenColor(hex, factor) {
+  // factor: 0.0 = czarny, 1.0 = oryginalny kolor
+  const { r, g, b } = hexToRgb(hex);
+  const rd = Math.round(r * factor);
+  const gd = Math.round(g * factor);
+  const bd = Math.round(b * factor);
+  return `rgb(${rd},${gd},${bd})`;
+}
+
+function mixWithDark(hex, darkFactor, darkBase) {
+  // Miesza kolor z ciemnym bazowym (np. #1a1a2e)
+  // darkFactor: 0 = tylko darkBase, 1 = tylko hex
+  const { r, g, b } = hexToRgb(hex);
+  const { r: dr, g: dg, b: db } = hexToRgb(darkBase);
+  return `rgb(${
+    Math.round(dr + (r - dr) * darkFactor)},${
+    Math.round(dg + (g - dg) * darkFactor)},${
+    Math.round(db + (b - db) * darkFactor)})`;
 }
 
 
-// ── Podgląd: Nowoczesny (dwukolumnowy) ──
 // ── Podgląd: Nowoczesny ──
 function renderPreviewModern(data, fullName, d) {
   const accent   = (d && d.accent_color) || '#6C63FF';
@@ -2080,11 +2191,17 @@ function renderPreviewModern(data, fullName, d) {
 
   const p = data.personal || {};
 
+  // ── Oblicz ciemne odcienie z accent ──
+  const darkBase    = darkenColor(accent, 0.18);   // bardzo ciemny — lewa strona gradientu
+  const darkMid     = darkenColor(accent, 0.25);   // sidebar góra
+  const darkDeep    = darkenColor(accent, 0.15);   // sidebar dół
+
   // ── Ciemny nagłówek z gradientem ──
   const headerHtml = `
-    <div style="background:linear-gradient(135deg,#1a1a2e 0%,${accent} 100%);
-                padding:36px 40px;color:#fff;font-family:'${font}',sans-serif;
-                position:relative;overflow:hidden;">
+    <div style="background:linear-gradient(135deg,${darkBase} 0%,${accent} 100%);
+                padding:24px 40px;color:#fff;font-family:'${font}',sans-serif;
+                position:relative;overflow:hidden;
+                display:flex;flex-direction:column;justify-content:center;">
       <div style="position:absolute;top:-40px;right:-40px;width:180px;height:180px;
                   border-radius:50%;background:rgba(255,255,255,0.05);"></div>
       <div style="position:absolute;bottom:-20px;right:60px;width:100px;height:100px;
@@ -2094,22 +2211,22 @@ function renderPreviewModern(data, fullName, d) {
         ${escHtml(fullName) || '<span style="opacity:0.4">Imię Nazwisko</span>'}
       </h1>
       ${p.position ? `
-        <p style="margin:6px 0 0;font-size:13px;font-weight:500;opacity:0.75;
+        <p style="margin:4px 0 0;font-size:13px;font-weight:500;opacity:0.75;
                   text-transform:uppercase;letter-spacing:2px;position:relative;z-index:1;">
           ${escHtml(p.position)}
         </p>` : ''}
-      <div style="display:flex;gap:16px;margin-top:16px;font-size:11px;
+      <div style="display:flex;gap:16px;margin-top:10px;font-size:11px;
                   opacity:0.7;flex-wrap:wrap;position:relative;z-index:1;">
-        ${p.email    ? `<span>${escHtml(p.email)}</span>`    : ''}
-        ${p.phone    ? `<span>${escHtml(p.phone)}</span>`    : ''}
-        ${p.city     ? `<span>${escHtml(p.city)}</span>`     : ''}
+        ${p.email ? `<span>✉ ${escHtml(p.email)}</span>` : ''}
+        ${p.phone ? `<span>✆ ${escHtml(p.phone)}</span>` : ''}
+        ${p.city  ? `<span>⌖ ${escHtml(p.city)}</span>`  : ''}
       </div>
     </div>
   `;
 
   // ── Helper sekcji ──
   function section(title, content, light) {
-    const titleColor = light ? accent : '#fff';
+    const titleColor  = light ? accent : '#fff';
     const borderColor = light ? accent : 'rgba(255,255,255,0.2)';
     return `
       <div style="margin-bottom:22px;">
@@ -2124,7 +2241,7 @@ function renderPreviewModern(data, fullName, d) {
     `;
   }
 
-  // ── Sekcje ──
+  // ── Sekcje sidebar ──
   let summaryHtml = '';
   if (data.summary) {
     summaryHtml = section('O mnie',
@@ -2154,8 +2271,13 @@ function renderPreviewModern(data, fullName, d) {
         ${data.languages.filter(l => l.name).map(l => `
           <div style="display:flex;justify-content:space-between;align-items:center;">
             <span style="font-size:12px;font-weight:600;">${escHtml(l.name)}</span>
-            ${l.level ? `<span style="font-size:10px;background:rgba(255,255,255,0.15);
-                                      padding:1px 7px;border-radius:99px;">${escHtml(l.level)}</span>` : ''}
+            ${l.level
+              ? `<span style="font-size:10px;color:rgba(255,255,255,0.7);
+                              padding:1px 7px;border-radius:4px;
+                              border:1px solid rgba(255,255,255,0.25);">
+                  ${escHtml(l.level)}
+                </span>`
+              : ''}
           </div>
         `).join('')}
       </div>`
@@ -2168,15 +2290,15 @@ function renderPreviewModern(data, fullName, d) {
     linksHtml = section('Linki',
       `<div style="display:flex;flex-direction:column;gap:5px;">
         ${filledLinks.map(([key, val]) =>
-          `<a href="${escHtml(val)}" style="font-size:11px;color:rgba(255,255,255,0.7);
-                                            text-decoration:none;word-break:break-all;">
+          `<span style="font-size:11px;color:rgba(255,255,255,0.7);word-break:break-all;">
             ${key.charAt(0).toUpperCase() + key.slice(1)}: ${escHtml(val)}
-          </a>`
+          </span>`
         ).join('')}
       </div>`
     );
   }
 
+  // ── Sekcje główne ──
   let expHtml = '';
   if (data.experience && data.experience.some(e => e.company || e.position)) {
     let items = '';
@@ -2291,12 +2413,12 @@ function renderPreviewModern(data, fullName, d) {
   return `
     <div style="font-family:'${font}',sans-serif;display:flex;flex-direction:column;min-height:1123px;">
       ${headerHtml}
-      <div style="display:flex;flex:1;">
+      <div style="display:flex;flex:1;min-height:0;">
 
-        <!-- Ciemny sidebar -->
+        <!-- Ciemny sidebar — odcień accent -->
         <div style="width:230px;flex-shrink:0;
-                    background:linear-gradient(180deg,#1a1a2e 0%,#16213e 100%);
-                    padding:28px 20px;color:#fff;box-sizing:border-box;">
+                    background:linear-gradient(180deg,${darkMid} 0%,${darkDeep} 100%);
+                    padding:28px 20px;color:#fff;box-sizing:border-box;align-self:stretch;">
           ${summaryHtml}
           ${skillsHtml}
           ${langsHtml}
@@ -2313,6 +2435,7 @@ function renderPreviewModern(data, fullName, d) {
     </div>
   `;
 }
+
 
 // ── Aktualizacja podglądu z debounce ──
 function schedulePreviewUpdate() {

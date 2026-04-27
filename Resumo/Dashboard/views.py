@@ -13,6 +13,7 @@ from django.conf import settings
 from django.db.models import F
 from django.contrib import messages
 from django.views.decorators.http import require_POST
+from django.urls import reverse
 
 
 # ──────────────────────────────────────────────
@@ -275,3 +276,61 @@ def delete_cv(request, cv_id):
 
     messages.success(request, f'CV „{title}" zostało usunięte.')
     return redirect('dashboard:dashboard')
+
+
+# ──────────────────────────────────────────────
+# WIDOK — Toggle udostępniania CV
+# ──────────────────────────────────────────────
+
+@login_required
+@require_POST
+def toggle_share(request, cv_id):
+    cv = get_object_or_404(CV, id=cv_id, user=request.user)
+
+    cv.is_shared = not cv.is_shared
+    cv.save(update_fields=['is_shared'])
+
+    share_url = request.build_absolute_uri(
+        reverse('dashboard:share_cv', kwargs={'token': cv.share_token})
+    )
+
+    return JsonResponse({
+        'is_shared': cv.is_shared,
+        'share_url': share_url,
+    })
+
+
+# ──────────────────────────────────────────────
+# WIDOK — Publiczny podgląd CV (bez logowania)
+# ──────────────────────────────────────────────
+
+def share_cv(request, token):
+    cv = get_object_or_404(CV, share_token=token)
+
+    if not cv.is_shared:
+        raise Http404("To CV nie jest udostępnione.")
+
+    CV.objects.filter(pk=cv.pk).update(view_count=F('view_count') + 1)
+    cv.refresh_from_db()
+
+    from .models import DEFAULT_DESIGN
+    merged_design = {**DEFAULT_DESIGN, **(cv.design or {})}
+    cv.design = merged_design
+
+    template_map = {
+        'classic': 'dashboard/pdf/cv-classic.html',
+        'modern':  'dashboard/pdf/cv-modern.html',
+        'minimal': 'dashboard/pdf/cv-minimal.html',
+    }
+    template_name = template_map.get(cv.template, 'dashboard/pdf/cv-classic.html')
+
+    cv_html = render_to_string(template_name, {
+        'cv':        cv,
+        'content':   cv.content or {},
+        'is_public': True,
+    }, request=request)
+
+    return render(request, 'dashboard/cv-share.html', {
+        'cv':      cv,
+        'cv_html': cv_html,   # ← czysty string, BEZ json.dumps
+    })

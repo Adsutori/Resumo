@@ -181,6 +181,19 @@
         <a href="{% url 'dashboard:edit_cv' cv.id %}" class="btn btn--accent btn--sm">
           <i data-lucide="pencil"></i> Edytuj
         </a>
+
+        <button
+          class="btn btn--ghost btn--sm share-btn"
+          id="share-btn-{{ cv.id }}"
+          onclick="toggleShare({{ cv.id }}, '{{ cv.share_token }}', {{ cv.is_shared|yesno:'true,false' }})"
+          title="{{ cv.is_shared|yesno:'Wyłącz udostępnianie,Udostępnij CV' }}"
+        >
+          <i data-lucide="{{ cv.is_shared|yesno:'link-2,share-2' }}" id="share-icon-{{ cv.id }}"></i>
+          <span id="share-label-{{ cv.id }}">
+            {{ cv.is_shared|yesno:'Udostępnione,Udostępnij' }}
+          </span>
+        </button>
+
         <a href="{% url 'dashboard:download_pdf' cv.id %}" class="btn btn--ghost btn--sm">
           <i data-lucide="download"></i> PDF
         </a>
@@ -1200,6 +1213,163 @@
       setTimeout(() => msg.remove(), 400);
     }, 5000);
   });
+
+  'use strict';
+
+  // ══════════════════════════════════════════════════════════
+  // TOAST NOTIFICATION
+  // ══════════════════════════════════════════════════════════
+
+  function showToast(message, type = 'success') {
+    // Usuń poprzedni toast jeśli istnieje
+    const existing = document.getElementById('cv-toast');
+    if (existing) existing.remove();
+
+    const icons = {
+      success: 'check-circle',
+      error:   'alert-circle',
+      info:    'info',
+    };
+
+    const toast = document.createElement('div');
+    toast.id = 'cv-toast';
+    toast.innerHTML = `
+      <i data-lucide="${icons[type] || 'info'}" style="width:16px;height:16px;flex-shrink:0;"></i>
+      <span>${message}</span>
+    `;
+
+    Object.assign(toast.style, {
+      position:       'fixed',
+      bottom:         '28px',
+      right:          '28px',
+      zIndex:         '9999',
+      display:        'flex',
+      alignItems:     'center',
+      gap:            '10px',
+      padding:        '12px 20px',
+      borderRadius:   '12px',
+      background:     'var(--color-surface)',
+      border:         '1px solid var(--color-border)',
+      color:          'var(--color-text)',
+      fontSize:       '13px',
+      fontWeight:     '500',
+      boxShadow:      '0 8px 32px rgba(0,0,0,0.35)',
+      opacity:        '0',
+      transform:      'translateY(12px)',
+      transition:     'opacity 0.25s ease, transform 0.25s ease',
+      maxWidth:       '360px',
+      fontFamily:     'inherit',
+    });
+
+    // Kolorowy lewy border zależnie od typu
+    const borderColors = {
+      success: 'var(--color-accent)',
+      error:   '#ef4444',
+      info:    '#0ea5e9',
+    };
+    toast.style.borderLeft = `3px solid ${borderColors[type] || 'var(--color-accent)'}`;
+
+    document.body.appendChild(toast);
+
+    // Inicjalizuj ikonę Lucide
+    if (window.lucide) lucide.createIcons({ nodes: [toast] });
+
+    // Animacja wejścia
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        toast.style.opacity   = '1';
+        toast.style.transform = 'translateY(0)';
+      });
+    });
+
+    // Animacja wyjścia po 3s
+    setTimeout(() => {
+      toast.style.opacity   = '0';
+      toast.style.transform = 'translateY(12px)';
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  }
+
+
+  // ══════════════════════════════════════════════════════════
+  // TOGGLE SHARE
+  // ══════════════════════════════════════════════════════════
+
+  async function toggleShare(cvId, token, currentIsShared) {
+    const btn   = document.getElementById(`share-btn-${cvId}`);
+    const icon  = document.getElementById(`share-icon-${cvId}`);
+    const label = document.getElementById(`share-label-${cvId}`);
+
+    // Zablokuj przycisk na czas żądania
+    if (btn) btn.disabled = true;
+
+    try {
+      const response = await fetch(`/dashboard/cv/${cvId}/toggle-share/`, {
+        method:  'POST',
+        headers: {
+          'X-CSRFToken': getCsrfToken(),
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+      const data = await response.json();
+
+      // ── Aktualizuj przycisk ──
+      if (icon) {
+        icon.setAttribute('data-lucide', data.is_shared ? 'link-2' : 'share-2');
+        if (window.lucide) lucide.createIcons({ nodes: [icon] });
+      }
+      if (label) {
+        label.textContent = data.is_shared ? 'Udostępnione' : 'Udostępnij';
+      }
+      if (btn) {
+        btn.title = data.is_shared ? 'Wyłącz udostępnianie' : 'Udostępnij CV';
+        // Aktualizuj onclick z nowym stanem
+        btn.setAttribute('onclick',
+          `toggleShare(${cvId}, '${token}', ${data.is_shared})`
+        );
+      }
+
+      // ── Toast + clipboard ──
+      if (data.is_shared) {
+        try {
+          await navigator.clipboard.writeText(data.share_url);
+          showToast('Link skopiowany do schowka!', 'success');
+        } catch {
+          // Fallback jeśli clipboard API niedostępne (np. HTTP)
+          showToast(`Udostępniono! Link: ${data.share_url}`, 'info');
+        }
+      } else {
+        showToast('Udostępnianie wyłączone', 'info');
+      }
+
+    } catch (err) {
+      console.error('toggleShare error:', err);
+      showToast('Wystąpił błąd. Spróbuj ponownie.', 'error');
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  }
+
+
+  // ══════════════════════════════════════════════════════════
+  // HELPER — CSRF Token
+  // ══════════════════════════════════════════════════════════
+
+  function getCsrfToken() {
+    // Próbuj z meta taga, potem z cookie
+    const meta = document.querySelector('meta[name="csrf-token"]');
+    if (meta) return meta.getAttribute('content');
+
+    const cookies = document.cookie.split(';');
+    for (const cookie of cookies) {
+      const [name, value] = cookie.trim().split('=');
+      if (name === 'csrftoken') return decodeURIComponent(value);
+    }
+    return '';
+  }
 
 </script>
 {% endblock %}

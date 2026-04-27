@@ -1,6 +1,7 @@
 import uuid
 from django.db import models
 from django.conf import settings
+from django.urls import reverse
 
 
 # Na górze pliku, poza klasą
@@ -64,7 +65,7 @@ class CV(models.Model):
         return f"{self.title} ({self.user.username})"
 
     def get_share_url(self):
-        return f"/cv/share/{self.share_token}/"
+        return reverse('dashboard:share_cv', kwargs={'token': self.share_token})
 
     def calculate_progress(self):
         """Oblicza % wypełnienia na podstawie sekcji w content."""
