@@ -26,9 +26,9 @@ FIX:
 
 🔜 WKRÓTCE (placeholder na teraz)
 
-[ ] Analiza CV przez AI — badge "Wkrótce", docelowo integracja z OpenAI API
-[ ] Śledzenie aplikacji — tabela z aplikacjami o pracę (firma, stanowisko, status)
-[ ] Import z LinkedIn — wymaga LinkedIn API lub parsowania PDF eksportu
+[ ] Analiza CV przez AI — badge "Wkrótce", docelowo integracja z OpenAI API - dodać aplikację (nazwac jakos typu AI) i w niej dac template, gdzie bedzie napisane 'wkrotce' i moze tam dac jakies male demo jak to bedzie dzialac
+[ ] Śledzenie aplikacji — tabela z aplikacjami o pracę (firma, stanowisko, status) - dodać aplikację (nazwac jakos) i w niej dac template, gdzie bedzie napisane 'wkrotce' i moze tam dac jakies male demo jak to bedzie dzialac
+[ ] Import z LinkedIn — wymaga LinkedIn API lub parsowania PDF eksportu - dodać aplikację (nazwac jakos) i w niej dac template, gdzie bedzie napisane 'wkrotce' i moze tam dac jakies male demo jak to bedzie dzialac
 
 
 ✅ REGULAMIN I POLITYKA PRYWATNOŚCI
