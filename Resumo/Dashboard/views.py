@@ -96,15 +96,111 @@ def calculate_progress(content: dict) -> int:
 
 
 # ──────────────────────────────────────────────
+# HELPER — ukończenie profilu (0–100%)
+# ──────────────────────────────────────────────
+
+def _calculate_profile_completion(user, cvs):
+    """
+    Liczy % ukończenia profilu na podstawie:
+      - danych konta użytkownika (40%)
+      - najlepiej wypełnionego CV (60%)
+    """
+    score = 0
+
+    # ── Dane konta (max 40%) ──
+    account_fields = {
+        'first_name': 10,
+        'last_name':  10,
+        'email':      10,
+        'avatar':     10,
+    }
+    for field, weight in account_fields.items():
+        val = getattr(user, field, None)
+        if val:
+            score += weight
+
+    # ── Najlepiej wypełnione CV (max 60%) ──
+    if cvs:
+        best_cv_progress = max(cv.progress for cv in cvs)
+        score += round(best_cv_progress * 0.60)
+
+    return min(score, 100)
+
+
+# ──────────────────────────────────────────────
+# HELPER — dni aktywności
+# ──────────────────────────────────────────────
+
+def _calculate_activity_days(user):
+    """
+    Liczy dni aktywności jako:
+    - Ile unikalnych dni w ostatnich 30 dniach
+      user miał wyświetlenia swoich CV (proxy aktywności).
+    - Minimum 1 jeśli user jest zalogowany dziś.
+    """
+    from django.utils import timezone
+    from datetime import timedelta
+    from .models import CVView
+    from django.db.models.functions import TruncDate
+
+    thirty_days_ago = timezone.now() - timedelta(days=30)
+
+    # Unikalne dni z wyświetleń CV usera w ostatnich 30 dniach
+    unique_days = (
+        CVView.objects
+        .filter(
+            cv__user=user,
+            viewed_at__gte=thirty_days_ago,
+        )
+        .annotate(day=TruncDate('viewed_at'))
+        .values('day')
+        .distinct()
+        .count()
+    )
+
+    # Zawsze liczymy dzień rejestracji i dzień ostatniego logowania
+    base_days = set()
+    if user.created_at:
+        base_days.add(user.created_at.date())
+    if user.last_login:
+        base_days.add(user.last_login.date())
+
+    # Dzisiaj też liczymy (user jest teraz zalogowany)
+    base_days.add(timezone.now().date())
+
+    return max(unique_days, len(base_days))
+
+
+# ──────────────────────────────────────────────
 # WIDOK — Dashboard (lista CV)
 # ──────────────────────────────────────────────
 
 @login_required
 def dashboard(request):
+    from django.utils import timezone
+    from datetime import timedelta
+
     cvs = CV.objects.filter(user=request.user).order_by('-updated_at')
+
+    # ── Licznik pobrań PDF (suma wszystkich CV usera) ──
+    total_downloads = sum(cv.download_count for cv in cvs)
+
+    # ── Licznik wyświetleń (suma wszystkich CV usera) ──
+    total_views = sum(cv.view_count for cv in cvs)
+
+    # ── Ukończenie profilu ──
+    profile_completion = _calculate_profile_completion(request.user, cvs)
+
+    # ── Dni aktywności (ostatnie 30 dni z last_login) ──
+    activity_days = _calculate_activity_days(request.user)
+
     context = {
-        'cvs':       cvs,
-        'cvs_count': cvs.count(),
+        'cvs':                cvs,
+        'cvs_count':          cvs.count(),
+        'total_downloads':    total_downloads,
+        'total_views':        total_views,
+        'profile_completion': profile_completion,
+        'activity_days':      activity_days,
     }
     return render(request, 'dashboard/dashboard.html', context)
 
@@ -264,6 +360,8 @@ def download_pdf(request, cv_id):
         string=html,
         base_url=request.build_absolute_uri('/')
     ).write_pdf()
+
+    CV.objects.filter(pk=cv_id).update(download_count=F('download_count') + 1)
 
     safe_title = cv.title.replace(' ', '_').replace('/', '-')[:50]
     response = HttpResponse(pdf, content_type='application/pdf')

@@ -398,52 +398,67 @@
 ============================================================ -->
 <div class="stats-row" style="margin-top: 48px; margin-bottom: 40px;">
 
+  <!-- Pobrania PDF -->
   <div class="stat-card card">
     <div class="stat-card__icon" style="color: var(--color-accent); background: var(--color-accent-glow);">
       <i data-lucide="download"></i>
     </div>
     <div class="stat-card__body">
-      <span class="stat-card__value">12</span>
+      <span class="stat-card__value">{{ total_downloads }}</span>
       <span class="stat-card__label">Pobrań PDF</span>
     </div>
   </div>
 
+  <!-- Wyświetlenia -->
   <div class="stat-card card">
     <div class="stat-card__icon" style="color: #10b981; background: rgba(16,185,129,0.15);">
       <i data-lucide="eye"></i>
     </div>
     <div class="stat-card__body">
-      <span class="stat-card__value">48</span>
+      <span class="stat-card__value">{{ total_views }}</span>
       <span class="stat-card__label">Wyświetleń CV</span>
     </div>
   </div>
 
+  <!-- Ukończenie profilu -->
   <div class="stat-card stat-card--wide card">
     <div class="stat-card__icon" style="color: #f59e0b; background: rgba(245,158,11,0.15);">
       <i data-lucide="user-check"></i>
     </div>
     <div class="stat-card__body" style="flex: 1;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
         <span class="stat-card__label">Ukończenie profilu</span>
-        <span class="stat-card__value" style="font-size: 18px;">80%</span>
+        <span class="stat-card__value" style="font-size:18px;">{{ profile_completion }}%</span>
       </div>
       <div class="progress">
-        <div class="progress__fill progress__fill--warning" style="width: 80%;"></div>
+        <div class="progress__fill progress__fill--warning"
+             style="width: {{ profile_completion }}%;"></div>
       </div>
+      {% if profile_completion < 100 %}
+      <div style="margin-top:6px; font-size:11px; color:var(--color-text-muted);">
+        {% if not request.user.avatar %}
+          <span style="color:#f59e0b;">↑ Dodaj avatar +10%</span>
+        {% elif profile_completion < 60 %}
+          <span>Uzupełnij dane w CV aby zwiększyć wynik</span>
+        {% endif %}
+      </div>
+      {% endif %}
     </div>
   </div>
 
+  <!-- Dni aktywności -->
   <div class="stat-card card">
     <div class="stat-card__icon" style="color: #6C63FF; background: var(--color-accent-glow);">
       <i data-lucide="flame"></i>
     </div>
     <div class="stat-card__body">
-      <span class="stat-card__value">7</span>
+      <span class="stat-card__value">{{ activity_days }}</span>
       <span class="stat-card__label">Dni aktywności</span>
     </div>
   </div>
 
 </div>
+
 
 <!-- ============================================================
      STYLE SPECYFICZNE DLA DASHBOARDU
