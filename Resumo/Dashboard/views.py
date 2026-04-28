@@ -320,6 +320,7 @@ def share_dashboard(request):
 
     for cv in cvs:
         cv.views_week = cv.views.filter(viewed_at__gte=week_ago).count()
+        cv.share_url   = cv.get_share_url(request)
         total_views  += cv.view_count
         week_views   += cv.views_week
         if cv.is_share_active():

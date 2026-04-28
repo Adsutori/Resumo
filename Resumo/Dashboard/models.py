@@ -72,8 +72,13 @@ class CV(models.Model):
     def is_share_active(self):
         if not self.is_shared:
             return False
-        if self.share_expires and self.share_expires < timezone.now():
-            return False
+        if self.share_expires:
+            now = timezone.now()
+            expires = self.share_expires
+            if timezone.is_naive(expires):
+                expires = timezone.make_aware(expires)
+            if expires < now:
+                return False
         return True
 
 
