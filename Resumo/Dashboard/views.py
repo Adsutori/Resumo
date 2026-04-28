@@ -383,6 +383,7 @@ def download_pdf(request, cv_id):
         type='download',
         title=f'Pobrano CV „{cv.title}" jako PDF',
         message='Twoje CV zostało pobrane w formacie PDF.',
+        allow_duplicates=True,
     )
 
     return response
@@ -584,6 +585,7 @@ def share_cv(request, token):
         type='share',
         title=f'Ktoś wyświetlił Twoje CV „{cv.title}"',
         message='Twoje udostępnione CV właśnie odwiedził nowy użytkownik.',
+        allow_duplicates=True,
     )
 
     return render(request, 'dashboard/cv-share.html', {

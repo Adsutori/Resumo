@@ -1,3 +1,5 @@
+# notifications/views.py
+
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
@@ -6,10 +8,9 @@ from .models import Notification
 
 @login_required
 def notifications_list(request):
-    """Zwraca listę powiadomień jako JSON."""
     notifications = Notification.objects.filter(
         user=request.user
-    ).order_by('-created_at')[:20]
+    ).order_by('-created_at')[:30]
 
     unread_count = Notification.objects.filter(
         user=request.user,
@@ -38,22 +39,35 @@ def notifications_list(request):
 @login_required
 @require_POST
 def mark_all_read(request):
-    """Oznacza wszystkie powiadomienia usera jako przeczytane."""
     Notification.objects.filter(
         user=request.user,
         is_read=False,
     ).update(is_read=True)
-
     return JsonResponse({'status': 'ok'})
 
 
 @login_required
 @require_POST
 def mark_read(request, notification_id):
-    """Oznacza jedno powiadomienie jako przeczytane."""
     Notification.objects.filter(
         pk=notification_id,
         user=request.user,
     ).update(is_read=True)
+    return JsonResponse({'status': 'ok'})
 
+
+@login_required
+@require_POST
+def delete_notification(request, notification_id):
+    Notification.objects.filter(
+        pk=notification_id,
+        user=request.user,
+    ).delete()
+    return JsonResponse({'status': 'ok'})
+
+
+@login_required
+@require_POST
+def delete_all_notifications(request):
+    Notification.objects.filter(user=request.user).delete()
     return JsonResponse({'status': 'ok'})

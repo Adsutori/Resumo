@@ -845,6 +845,163 @@
     .notif-icon--download { background: rgba(108,99,255,0.15); color: var(--color-accent); }
     .notif-icon--info     { background: rgba(255,255,255,0.07); color: var(--color-text-muted); }
 
+    /* ── Przycisk usuń wszystkie ── */
+    .notif-panel__delete-all {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.2);
+      border-radius: var(--radius-sm);
+      color: #ef4444;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: background 0.15s;
+    }
+
+    .notif-panel__delete-all:hover {
+      background: rgba(239,68,68,0.18);
+    }
+
+    .notif-panel__delete-all i {
+      width: 12px;
+      height: 12px;
+    }
+
+    /* ── Akcje na powiadomieniu ── */
+    .notif-item__actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      opacity: 0;
+      transition: opacity 0.15s;
+      flex-shrink: 0;
+    }
+
+    .notif-item:hover .notif-item__actions {
+      opacity: 1;
+    }
+
+    .notif-item__action-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, color 0.15s;
+      color: var(--color-text-muted);
+    }
+
+    .notif-item__action-btn:hover {
+      background: var(--color-surface-3);
+      color: var(--color-text);
+    }
+
+    .notif-item__action-btn--delete:hover {
+      background: rgba(239,68,68,0.12);
+      color: #ef4444;
+    }
+
+    .notif-item__action-btn i {
+      width: 13px;
+      height: 13px;
+    }
+
+    /* ── Modal szczegółów ── */
+    .notif-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .notif-modal {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      width: 100%;
+      max-width: 420px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: var(--shadow-xl);
+      animation: notifIn 0.18s ease;
+    }
+
+    .notif-modal__header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .notif-modal__icon-wrap {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .notif-modal__icon-wrap i {
+      width: 20px;
+      height: 20px;
+    }
+
+    .notif-modal__close {
+      width: 30px;
+      height: 30px;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: var(--color-surface-2);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-muted);
+      transition: background 0.15s;
+    }
+
+    .notif-modal__close:hover { background: var(--color-surface-3); }
+    .notif-modal__close i { width: 15px; height: 15px; }
+
+    .notif-modal__title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-text);
+      line-height: 1.4;
+      margin: 0;
+    }
+
+    .notif-modal__msg {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .notif-modal__time {
+      font-size: 11px;
+      color: var(--color-text-muted);
+      opacity: 0.6;
+      margin: 0;
+    }
+
+    .notif-modal__footer {
+      display: flex;
+      justify-content: flex-end;
+    }
+
   </style>
 
   {% block extra_head %}{% endblock %}
@@ -1004,9 +1161,15 @@
         <div class="notif-panel" id="notifPanel" style="display:none;">
           <div class="notif-panel__header">
             <span class="notif-panel__title">Powiadomienia</span>
-            <button class="notif-panel__mark-all" onclick="markAllRead()">
-              Oznacz wszystkie
-            </button>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <button class="notif-panel__mark-all" onclick="markAllRead()" title="Oznacz wszystkie jako przeczytane">
+                Oznacz wszystkie
+              </button>
+              <button class="notif-panel__delete-all" onclick="deleteAllNotifications()" title="Usuń wszystkie">
+                <i data-lucide="trash-2"></i>
+                <abbr title="Usuń wszystkie" style="text-decoration:none; font-size:10px; font-weight:700;">USUŃ</abbr>
+              </button>
+            </div>
           </div>
           <div class="notif-panel__list" id="notifList">
             <div class="notif-panel__empty">
@@ -1017,6 +1180,29 @@
         </div>
       </div>
 
+      <!-- Modal szczegółów powiadomienia -->
+      <div class="notif-modal-overlay" id="notifModal" style="display:none;" onclick="closeNotifModal(event)">
+        <div class="notif-modal">
+          <div class="notif-modal__header">
+            <div class="notif-modal__icon-wrap" id="notifModalIcon">
+              <i data-lucide="bell"></i>
+            </div>
+            <button class="notif-modal__close" onclick="closeNotifModal()">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+          <div class="notif-modal__body">
+            <h3 class="notif-modal__title" id="notifModalTitle"></h3>
+            <p  class="notif-modal__msg"   id="notifModalMsg"></p>
+            <p  class="notif-modal__time"  id="notifModalTime"></p>
+          </div>
+          <div class="notif-modal__footer">
+            <button class="btn btn--ghost btn--sm" onclick="closeNotifModal()">
+              Zamknij
+            </button>
+          </div>
+        </div>
+      </div>
 
         {% comment %} <!-- Przycisk Nowe CV -->
         <a href="{% url 'dashboard:create_cv' %}" class="topbar__btn">
@@ -1081,6 +1267,17 @@
     ?.split('=')[1] || '';
 
   let notifPanelOpen = false;
+  let currentNotifId = null;
+
+  // Kolory ikon wg typu
+  const NOTIF_ICON_COLORS = {
+    welcome:  { bg: 'rgba(108,99,255,0.15)', color: 'var(--color-accent)' },
+    profile:  { bg: 'rgba(245,158,11,0.15)', color: '#f59e0b' },
+    feature:  { bg: 'rgba(16,185,129,0.15)', color: '#10b981' },
+    share:    { bg: 'rgba(99,179,237,0.15)', color: '#63b3ed' },
+    download: { bg: 'rgba(108,99,255,0.15)', color: 'var(--color-accent)' },
+    info:     { bg: 'rgba(255,255,255,0.07)', color: 'var(--color-text-muted)' },
+  };
 
   async function loadNotifications() {
     try {
@@ -1089,11 +1286,8 @@
 
       // Czerwona kropka
       const dot = document.getElementById('notifDot');
-      if (dot) {
-        dot.style.display = data.unread_count > 0 ? 'block' : 'none';
-      }
+      if (dot) dot.style.display = data.unread_count > 0 ? 'block' : 'none';
 
-      // Wypełnij listę
       const list = document.getElementById('notifList');
       if (!list) return;
 
@@ -1109,16 +1303,37 @@
 
       list.innerHTML = data.notifications.map(n => `
         <div class="notif-item ${n.is_read ? '' : 'notif-item--unread'}"
-            id="notif-${n.id}"
-            onclick="markRead(${n.id})">
-          <div class="notif-item__icon notif-icon--${n.type}">
+            id="notif-${n.id}">
+          <div class="notif-item__icon notif-icon--${n.type}"
+              onclick="openNotifModal(${n.id})"
+              style="cursor:pointer;">
             <i data-lucide="${n.icon}"></i>
           </div>
-          <div class="notif-item__body">
+          <div class="notif-item__body"
+              onclick="openNotifModal(${n.id})"
+              style="cursor:pointer;">
             <div class="notif-item__title">${n.title}</div>
             ${n.message ? `<div class="notif-item__msg">${n.message}</div>` : ''}
           </div>
-          <div class="notif-item__time">${n.created_at}</div>
+          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px; flex-shrink:0;">
+            <div class="notif-item__time">${n.created_at}</div>
+            <div class="notif-item__actions">
+              <button
+                class="notif-item__action-btn"
+                onclick="markReadSingle(event, ${n.id})"
+                title="Oznacz jako przeczytane"
+              >
+                <i data-lucide="check"></i>
+              </button>
+              <button
+                class="notif-item__action-btn notif-item__action-btn--delete"
+                onclick="deleteSingle(event, ${n.id})"
+                title="Usuń powiadomienie"
+              >
+                <i data-lucide="trash-2"></i>
+              </button>
+            </div>
+          </div>
         </div>
       `).join('');
 
@@ -1132,45 +1347,151 @@
   function toggleNotifPanel() {
     const panel = document.getElementById('notifPanel');
     if (!panel) return;
-
     notifPanelOpen = !notifPanelOpen;
     panel.style.display = notifPanelOpen ? 'block' : 'none';
-
     if (notifPanelOpen) loadNotifications();
   }
 
-  async function markRead(notifId) {
-    // Wizualnie oznacz od razu
+  // ── Otwórz modal szczegółów ──
+  function openNotifModal(notifId) {
+    const item = document.getElementById(`notif-${notifId}`);
+    if (!item) return;
+
+    currentNotifId = notifId;
+
+    // Zbierz dane z DOM
+    const title   = item.querySelector('.notif-item__title')?.textContent  || '';
+    const msg     = item.querySelector('.notif-item__msg')?.textContent     || '';
+    const time    = item.querySelector('.notif-item__time')?.textContent    || '';
+    const iconEl  = item.querySelector('.notif-item__icon i');
+    const iconName = iconEl?.getAttribute('data-lucide') || 'bell';
+
+    // Ustal typ z klasy
+    const typeClass = [...item.querySelector('.notif-item__icon').classList]
+      .find(c => c.startsWith('notif-icon--'))
+      ?.replace('notif-icon--', '') || 'info';
+
+    const colors = NOTIF_ICON_COLORS[typeClass] || NOTIF_ICON_COLORS.info;
+
+    // Wypełnij modal
+    document.getElementById('notifModalTitle').textContent = title;
+    document.getElementById('notifModalMsg').textContent   = msg;
+    document.getElementById('notifModalTime').textContent  = time;
+
+    const iconWrap = document.getElementById('notifModalIcon');
+    iconWrap.style.background = colors.bg;
+    iconWrap.style.color      = colors.color;
+    iconWrap.innerHTML        = `<i data-lucide="${iconName}"></i>`;
+
+    // Pokaż modal
+    const modal = document.getElementById('notifModal');
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    if (window.lucide) lucide.createIcons({ nodes: [iconWrap] });
+
+    // Oznacz jako przeczytane
+    markReadSilent(notifId);
+  }
+
+  function closeNotifModal(e) {
+    if (e && e.target !== document.getElementById('notifModal')) return;
+    document.getElementById('notifModal').style.display = 'none';
+    document.body.style.overflow = '';
+    currentNotifId = null;
+  }
+
+  // Zamknij modal klawiszem Escape
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      document.getElementById('notifModal').style.display = 'none';
+      document.body.style.overflow = '';
+    }
+  });
+
+  // ── Oznacz jako przeczytane (cicho, bez przeładowania listy) ──
+  async function markReadSilent(notifId) {
     const item = document.getElementById(`notif-${notifId}`);
     if (item) item.classList.remove('notif-item--unread');
-
     try {
       await fetch(`/notifications/${notifId}/read/`, {
-        method:  'POST',
+        method: 'POST',
         headers: { 'X-CSRFToken': NOTIF_CSRF },
       });
-      // Odśwież kropkę
-      loadNotifications();
+      loadNotifications(); // odśwież kropkę
     } catch (e) {
       console.warn('markRead error:', e);
     }
   }
 
+  // ── Oznacz pojedyncze (przycisk w liście) ──
+  async function markReadSingle(event, notifId) {
+    event.stopPropagation();
+    await markReadSilent(notifId);
+  }
+
+  // ── Oznacz wszystkie ──
   async function markAllRead() {
-    // Wizualnie oznacz wszystkie od razu
     document.querySelectorAll('.notif-item--unread')
       .forEach(el => el.classList.remove('notif-item--unread'));
-
     const dot = document.getElementById('notifDot');
     if (dot) dot.style.display = 'none';
-
     try {
       await fetch('/notifications/mark-all-read/', {
-        method:  'POST',
+        method: 'POST',
         headers: { 'X-CSRFToken': NOTIF_CSRF },
       });
     } catch (e) {
       console.warn('markAllRead error:', e);
+    }
+  }
+
+  // ── Usuń pojedyncze ──
+  async function deleteSingle(event, notifId) {
+    event.stopPropagation();
+    const item = document.getElementById(`notif-${notifId}`);
+    if (item) {
+      item.style.transition = 'opacity 0.2s, transform 0.2s';
+      item.style.opacity    = '0';
+      item.style.transform  = 'translateX(12px)';
+      setTimeout(() => item.remove(), 200);
+    }
+    try {
+      await fetch(`/notifications/${notifId}/delete/`, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': NOTIF_CSRF },
+      });
+      loadNotifications();
+    } catch (e) {
+      console.warn('deleteSingle error:', e);
+    }
+  }
+
+  // ── Usuń wszystkie ──
+  async function deleteAllNotifications() {
+    const list = document.getElementById('notifList');
+    if (list) {
+      list.style.transition = 'opacity 0.2s';
+      list.style.opacity    = '0';
+      setTimeout(() => {
+        list.innerHTML = `
+          <div class="notif-panel__empty">
+            <i data-lucide="bell-off"></i>
+            <span>Brak powiadomień</span>
+          </div>`;
+        list.style.opacity = '1';
+        if (window.lucide) lucide.createIcons({ nodes: [list] });
+      }, 200);
+    }
+    const dot = document.getElementById('notifDot');
+    if (dot) dot.style.display = 'none';
+    try {
+      await fetch('/notifications/delete-all/', {
+        method: 'POST',
+        headers: { 'X-CSRFToken': NOTIF_CSRF },
+      });
+    } catch (e) {
+      console.warn('deleteAll error:', e);
     }
   }
 
@@ -1185,12 +1506,12 @@
     }
   });
 
-  // Załaduj stan kropki przy starcie strony
+  // Załaduj stan kropki przy starcie
   document.addEventListener('DOMContentLoaded', () => {
     loadNotifications();
-    // Odświeżaj co 60 sekund
     setInterval(loadNotifications, 60_000);
   });
+
 </script>
 
 
