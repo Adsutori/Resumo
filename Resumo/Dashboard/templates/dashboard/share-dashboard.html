@@ -516,11 +516,9 @@
 <div class="share-stats-bar">
   <div class="share-stat-card">
     <div class="share-stat-card__icon" style="background:rgba(108,99,255,0.12);color:var(--color-accent);">
-      <i data-lucide="share-2"></i>
+      <i data-lucide="file-text"></i>
     </div>
-    <div class="share-stat-card__value" id="statShared">
-      {{ cvs|length }}
-    </div>
+    <div class="share-stat-card__value">{{ cvs|length }}</div>
     <div class="share-stat-card__label">Dokumentów łącznie</div>
   </div>
 
@@ -528,9 +526,7 @@
     <div class="share-stat-card__icon" style="background:rgba(16,185,129,0.12);color:#10b981;">
       <i data-lucide="link"></i>
     </div>
-    <div class="share-stat-card__value" id="statActive">
-      {{ cvs|dictsortreversed:"is_shared"|length }}
-    </div>
+    <div class="share-stat-card__value">{{ active_count }}</div>
     <div class="share-stat-card__label">Aktywnych linków</div>
   </div>
 
@@ -538,11 +534,7 @@
     <div class="share-stat-card__icon" style="background:rgba(245,158,11,0.12);color:#f59e0b;">
       <i data-lucide="eye"></i>
     </div>
-    <div class="share-stat-card__value" id="statViews">
-      {% with total=0 %}
-        {% for cv in cvs %}{{ cv.view_count|add:total }}{% endfor %}
-      {% endwith %}
-    </div>
+    <div class="share-stat-card__value">{{ total_views }}</div>
     <div class="share-stat-card__label">Wyświetleń łącznie</div>
   </div>
 
@@ -550,10 +542,11 @@
     <div class="share-stat-card__icon" style="background:rgba(99,179,237,0.12);color:#63b3ed;">
       <i data-lucide="trending-up"></i>
     </div>
-    <div class="share-stat-card__value" id="statWeek">—</div>
+    <div class="share-stat-card__value">{{ week_views }}</div>
     <div class="share-stat-card__label">Wyświetleń (7 dni)</div>
   </div>
 </div>
+
 
 <!-- ══════════════════════════════════════════
      CV LIST
@@ -1033,10 +1026,10 @@ function showToast(msg, icon = 'check-circle') {
 document.addEventListener('DOMContentLoaded', async () => {
   if (window.lucide) lucide.createIcons();
 
-  let totalWeek = 0;
-
   // Dla każdej karty — załaduj QR i wykres
-  document.querySelectorAll('.share-cv-card').forEach(async card => {
+  const promises = [];
+
+  document.querySelectorAll('.share-cv-card').forEach(card => {
     const cvId   = card.dataset.cvId;
     const url    = card.dataset.shareUrl;
     const shared = card.dataset.isShared === 'true';
@@ -1045,16 +1038,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       generateQR(cvId, url);
     }
 
-    const week = await loadChart(cvId);
-    totalWeek += (week || 0);
+    promises.push(loadChart(cvId));
   });
 
-  // Zaktualizuj globalny licznik "7 dni"
-  setTimeout(() => {
-    const el = document.getElementById('statWeek');
-    if (el) el.textContent = totalWeek;
-  }, 800);
+  await Promise.all(promises);
 });
+
 </script>
 
 {% endblock %}

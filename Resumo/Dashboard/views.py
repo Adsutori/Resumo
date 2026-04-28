@@ -2,7 +2,7 @@ import json
 import uuid
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.views.decorators.http import require_http_methods
 from .models import CV
 from django.http import HttpResponse
@@ -19,6 +19,7 @@ from django.db.models import Count
 from django.db.models.functions import TruncDate
 from django.utils import timezone
 from datetime import timedelta
+from .models import CV, CVView
 
 
 
@@ -306,85 +307,29 @@ def delete_cv(request, cv_id):
     return redirect('dashboard:dashboard')
 
 
-# ──────────────────────────────────────────────
-# WIDOK — Toggle udostępniania CV
-# ──────────────────────────────────────────────
-
-@login_required
-@require_POST
-def toggle_share(request, cv_id):
-    cv = get_object_or_404(CV, id=cv_id, user=request.user)
-
-    cv.is_shared = not cv.is_shared
-    cv.save(update_fields=['is_shared'])
-
-    share_url = request.build_absolute_uri(
-        reverse('dashboard:share_cv', kwargs={'token': cv.share_token})
-    )
-
-    return JsonResponse({
-        'is_shared': cv.is_shared,
-        'share_url': share_url,
-    })
-
-
-# ──────────────────────────────────────────────
-# WIDOK — Publiczny podgląd CV (bez logowania)
-# ──────────────────────────────────────────────
-
-def share_cv(request, token):
-    cv = get_object_or_404(CV, share_token=token)
-
-    if not cv.is_shared:
-        raise Http404("To CV nie jest udostępnione.")
-
-    CV.objects.filter(pk=cv.pk).update(view_count=F('view_count') + 1)
-    cv.refresh_from_db()
-
-    from .models import DEFAULT_DESIGN
-    merged_design = {**DEFAULT_DESIGN, **(cv.design or {})}
-    cv.design = merged_design
-
-    template_map = {
-        'classic': 'dashboard/pdf/cv-classic.html',
-        'modern':  'dashboard/pdf/cv-modern.html',
-        'minimal': 'dashboard/pdf/cv-minimal.html',
-    }
-    template_name = template_map.get(cv.template, 'dashboard/pdf/cv-classic.html')
-
-    accent    = merged_design.get('accent_color', '#6C63FF')
-    dark_base = darken_hex(accent, 0.18)
-    dark_mid  = darken_hex(accent, 0.25)
-    dark_deep = darken_hex(accent, 0.15)
-
-    cv_html = render_to_string(template_name, {
-        'cv':        cv,
-        'content':   cv.content or {},
-        'is_public': True,
-        'dark_base': dark_base,
-        'dark_mid':  dark_mid,
-        'dark_deep': dark_deep,
-    }, request=request)
-
-    return render(request, 'dashboard/cv-share.html', {
-        'cv':      cv,
-        'cv_html': cv_html,   # ← czysty string, BEZ json.dumps
-    })
-
-
 # ── Strona główna sekcji ──────────────────────────────────
 @login_required
 def share_dashboard(request):
-    """Lista wszystkich CV z opcjami udostępniania."""
     cvs = CV.objects.filter(user=request.user).order_by('-updated_at')
 
-    # Dla każdego CV policz wyświetlenia z ostatnich 7 dni
     week_ago = timezone.now() - timedelta(days=7)
+
+    total_views  = 0
+    active_count = 0
+    week_views   = 0
+
     for cv in cvs:
         cv.views_week = cv.views.filter(viewed_at__gte=week_ago).count()
+        total_views  += cv.view_count
+        week_views   += cv.views_week
+        if cv.is_share_active():
+            active_count += 1
 
     return render(request, 'dashboard/share-dashboard.html', {
-        'cvs': cvs,
+        'cvs':          cvs,
+        'total_views':  total_views,
+        'active_count': active_count,
+        'week_views':   week_views,
     })
 
 
@@ -393,16 +338,29 @@ def share_dashboard(request):
 @require_POST
 def toggle_share(request, cv_id):
     cv = get_object_or_404(CV, pk=cv_id, user=request.user)
-    data = json.loads(request.body)
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
 
     cv.is_shared = data.get('is_shared', False)
 
-    # Opcjonalna data wygaśnięcia
     expires = data.get('expires')
     if expires:
-        cv.share_expires = timezone.datetime.fromisoformat(expires).replace(
-            tzinfo=timezone.get_current_timezone()
-        )
+        try:
+            from django.utils.dateparse import parse_datetime
+            parsed = parse_datetime(expires)
+            if parsed:
+                # Jeśli brak tzinfo — dodaj lokalną strefę
+                if parsed.tzinfo is None:
+                    from django.utils import timezone as tz
+                    parsed = tz.make_aware(parsed)
+                cv.share_expires = parsed
+            else:
+                cv.share_expires = None
+        except Exception:
+            cv.share_expires = None
     else:
         cv.share_expires = None
 

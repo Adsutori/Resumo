@@ -85,9 +85,6 @@ class CV(models.Model):
     def __str__(self):
         return f"{self.title} ({self.user.username})"
 
-    def get_share_url(self):
-        return reverse('dashboard:share_cv', kwargs={'token': self.share_token})
-
     def calculate_progress(self):
         """Oblicza % wypełnienia na podstawie sekcji w content."""
         sections = [

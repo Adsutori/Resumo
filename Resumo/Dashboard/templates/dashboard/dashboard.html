@@ -1300,49 +1300,59 @@
     const icon  = document.getElementById(`share-icon-${cvId}`);
     const label = document.getElementById(`share-label-${cvId}`);
 
-    // Zablokuj przycisk na czas żądania
     if (btn) btn.disabled = true;
+
+    // Nowy stan to odwrotność obecnego
+    const newState = !currentIsShared;
 
     try {
       const response = await fetch(`/dashboard/cv/${cvId}/toggle-share/`, {
         method:  'POST',
         headers: {
-          'X-CSRFToken': getCsrfToken(),
+          'X-CSRFToken':  getCsrfToken(),
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify({
+          is_shared: newState,
+          expires:   null,        // dashboard nie ustawia daty wygaśnięcia
+        }),
       });
-
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
       const data = await response.json();
 
-      // ── Aktualizuj przycisk ──
+      if (!response.ok || data.status !== 'ok') {
+        throw new Error(data.message || `HTTP ${response.status}`);
+      }
+
+      // ── Aktualizuj ikonę ──
       if (icon) {
         icon.setAttribute('data-lucide', data.is_shared ? 'link-2' : 'share-2');
         if (window.lucide) lucide.createIcons({ nodes: [icon] });
       }
+
+      // ── Aktualizuj etykietę ──
       if (label) {
         label.textContent = data.is_shared ? 'Udostępnione' : 'Udostępnij';
       }
+
+      // ── Zaktualizuj onclick z nowym stanem ──
       if (btn) {
         btn.title = data.is_shared ? 'Wyłącz udostępnianie' : 'Udostępnij CV';
-        // Aktualizuj onclick z nowym stanem
         btn.setAttribute('onclick',
           `toggleShare(${cvId}, '${token}', ${data.is_shared})`
         );
       }
 
       // ── Toast + clipboard ──
-      if (data.is_shared) {
+      if (data.is_active) {
         try {
           await navigator.clipboard.writeText(data.share_url);
           showToast('Link skopiowany do schowka!', 'success');
         } catch {
-          // Fallback jeśli clipboard API niedostępne (np. HTTP)
           showToast(`Udostępniono! Link: ${data.share_url}`, 'info');
         }
       } else {
-        showToast('Udostępnianie wyłączone', 'info');
+        showToast('Udostępnianie wyłączone.', 'info');
       }
 
     } catch (err) {
@@ -1352,6 +1362,7 @@
       if (btn) btn.disabled = false;
     }
   }
+
 
 
   // ══════════════════════════════════════════════════════════
