@@ -97,6 +97,24 @@ def login_view(request):
 
                 login(request, user)
 
+                # ── Powiadomienie powitalne (tylko przy pierwszym logowaniu) ──
+                from notifications.models import Notification
+                from notifications.utils  import notify_welcome, notify_feature
+
+                if not Notification.objects.filter(user=user, type='welcome').exists():
+                    notify_welcome(user)
+
+                # ── Powiadomienie o nowej funkcji (jednorazowe) ──
+                if not Notification.objects.filter(
+                    user=user,
+                    type='feature',
+                    title__icontains='Udostępnianie CV',
+                ).exists():
+                    notify_feature(
+                        user,
+                        title='Nowość: Udostępnianie CV z QR kodem! 🔗',
+                        message='Możesz teraz udostępniać swoje CV publicznie i śledzić wyświetlenia.',
+                    )
 
                 # Respect ?next= redirect param
                 next_url = request.GET.get('next') or 'dashboard:dashboard'

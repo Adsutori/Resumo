@@ -1070,7 +1070,129 @@
   window.addEventListener('resize', () => {
     if (window.innerWidth > 768) closeSidebar();
   });
+
+  // ══════════════════════════════════════════════════════════
+  // POWIADOMIENIA
+  // ══════════════════════════════════════════════════════════
+
+  const NOTIF_CSRF = document.cookie
+    .split('; ')
+    .find(r => r.startsWith('csrftoken='))
+    ?.split('=')[1] || '';
+
+  let notifPanelOpen = false;
+
+  async function loadNotifications() {
+    try {
+      const res  = await fetch('/notifications/list/');
+      const data = await res.json();
+
+      // Czerwona kropka
+      const dot = document.getElementById('notifDot');
+      if (dot) {
+        dot.style.display = data.unread_count > 0 ? 'block' : 'none';
+      }
+
+      // Wypełnij listę
+      const list = document.getElementById('notifList');
+      if (!list) return;
+
+      if (data.notifications.length === 0) {
+        list.innerHTML = `
+          <div class="notif-panel__empty">
+            <i data-lucide="bell-off"></i>
+            <span>Brak powiadomień</span>
+          </div>`;
+        if (window.lucide) lucide.createIcons({ nodes: [list] });
+        return;
+      }
+
+      list.innerHTML = data.notifications.map(n => `
+        <div class="notif-item ${n.is_read ? '' : 'notif-item--unread'}"
+            id="notif-${n.id}"
+            onclick="markRead(${n.id})">
+          <div class="notif-item__icon notif-icon--${n.type}">
+            <i data-lucide="${n.icon}"></i>
+          </div>
+          <div class="notif-item__body">
+            <div class="notif-item__title">${n.title}</div>
+            ${n.message ? `<div class="notif-item__msg">${n.message}</div>` : ''}
+          </div>
+          <div class="notif-item__time">${n.created_at}</div>
+        </div>
+      `).join('');
+
+      if (window.lucide) lucide.createIcons({ nodes: [list] });
+
+    } catch (e) {
+      console.warn('Notifications load error:', e);
+    }
+  }
+
+  function toggleNotifPanel() {
+    const panel = document.getElementById('notifPanel');
+    if (!panel) return;
+
+    notifPanelOpen = !notifPanelOpen;
+    panel.style.display = notifPanelOpen ? 'block' : 'none';
+
+    if (notifPanelOpen) loadNotifications();
+  }
+
+  async function markRead(notifId) {
+    // Wizualnie oznacz od razu
+    const item = document.getElementById(`notif-${notifId}`);
+    if (item) item.classList.remove('notif-item--unread');
+
+    try {
+      await fetch(`/notifications/${notifId}/read/`, {
+        method:  'POST',
+        headers: { 'X-CSRFToken': NOTIF_CSRF },
+      });
+      // Odśwież kropkę
+      loadNotifications();
+    } catch (e) {
+      console.warn('markRead error:', e);
+    }
+  }
+
+  async function markAllRead() {
+    // Wizualnie oznacz wszystkie od razu
+    document.querySelectorAll('.notif-item--unread')
+      .forEach(el => el.classList.remove('notif-item--unread'));
+
+    const dot = document.getElementById('notifDot');
+    if (dot) dot.style.display = 'none';
+
+    try {
+      await fetch('/notifications/mark-all-read/', {
+        method:  'POST',
+        headers: { 'X-CSRFToken': NOTIF_CSRF },
+      });
+    } catch (e) {
+      console.warn('markAllRead error:', e);
+    }
+  }
+
+  // Zamknij panel klikając poza nim
+  document.addEventListener('click', e => {
+    const panel = document.getElementById('notifPanel');
+    const btn   = document.getElementById('notifBtn');
+    if (!panel || !btn) return;
+    if (notifPanelOpen && !panel.contains(e.target) && !btn.contains(e.target)) {
+      notifPanelOpen = false;
+      panel.style.display = 'none';
+    }
+  });
+
+  // Załaduj stan kropki przy starcie strony
+  document.addEventListener('DOMContentLoaded', () => {
+    loadNotifications();
+    // Odświeżaj co 60 sekund
+    setInterval(loadNotifications, 60_000);
+  });
 </script>
+
 
 {% block extra_js %}{% endblock %}
 

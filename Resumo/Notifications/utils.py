@@ -18,6 +18,7 @@ def create_notification(user, type, title, message=''):
         already_exists = Notification.objects.filter(
             user=user,
             type=type,
+            title=title,
             created_at__gte=recent_cutoff,
         ).exists()
 

@@ -204,12 +204,12 @@ def dashboard(request):
     }
 
     if profile_completion == 100:
-            from Notifications.utils import notify_profile_complete
-            from Notifications.models import Notification
-            if not Notification.objects.filter(
-                user=request.user, type='profile'
-            ).exists():
-                notify_profile_complete(request.user)
+        from Notifications.utils import notify_profile_complete
+        from Notifications.models import Notification
+        if not Notification.objects.filter(
+            user=request.user, type='profile'
+        ).exists():
+            notify_profile_complete(request.user)
 
     return render(request, 'dashboard/dashboard.html', context)
 
@@ -375,6 +375,16 @@ def download_pdf(request, cv_id):
     safe_title = cv.title.replace(' ', '_').replace('/', '-')[:50]
     response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="{safe_title}.pdf"'
+
+    # ── Powiadomienie o pobraniu ──
+    from Notifications.utils import create_notification
+    create_notification(
+        user=request.user,
+        type='download',
+        title=f'Pobrano CV „{cv.title}" jako PDF',
+        message='Twoje CV zostało pobrane w formacie PDF.',
+    )
+
     return response
 
 
@@ -566,6 +576,15 @@ def share_cv(request, token):
         'dark_mid':  dark_mid,
         'dark_deep': dark_deep,
     }, request=request)
+
+    # ── Powiadomienie dla właściciela CV ──
+    from Notifications.utils import create_notification
+    create_notification(
+        user=cv.user,
+        type='share',
+        title=f'Ktoś wyświetlił Twoje CV „{cv.title}"',
+        message='Twoje udostępnione CV właśnie odwiedził nowy użytkownik.',
+    )
 
     return render(request, 'dashboard/cv-share.html', {
         'cv':      cv,
