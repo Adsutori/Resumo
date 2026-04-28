@@ -7,20 +7,23 @@
 {% block content %}
 
 {% if messages %}
-<div class="messages-wrap">
+<div id="toastContainer" class="toast-container">
   {% for message in messages %}
-  <div class="message message--{{ message.tags }}" role="alert">
-    {% if message.tags == 'success' %}<i data-lucide="check-circle"></i>
-    {% elif message.tags == 'error' %}<i data-lucide="alert-circle"></i>
-    {% else %}<i data-lucide="info"></i>{% endif %}
-    <span>{{ message }}</span>
-    <button type="button" class="message__close" onclick="this.parentElement.remove()">
+  <div class="toast toast--{{ message.tags }}" role="alert">
+    <div class="toast__icon">
+      {% if message.tags == 'success' %}<i data-lucide="check-circle"></i>
+      {% elif message.tags == 'error' %}<i data-lucide="alert-circle"></i>
+      {% else %}<i data-lucide="info"></i>{% endif %}
+    </div>
+    <span class="toast__text">{{ message }}</span>
+    <button class="toast__close" onclick="this.closest('.toast').remove()">
       <i data-lucide="x"></i>
     </button>
   </div>
   {% endfor %}
 </div>
 {% endif %}
+
 
 <div class="settings-layout">
 
@@ -773,6 +776,136 @@
     to   { opacity: 1; transform: scale(1)    translateY(0);   }
     }
 
+  /* ══════════════════════════════════════
+   TOAST NOTIFICATIONS
+  ══════════════════════════════════════ */
+  .toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+  }
+
+  .toast {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: var(--radius-lg);
+    border: 1px solid transparent;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: var(--font);
+    min-width: 280px;
+    max-width: 380px;
+    box-shadow: var(--shadow-xl);
+    pointer-events: all;
+    animation: toastIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes toastIn {
+    from {
+      opacity: 0;
+      transform: translateX(40px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+    }
+  }
+
+  @keyframes toastOut {
+    from {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(40px) scale(0.95);
+    }
+  }
+
+  .toast--success {
+    background: rgba(16, 185, 129, 0.12);
+    border-color: rgba(16, 185, 129, 0.3);
+    color: #10b981;
+  }
+
+  .toast--error {
+    background: rgba(239, 68, 68, 0.12);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+  }
+
+  .toast--info {
+    background: var(--color-accent-glow);
+    border-color: rgba(108, 99, 255, 0.3);
+    color: var(--color-accent);
+  }
+
+  .toast__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .toast__icon i {
+    width: 18px;
+    height: 18px;
+  }
+
+  .toast__text {
+    flex: 1;
+    line-height: 1.4;
+    color: var(--color-text);
+  }
+
+  .toast__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-muted);
+    opacity: 0.6;
+    transition: opacity 0.15s, background 0.15s;
+    flex-shrink: 0;
+    font-family: var(--font);
+  }
+
+  .toast__close:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .toast__close i {
+    width: 13px;
+    height: 13px;
+  }
+
+  @media (max-width: 480px) {
+    .toast-container {
+      bottom: 16px;
+      right: 16px;
+      left: 16px;
+    }
+
+    .toast {
+      min-width: unset;
+      max-width: 100%;
+    }
+  }
+
+
 </style>
 
 {% endblock %}
@@ -931,13 +1064,23 @@ const observer = new IntersectionObserver(entries => {
 
 sections.forEach(s => observer.observe(s));
 
-// ── Auto-ukryj messages ──
-document.querySelectorAll('.message').forEach(msg => {
+// ── Auto-ukryj toasty ──
+document.querySelectorAll('.toast').forEach((toast, i) => {
+  // Opóźnienie kaskadowe — każdy toast pojawia się 150ms po poprzednim
+  toast.style.animationDelay = `${i * 150}ms`;
+
+  // Auto-usuń po 5 sekundach
   setTimeout(() => {
-    msg.style.transition = 'opacity 0.4s';
-    msg.style.opacity    = '0';
-    setTimeout(() => msg.remove(), 400);
-  }, 5000);
+    toast.style.animation = 'toastOut 0.3s ease forwards';
+    setTimeout(() => toast.remove(), 300);
+  }, 5000 + i * 150);
 });
+
+// Reinicjalizuj ikony Lucide w toastach
+if (window.lucide) {
+  const container = document.getElementById('toastContainer');
+  if (container) lucide.createIcons({ nodes: [container] });
+}
+
 </script>
 {% endblock %}
