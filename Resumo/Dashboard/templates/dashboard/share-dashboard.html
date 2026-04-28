@@ -9,7 +9,7 @@
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <!-- QRCode.js -->
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
 <style>
 .share-page-header {
@@ -281,7 +281,7 @@
 }
 .share-bottom-row {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: 152px 1fr;
   gap: 20px;
   align-items: start;
 }
@@ -290,11 +290,25 @@
   flex-direction: column;
   align-items: center;
   gap: 8px;
+  width: 152px;
+  flex-shrink: 0;
 }
 .share-qr-canvas {
   border-radius: var(--radius-md);
   background: #fff;
   padding: 8px;
+  width: 136px !important;
+  height: 136px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.share-qr-canvas canvas,
+.share-qr-canvas img {
+  width: 120px !important;
+  height: 120px !important;
+  display: block;
 }
 .share-chart-wrap {
   display: flex;
@@ -578,9 +592,9 @@
             <i data-lucide="qr-code"></i>
             Kod QR
           </div>
-          <canvas class="share-qr-canvas"
-                  id="qr-{{ cv.id }}"
-                  width="120" height="120"></canvas>
+          <div class="share-qr-canvas"
+              id="qr-{{ cv.id }}"
+              style="width:120px;height:120px;"></div>
           <button class="btn-share-action"
                   onclick="downloadQR({{ cv.id }}, '{{ cv.title|escapejs }}')"
                   style="width:100%;">
@@ -832,41 +846,51 @@ function checkExpiredLinks() {
   });
 }
 
-// ══════════════════════════════════════════════════════════
+/// ══════════════════════════════════════════════════════════
 // QR KOD
 // ══════════════════════════════════════════════════════════
 
 function generateQR(cvId, url) {
-  const canvas = document.getElementById(`qr-${cvId}`);
-  if (!canvas) { console.warn(`QR: brak canvas dla cv ${cvId}`); return; }
-  if (!url)    { console.warn(`QR: brak URL dla cv ${cvId}`);    return; }
+  if (!url) { console.warn(`QR: brak URL dla cv ${cvId}`); return; }
 
-  // Wyczyść canvas przed rysowaniem
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // qrcodejs renderuje do diva, nie do canvas — używamy wrappera
+  const canvasEl = document.getElementById(`qr-${cvId}`);
+  if (!canvasEl) { console.warn(`QR: brak elementu qr-${cvId}`); return; }
 
-  // Poczekaj aż QRCode.js będzie gotowe
-  function tryGenerate(attempts) {
-    if (!window.QRCode) {
-      if (attempts > 20) {
-        console.warn('QRCode.js nie załadowało się.');
-        return;
-      }
-      setTimeout(() => tryGenerate(attempts + 1), 200);
-      return;
-    }
+  // Wyczyść poprzednią zawartość
+  canvasEl.innerHTML = '';
 
-    QRCode.toCanvas(canvas, url, {
-      width:  120,
-      margin: 1,
-      color:  { dark: '#000000', light: '#ffffff' },
-    }, err => {
-      if (err) console.warn('QR error:', err);
-    });
-  }
-
-  tryGenerate(0);
+  new QRCode(canvasEl, {
+    text:         url,
+    width:        120,
+    height:       120,
+    colorDark:    '#000000',
+    colorLight:   '#ffffff',
+    correctLevel: QRCode.CorrectLevel.M,
+  });
 }
+
+function downloadQR(cvId, title) {
+  const wrap = document.getElementById(`qr-${cvId}`);
+  if (!wrap) return;
+
+  // qrcodejs tworzy <img> lub <canvas> wewnątrz wrappera
+  const img    = wrap.querySelector('img');
+  const canvas = wrap.querySelector('canvas');
+
+  const link    = document.createElement('a');
+  link.download = `QR_${title.replace(/\s+/g, '_')}.png`;
+
+  if (canvas) {
+    link.href = canvas.toDataURL('image/png');
+  } else if (img) {
+    link.href = img.src;
+  } else {
+    return;
+  }
+  link.click();
+}
+
 
 
 // ══════════════════════════════════════════════════════════
