@@ -5,6 +5,7 @@ from django.contrib                 import messages
 from django.utils                   import timezone
 from django.views.decorators.http   import require_POST
 from datetime import datetime
+from django.contrib.auth import update_session_auth_hash
 
 
 from .forms   import RegisterForm, LoginForm, VerifyEmailForm, ResendVerificationForm
@@ -258,11 +259,110 @@ def resend_verification_view(request):
     return redirect('users:verify_email')
 
 
-# ================================================================
-# DASHBOARD (placeholder — replace with real view)
-# ================================================================
-# @login_required
-# def dashboard_view(request):
-#     return render(request, 'users/dashboard.html', {
-#         'user': request.user,
-#     })
+@login_required
+def settings_view(request):
+    """Strona ustawień konta — GET renderuje formularz."""
+    from .forms import (
+        ChangeNickForm, ChangeEmailForm,
+        ChangePasswordForm, AvatarUploadForm, DeleteAccountForm,
+    )
+    context = {
+        'nick_form':     ChangeNickForm(user=request.user),
+        'email_form':    ChangeEmailForm(user=request.user),
+        'password_form': ChangePasswordForm(user=request.user),
+        'avatar_form':   AvatarUploadForm(instance=request.user),
+        'delete_form':   DeleteAccountForm(user=request.user),
+    }
+    return render(request, 'users/settings.html', context)
+
+
+@login_required
+@require_POST
+def change_nick(request):
+    from .forms import ChangeNickForm
+    form = ChangeNickForm(user=request.user, data=request.POST)
+    if form.is_valid():
+        request.user.nick = form.cleaned_data['nick']
+        request.user.save(update_fields=['nick'])
+        messages.success(request, 'Nick został zmieniony.')
+    else:
+        for field_errors in form.errors.values():
+            for error in field_errors:
+                messages.error(request, error)
+    return redirect('users:settings')
+
+
+@login_required
+@require_POST
+def change_email(request):
+    from .forms import ChangeEmailForm
+    form = ChangeEmailForm(user=request.user, data=request.POST)
+    if form.is_valid():
+        request.user.email = form.cleaned_data['email']
+        request.user.save(update_fields=['email'])
+        messages.success(request, 'Adres e-mail został zmieniony.')
+    else:
+        for field_errors in form.errors.values():
+            for error in field_errors:
+                messages.error(request, error)
+    return redirect('users:settings')
+
+
+@login_required
+@require_POST
+def change_password(request):
+    from .forms import ChangePasswordForm
+    form = ChangePasswordForm(user=request.user, data=request.POST)
+    if form.is_valid():
+        request.user.set_password(form.cleaned_data['new_password'])
+        request.user.save()
+        # Utrzymaj sesję po zmianie hasła
+        update_session_auth_hash(request, request.user)
+        messages.success(request, 'Hasło zostało zmienione.')
+    else:
+        for field_errors in form.errors.values():
+            for error in field_errors:
+                messages.error(request, error)
+    return redirect('users:settings')
+
+
+@login_required
+@require_POST
+def upload_avatar(request):
+    from .forms import AvatarUploadForm
+
+    # Obsługa usunięcia avatara
+    if request.POST.get('remove_avatar'):
+        if request.user.avatar:
+            request.user.avatar.delete(save=True)
+        messages.success(request, 'Avatar został usunięty.')
+        return redirect('users:settings')
+
+    form = AvatarUploadForm(request.POST, request.FILES, instance=request.user)
+    if form.is_valid():
+        form.save()
+        messages.success(request, 'Avatar został zaktualizowany.')
+    else:
+        for field_errors in form.errors.values():
+            for error in field_errors:
+                messages.error(request, error)
+    return redirect('users:settings')
+
+
+
+@login_required
+@require_POST
+def delete_account(request):
+    from .forms import DeleteAccountForm
+    form = DeleteAccountForm(user=request.user, data=request.POST)
+    if form.is_valid():
+        user = request.user
+        logout(request)
+        user.delete()
+        messages.success(request, 'Konto zostało usunięte.')
+        return redirect('landing_page')
+    else:
+        for field_errors in form.errors.values():
+            for error in field_errors:
+                messages.error(request, error)
+    return redirect('users:settings')

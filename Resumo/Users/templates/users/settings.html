@@ -1,0 +1,879 @@
+{% extends 'dashboard-layout.html' %}
+{% load static %}
+
+{% block title %}Ustawienia konta — Resumo{% endblock %}
+{% block page_title %}Ustawienia konta{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+<div class="messages-wrap">
+  {% for message in messages %}
+  <div class="message message--{{ message.tags }}" role="alert">
+    {% if message.tags == 'success' %}<i data-lucide="check-circle"></i>
+    {% elif message.tags == 'error' %}<i data-lucide="alert-circle"></i>
+    {% else %}<i data-lucide="info"></i>{% endif %}
+    <span>{{ message }}</span>
+    <button type="button" class="message__close" onclick="this.parentElement.remove()">
+      <i data-lucide="x"></i>
+    </button>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="settings-layout">
+
+  <!-- ── SIDEBAR NAWIGACJA ── -->
+  <nav class="settings-nav card">
+    <a href="#avatar"   class="settings-nav__item settings-nav__item--active" onclick="scrollTo('avatar')">
+      <i data-lucide="image"></i> Avatar
+    </a>
+    <a href="#nick"     class="settings-nav__item" onclick="scrollTo('nick')">
+      <i data-lucide="at-sign"></i> Nick
+    </a>
+    <a href="#email"    class="settings-nav__item" onclick="scrollTo('email')">
+      <i data-lucide="mail"></i> E-mail
+    </a>
+    <a href="#password" class="settings-nav__item" onclick="scrollTo('password')">
+      <i data-lucide="lock"></i> Hasło
+    </a>
+    <a href="#danger"   class="settings-nav__item settings-nav__item--danger" onclick="scrollTo('danger')">
+      <i data-lucide="trash-2"></i> Usuń konto
+    </a>
+  </nav>
+
+  <!-- ── GŁÓWNA TREŚĆ ── -->
+  <div class="settings-content">
+
+    <!-- ════════════════════════════════
+         SEKCJA: AVATAR
+    ════════════════════════════════ -->
+    <section class="settings-section card" id="avatar">
+      <div class="settings-section__header">
+        <div class="settings-section__icon" style="background:rgba(108,99,255,0.15); color:var(--color-accent);">
+          <i data-lucide="image"></i>
+        </div>
+        <div>
+          <h3 class="settings-section__title">Zdjęcie profilowe</h3>
+          <p class="settings-section__desc">JPG, PNG lub WEBP · maks. 5 MB</p>
+        </div>
+      </div>
+
+      <div class="avatar-upload-area">
+        <!-- Podgląd avatara -->
+        <div class="avatar-preview" id="avatarPreview">
+          {% if request.user.avatar %}
+            <img src="{{ request.user.avatar.url }}" alt="Avatar" id="avatarImg">
+          {% else %}
+            <div class="avatar-placeholder" id="avatarPlaceholder">
+              <i data-lucide="user"></i>
+            </div>
+            <img src="" alt="Avatar" id="avatarImg" style="display:none;">
+          {% endif %}
+        </div>
+
+        <!-- Strefa drag & drop -->
+        <div class="avatar-dropzone" id="avatarDropzone" onclick="document.getElementById('avatarFileInput').click()">
+          <i data-lucide="upload-cloud"></i>
+          <span class="avatar-dropzone__label">Kliknij lub przeciągnij plik</span>
+          <span class="avatar-dropzone__sub">JPG, PNG, WEBP · maks. 5 MB</span>
+        </div>
+      </div>
+
+      <form method="POST" action="{% url 'users:upload_avatar' %}"
+            enctype="multipart/form-data" id="avatarForm">
+        {% csrf_token %}
+        <input type="file" name="avatar" id="avatarFileInput"
+               accept="image/*" style="display:none;"
+               onchange="previewAvatar(this)">
+        <div class="settings-section__footer">
+          <button type="submit" class="btn btn--accent btn--sm" id="avatarSaveBtn" disabled>
+            <i data-lucide="save"></i>
+            Zapisz avatar
+          </button>
+          {% if request.user.avatar %}
+          <button type="button" class="btn btn--ghost btn--sm"
+                  onclick="openRemoveAvatarModal()">
+            <i data-lucide="trash-2"></i>
+            Usuń zdjęcie
+          </button>
+          {% endif %}
+        </div>
+      </form>
+    </section>
+
+    <!-- ════════════════════════════════
+         SEKCJA: NICK
+    ════════════════════════════════ -->
+    <section class="settings-section card" id="nick">
+      <div class="settings-section__header">
+        <div class="settings-section__icon" style="background:rgba(16,185,129,0.15); color:#10b981;">
+          <i data-lucide="at-sign"></i>
+        </div>
+        <div>
+          <h3 class="settings-section__title">Nick</h3>
+          <p class="settings-section__desc">Aktualny: <strong>{{ request.user.nick }}</strong></p>
+        </div>
+      </div>
+
+      <form method="POST" action="{% url 'users:change_nick' %}">
+        {% csrf_token %}
+        <div class="form-group">
+          <label class="form-label">Nowy nick</label>
+          <input
+            type="text"
+            name="nick"
+            class="form-input"
+            placeholder="Wpisz nowy nick"
+            value="{{ request.user.nick }}"
+            maxlength="50"
+            required
+          >
+        </div>
+        <div class="settings-section__footer">
+          <button type="submit" class="btn btn--accent btn--sm">
+            <i data-lucide="save"></i>
+            Zapisz nick
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ════════════════════════════════
+         SEKCJA: E-MAIL
+    ════════════════════════════════ -->
+    <section class="settings-section card" id="email">
+      <div class="settings-section__header">
+        <div class="settings-section__icon" style="background:rgba(99,179,237,0.15); color:#63b3ed;">
+          <i data-lucide="mail"></i>
+        </div>
+        <div>
+          <h3 class="settings-section__title">Adres e-mail</h3>
+          <p class="settings-section__desc">Aktualny: <strong>{{ request.user.email }}</strong></p>
+        </div>
+      </div>
+
+      <form method="POST" action="{% url 'users:change_email' %}">
+        {% csrf_token %}
+        <div class="form-group">
+          <label class="form-label">Nowy adres e-mail</label>
+          <input
+            type="email"
+            name="email"
+            class="form-input"
+            placeholder="nowy@email.com"
+            required
+          >
+        </div>
+        <div class="form-group">
+          <label class="form-label">Potwierdź aktualnym hasłem</label>
+          <div class="input-password-wrap">
+            <input
+              type="password"
+              name="password"
+              class="form-input"
+              placeholder="Aktualne hasło"
+              id="emailPasswordInput"
+              required
+            >
+            <button type="button" class="input-eye-btn"
+                    onclick="togglePasswordVisibility('emailPasswordInput', this)">
+              <i data-lucide="eye"></i>
+            </button>
+          </div>
+        </div>
+        <div class="settings-section__footer">
+          <button type="submit" class="btn btn--accent btn--sm">
+            <i data-lucide="save"></i>
+            Zapisz e-mail
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ════════════════════════════════
+         SEKCJA: HASŁO
+    ════════════════════════════════ -->
+    <section class="settings-section card" id="password">
+      <div class="settings-section__header">
+        <div class="settings-section__icon" style="background:rgba(245,158,11,0.15); color:#f59e0b;">
+          <i data-lucide="lock"></i>
+        </div>
+        <div>
+          <h3 class="settings-section__title">Zmiana hasła</h3>
+          <p class="settings-section__desc">Użyj silnego hasła z min. 8 znaków</p>
+        </div>
+      </div>
+
+      <form method="POST" action="{% url 'users:change_password' %}">
+        {% csrf_token %}
+        <div class="form-group">
+          <label class="form-label">Aktualne hasło</label>
+          <div class="input-password-wrap">
+            <input type="password" name="current_password" class="form-input"
+                   placeholder="Aktualne hasło" id="currentPwdInput" required>
+            <button type="button" class="input-eye-btn"
+                    onclick="togglePasswordVisibility('currentPwdInput', this)">
+              <i data-lucide="eye"></i>
+            </button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nowe hasło</label>
+          <div class="input-password-wrap">
+            <input type="password" name="new_password" class="form-input"
+                   placeholder="Min. 8 znaków" id="newPwdInput"
+                   oninput="updateStrength(this.value)" required>
+            <button type="button" class="input-eye-btn"
+                    onclick="togglePasswordVisibility('newPwdInput', this)">
+              <i data-lucide="eye"></i>
+            </button>
+          </div>
+          <!-- Pasek siły hasła -->
+          <div class="pwd-strength" id="pwdStrength" style="display:none;">
+            <div class="pwd-strength__bar">
+              <div class="pwd-strength__fill" id="pwdStrengthFill"></div>
+            </div>
+            <span class="pwd-strength__label" id="pwdStrengthLabel"></span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Powtórz nowe hasło</label>
+          <div class="input-password-wrap">
+            <input type="password" name="confirm_password" class="form-input"
+                   placeholder="Powtórz nowe hasło" id="confirmPwdInput" required>
+            <button type="button" class="input-eye-btn"
+                    onclick="togglePasswordVisibility('confirmPwdInput', this)">
+              <i data-lucide="eye"></i>
+            </button>
+          </div>
+        </div>
+        <div class="settings-section__footer">
+          <button type="submit" class="btn btn--accent btn--sm">
+            <i data-lucide="save"></i>
+            Zmień hasło
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ════════════════════════════════
+         SEKCJA: STREFA NIEBEZPIECZNA
+    ════════════════════════════════ -->
+    <section class="settings-section settings-section--danger card" id="danger">
+      <div class="settings-section__header">
+        <div class="settings-section__icon" style="background:rgba(239,68,68,0.15); color:#ef4444;">
+          <i data-lucide="triangle-alert"></i>
+        </div>
+        <div>
+          <h3 class="settings-section__title" style="color:#ef4444;">Strefa niebezpieczna</h3>
+          <p class="settings-section__desc">Tych operacji nie można cofnąć.</p>
+        </div>
+      </div>
+
+      <div class="danger-zone">
+        <div class="danger-zone__item">
+          <div>
+            <p class="danger-zone__label">Usuń konto</p>
+            <p class="danger-zone__desc">
+              Trwale usuwa konto, wszystkie CV i dane. Operacji nie można cofnąć.
+            </p>
+          </div>
+          <button type="button" class="btn btn--danger btn--sm"
+                  onclick="openDeleteAccountModal()">
+            <i data-lucide="trash-2"></i>
+            Usuń konto
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     MODAL — Usuń konto
+════════════════════════════════════════ -->
+<div class="modal-overlay" id="deleteAccountModal" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal__icon" style="background:rgba(239,68,68,0.1); border-color:rgba(239,68,68,0.3); color:#ef4444;">
+      <i data-lucide="triangle-alert"></i>
+    </div>
+    <h3 class="modal__title">Usuń konto</h3>
+    <p class="modal__desc">
+      Wpisz swoje hasło aby potwierdzić.<br>
+      <span style="color:#ef4444; font-size:12px;">Wszystkie CV i dane zostaną trwale usunięte.</span>
+    </p>
+    <form method="POST" action="{% url 'users:delete_account' %}" style="width:100%;">
+      {% csrf_token %}
+      <div class="form-group" style="margin-bottom:12px;">
+        <div class="input-password-wrap">
+          <input type="password" name="password" class="form-input"
+                 placeholder="Wpisz hasło" id="deleteAccountPwd" required>
+          <button type="button" class="input-eye-btn"
+                  onclick="togglePasswordVisibility('deleteAccountPwd', this)">
+            <i data-lucide="eye"></i>
+          </button>
+        </div>
+      </div>
+      <label class="checkbox-label" style="margin-bottom:16px; display:flex; gap:8px; align-items:flex-start; font-size:12px; color:var(--color-text-muted); cursor:pointer;">
+        <input type="checkbox" name="confirm" required style="margin-top:2px; accent-color:#ef4444;">
+        Rozumiem, że tej operacji nie można cofnąć.
+      </label>
+      <div class="modal__actions">
+        <button type="button" class="btn btn--ghost" onclick="closeDeleteAccountModal()">
+          Anuluj
+        </button>
+        <button type="submit" class="btn btn--danger">
+          <i data-lucide="trash-2"></i>
+          Usuń na zawsze
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     MODAL — Usuń avatar
+════════════════════════════════════════ -->
+<div class="modal-overlay" id="removeAvatarModal" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal__icon">
+      <i data-lucide="image-off"></i>
+    </div>
+    <h3 class="modal__title">Usuń zdjęcie profilowe</h3>
+    <p class="modal__desc">Czy na pewno chcesz usunąć swój avatar?</p>
+    <div class="modal__actions">
+      <button type="button" class="btn btn--ghost" onclick="closeRemoveAvatarModal()">
+        Anuluj
+      </button>
+      <form method="POST" action="{% url 'users:upload_avatar' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" name="remove_avatar" value="1">
+        <button type="submit" class="btn btn--danger">
+          <i data-lucide="trash-2"></i>
+          Usuń avatar
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════
+     STYLE
+════════════════════════════════════════ -->
+<style>
+  .settings-layout {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  /* ── Nawigacja boczna ── */
+  .settings-nav {
+    position: sticky;
+    top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px;
+  }
+
+  .settings-nav__item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+    cursor: pointer;
+  }
+
+  .settings-nav__item i {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+  }
+
+  .settings-nav__item:hover,
+  .settings-nav__item--active {
+    background: var(--color-surface-2);
+    color: var(--color-text);
+  }
+
+  .settings-nav__item--danger {
+    color: #ef4444;
+    margin-top: 8px;
+    border-top: 1px solid var(--color-border);
+    padding-top: 12px;
+  }
+
+  .settings-nav__item--danger:hover {
+    background: rgba(239,68,68,0.08);
+    color: #ef4444;
+  }
+
+  /* ── Sekcje ── */
+  .settings-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .settings-section {
+    padding: 24px;
+  }
+
+  .settings-section--danger {
+    border-color: rgba(239,68,68,0.25);
+  }
+
+  .settings-section__header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .settings-section__icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .settings-section__icon i {
+    width: 18px;
+    height: 18px;
+  }
+
+  .settings-section__title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 2px;
+  }
+
+  .settings-section__desc {
+    font-size: 12px;
+    color: var(--color-text-muted);
+  }
+
+  .settings-section__footer {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--color-border);
+  }
+
+  /* ── Avatar ── */
+  .avatar-upload-area {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 4px;
+  }
+
+  .avatar-preview {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid var(--color-border);
+    flex-shrink: 0;
+    background: var(--color-surface-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .avatar-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .avatar-placeholder {
+    color: var(--color-text-muted);
+    opacity: 0.5;
+  }
+
+  .avatar-placeholder i {
+    width: 32px;
+    height: 32px;
+  }
+
+  .avatar-dropzone {
+    flex: 1;
+    border: 2px dashed var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    text-align: center;
+  }
+
+  .avatar-dropzone:hover,
+  .avatar-dropzone--dragover {
+    border-color: var(--color-accent);
+    background: var(--color-accent-glow);
+  }
+
+  .avatar-dropzone i {
+    width: 28px;
+    height: 28px;
+    color: var(--color-text-muted);
+  }
+
+  .avatar-dropzone__label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .avatar-dropzone__sub {
+    font-size: 11px;
+    color: var(--color-text-muted);
+  }
+
+  /* ── Formularze ── */
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  .form-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+    font-size: 14px;
+    font-family: var(--font);
+    transition: border-color 0.15s, box-shadow 0.15s;
+    box-sizing: border-box;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(108,99,255,0.15);
+  }
+
+  /* ── Input z okiem ── */
+  .input-password-wrap {
+    position: relative;
+  }
+
+  .input-password-wrap .form-input {
+    padding-right: 44px;
+  }
+
+  .input-eye-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: var(--radius-sm);
+    transition: color 0.15s;
+  }
+
+  .input-eye-btn:hover { color: var(--color-text); }
+  .input-eye-btn i { width: 16px; height: 16px; }
+
+  /* ── Siła hasła ── */
+  .pwd-strength {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 6px;
+  }
+
+  .pwd-strength__bar {
+    flex: 1;
+    height: 4px;
+    background: var(--color-surface-3);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .pwd-strength__fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s ease, background 0.3s ease;
+  }
+
+  .pwd-strength__label {
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* ── Strefa niebezpieczna ── */
+  .danger-zone__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px;
+    background: rgba(239,68,68,0.05);
+    border: 1px solid rgba(239,68,68,0.15);
+    border-radius: var(--radius-lg);
+  }
+
+  .danger-zone__label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 4px;
+  }
+
+  .danger-zone__desc {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+  }
+
+  /* ── Responsywność ── */
+  @media (max-width: 768px) {
+    .settings-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .settings-nav {
+      position: static;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .settings-nav__item--danger {
+      border-top: none;
+      padding-top: 10px;
+      margin-top: 0;
+    }
+
+    .avatar-upload-area {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .avatar-dropzone {
+      width: 100%;
+    }
+
+    .danger-zone__item {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
+
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+'use strict';
+
+// ── Podgląd avatara przed uploadem ──
+function previewAvatar(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const img         = document.getElementById('avatarImg');
+  const placeholder = document.getElementById('avatarPlaceholder');
+  const saveBtn     = document.getElementById('avatarSaveBtn');
+  const dropzone    = document.getElementById('avatarDropzone');
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    img.src          = e.target.result;
+    img.style.display = 'block';
+    if (placeholder) placeholder.style.display = 'none';
+    if (saveBtn) saveBtn.disabled = false;
+    if (dropzone) {
+      dropzone.querySelector('.avatar-dropzone__label').textContent = file.name;
+      dropzone.querySelector('.avatar-dropzone__sub').textContent =
+        (file.size / 1024 / 1024).toFixed(2) + ' MB';
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── Drag & Drop ──
+const dropzone = document.getElementById('avatarDropzone');
+if (dropzone) {
+  dropzone.addEventListener('dragover', e => {
+    e.preventDefault();
+    dropzone.classList.add('avatar-dropzone--dragover');
+  });
+  dropzone.addEventListener('dragleave', () => {
+    dropzone.classList.remove('avatar-dropzone--dragover');
+  });
+  dropzone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropzone.classList.remove('avatar-dropzone--dragover');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+      const input = document.getElementById('avatarFileInput');
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      input.files = dt.files;
+      previewAvatar(input);
+    }
+  });
+}
+
+// ── Pokaż/ukryj hasło ──
+function togglePasswordVisibility(inputId, btn) {
+  const input = document.getElementById(inputId);
+  const icon  = btn.querySelector('i');
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.setAttribute('data-lucide', 'eye-off');
+  } else {
+    input.type = 'password';
+    icon.setAttribute('data-lucide', 'eye');
+  }
+  if (window.lucide) lucide.createIcons({ nodes: [btn] });
+}
+
+// ── Siła hasła ──
+function updateStrength(value) {
+  const wrap  = document.getElementById('pwdStrength');
+  const fill  = document.getElementById('pwdStrengthFill');
+  const label = document.getElementById('pwdStrengthLabel');
+  if (!wrap) return;
+
+  if (!value) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'flex';
+
+  let score = 0;
+  if (value.length >= 8)                    score++;
+  if (value.length >= 12)                   score++;
+  if (/[A-Z]/.test(value))                  score++;
+  if (/[0-9]/.test(value))                  score++;
+  if (/[^A-Za-z0-9]/.test(value))           score++;
+
+  const levels = [
+    { pct: '20%',  color: '#ef4444', text: 'Bardzo słabe' },
+    { pct: '40%',  color: '#f97316', text: 'Słabe'        },
+    { pct: '60%',  color: '#f59e0b', text: 'Średnie'      },
+    { pct: '80%',  color: '#84cc16', text: 'Silne'        },
+    { pct: '100%', color: '#10b981', text: 'Bardzo silne' },
+  ];
+
+  const lvl = levels[Math.min(score - 1, 4)] || levels[0];
+  fill.style.width      = lvl.pct;
+  fill.style.background = lvl.color;
+  label.textContent     = lvl.text;
+  label.style.color     = lvl.color;
+}
+
+// ── Modals ──
+function openDeleteAccountModal() {
+  document.getElementById('deleteAccountModal').classList.add('modal-overlay--active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDeleteAccountModal() {
+  document.getElementById('deleteAccountModal').classList.remove('modal-overlay--active');
+  document.body.style.overflow = '';
+}
+
+function openRemoveAvatarModal() {
+  document.getElementById('removeAvatarModal').classList.add('modal-overlay--active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeRemoveAvatarModal() {
+  document.getElementById('removeAvatarModal').classList.remove('modal-overlay--active');
+  document.body.style.overflow = '';
+}
+
+// Zamknij modal klikając w overlay
+['deleteAccountModal', 'removeAvatarModal'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('click', e => {
+    if (e.target === el) {
+      el.classList.remove('modal-overlay--active');
+      document.body.style.overflow = '';
+    }
+  });
+});
+
+// Escape zamyka modals
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    ['deleteAccountModal', 'removeAvatarModal'].forEach(id => {
+      document.getElementById(id)?.classList.remove('modal-overlay--active');
+    });
+    document.body.style.overflow = '';
+  }
+});
+
+// ── Aktywny link w nawigacji bocznej ──
+const sections = document.querySelectorAll('.settings-section');
+const navItems = document.querySelectorAll('.settings-nav__item');
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navItems.forEach(item => item.classList.remove('settings-nav__item--active'));
+      const active = document.querySelector(`.settings-nav__item[href="#${entry.target.id}"]`);
+      if (active) active.classList.add('settings-nav__item--active');
+    }
+  });
+}, { threshold: 0.4 });
+
+sections.forEach(s => observer.observe(s));
+
+// Auto-ukryj messages
+document.querySelectorAll('.message').forEach(msg => {
+  setTimeout(() => {
+    msg.style.transition = 'opacity 0.4s';
+    msg.style.opacity    = '0';
+    setTimeout(() => msg.remove(), 400);
+  }, 5000);
+});
+</script>
+{% endblock %}
