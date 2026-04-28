@@ -1,10 +1,3 @@
-🔔 POWIADOMIENIA
-
-[ ] Model Notification lub prostsze — Django messages framework
-[ ] Czerwona kropka znika po przeczytaniu
-[ ] Powiadomienia: pierwsze logowanie, ukończenie profilu, nowe funkcje
-
-
 🔧 USTAWIENIA KONTA
 
 [ ] Strona settings.html — zmiana nicku, emaila, hasła

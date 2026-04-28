@@ -98,8 +98,8 @@ def login_view(request):
                 login(request, user)
 
                 # ── Powiadomienie powitalne (tylko przy pierwszym logowaniu) ──
-                from notifications.models import Notification
-                from notifications.utils  import notify_welcome, notify_feature
+                from Notifications.models import Notification
+                from Notifications.utils  import notify_welcome, notify_feature
 
                 if not Notification.objects.filter(user=user, type='welcome').exists():
                     notify_welcome(user)
