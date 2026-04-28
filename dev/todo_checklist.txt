@@ -1,7 +1,3 @@
-FIX:
-- cały subpage udostępnianie
-
-
 📊 STATYSTYKI
 
 [ ] Licznik pobrań PDF — pole download_count w modelu CV
