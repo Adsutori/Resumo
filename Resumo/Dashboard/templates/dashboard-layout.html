@@ -1081,7 +1081,7 @@
     <!-- Konto -->
     <span class="sidebar__nav-label">Konto</span>
 
-    <a href="#"
+    <a href="{% url 'users:settings' %}"
       class="sidebar__nav-item {% if request.resolver_match.url_name == 'settings' %}sidebar__nav-item--active{% endif %}">
       <i data-lucide="settings"></i>
       Ustawienia

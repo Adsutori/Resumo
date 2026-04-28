@@ -24,34 +24,36 @@
 
 <div class="settings-layout">
 
-  <!-- ── SIDEBAR NAWIGACJA ── -->
+  <!-- ══════════════════════════════
+       SIDEBAR
+  ══════════════════════════════ -->
   <nav class="settings-nav card">
-    <a href="#avatar"   class="settings-nav__item settings-nav__item--active" onclick="scrollTo('avatar')">
+    <a href="#section-avatar"   class="settings-nav__item">
       <i data-lucide="image"></i> Avatar
     </a>
-    <a href="#nick"     class="settings-nav__item" onclick="scrollTo('nick')">
+    <a href="#section-nick"     class="settings-nav__item">
       <i data-lucide="at-sign"></i> Nick
     </a>
-    <a href="#email"    class="settings-nav__item" onclick="scrollTo('email')">
+    <a href="#section-email"    class="settings-nav__item">
       <i data-lucide="mail"></i> E-mail
     </a>
-    <a href="#password" class="settings-nav__item" onclick="scrollTo('password')">
+    <a href="#section-password" class="settings-nav__item">
       <i data-lucide="lock"></i> Hasło
     </a>
-    <a href="#danger"   class="settings-nav__item settings-nav__item--danger" onclick="scrollTo('danger')">
+    <a href="#section-danger"   class="settings-nav__item settings-nav__item--danger">
       <i data-lucide="trash-2"></i> Usuń konto
     </a>
   </nav>
 
-  <!-- ── GŁÓWNA TREŚĆ ── -->
+  <!-- ══════════════════════════════
+       TREŚĆ
+  ══════════════════════════════ -->
   <div class="settings-content">
 
-    <!-- ════════════════════════════════
-         SEKCJA: AVATAR
-    ════════════════════════════════ -->
-    <section class="settings-section card" id="avatar">
+    <!-- ── AVATAR ── -->
+    <section class="settings-section card" id="section-avatar">
       <div class="settings-section__header">
-        <div class="settings-section__icon" style="background:rgba(108,99,255,0.15); color:var(--color-accent);">
+        <div class="settings-section__icon" style="background:rgba(108,99,255,0.15);color:var(--color-accent);">
           <i data-lucide="image"></i>
         </div>
         <div>
@@ -61,20 +63,19 @@
       </div>
 
       <div class="avatar-upload-area">
-        <!-- Podgląd avatara -->
-        <div class="avatar-preview" id="avatarPreview">
+        <div class="avatar-preview">
           {% if request.user.avatar %}
             <img src="{{ request.user.avatar.url }}" alt="Avatar" id="avatarImg">
           {% else %}
             <div class="avatar-placeholder" id="avatarPlaceholder">
               <i data-lucide="user"></i>
             </div>
-            <img src="" alt="Avatar" id="avatarImg" style="display:none;">
+            <img src="" alt="" id="avatarImg" style="display:none;">
           {% endif %}
         </div>
 
-        <!-- Strefa drag & drop -->
-        <div class="avatar-dropzone" id="avatarDropzone" onclick="document.getElementById('avatarFileInput').click()">
+        <div class="avatar-dropzone" id="avatarDropzone"
+             onclick="document.getElementById('avatarFileInput').click()">
           <i data-lucide="upload-cloud"></i>
           <span class="avatar-dropzone__label">Kliknij lub przeciągnij plik</span>
           <span class="avatar-dropzone__sub">JPG, PNG, WEBP · maks. 5 MB</span>
@@ -88,27 +89,24 @@
                accept="image/*" style="display:none;"
                onchange="previewAvatar(this)">
         <div class="settings-section__footer">
-          <button type="submit" class="btn btn--accent btn--sm" id="avatarSaveBtn" disabled>
-            <i data-lucide="save"></i>
-            Zapisz avatar
+          <button type="submit" class="btn btn--accent btn--sm"
+                  id="avatarSaveBtn" disabled>
+            <i data-lucide="save"></i> Zapisz avatar
           </button>
           {% if request.user.avatar %}
           <button type="button" class="btn btn--ghost btn--sm"
                   onclick="openRemoveAvatarModal()">
-            <i data-lucide="trash-2"></i>
-            Usuń zdjęcie
+            <i data-lucide="trash-2"></i> Usuń zdjęcie
           </button>
           {% endif %}
         </div>
       </form>
     </section>
 
-    <!-- ════════════════════════════════
-         SEKCJA: NICK
-    ════════════════════════════════ -->
-    <section class="settings-section card" id="nick">
+    <!-- ── NICK ── -->
+    <section class="settings-section card" id="section-nick">
       <div class="settings-section__header">
-        <div class="settings-section__icon" style="background:rgba(16,185,129,0.15); color:#10b981;">
+        <div class="settings-section__icon" style="background:rgba(16,185,129,0.15);color:#10b981;">
           <i data-lucide="at-sign"></i>
         </div>
         <div>
@@ -116,36 +114,27 @@
           <p class="settings-section__desc">Aktualny: <strong>{{ request.user.nick }}</strong></p>
         </div>
       </div>
-
       <form method="POST" action="{% url 'users:change_nick' %}">
         {% csrf_token %}
         <div class="form-group">
           <label class="form-label">Nowy nick</label>
-          <input
-            type="text"
-            name="nick"
-            class="form-input"
-            placeholder="Wpisz nowy nick"
-            value="{{ request.user.nick }}"
-            maxlength="50"
-            required
-          >
+          <input type="text" name="nick" class="form-input"
+                 placeholder="Wpisz nowy nick"
+                 value="{{ request.user.nick }}"
+                 maxlength="50" required>
         </div>
         <div class="settings-section__footer">
           <button type="submit" class="btn btn--accent btn--sm">
-            <i data-lucide="save"></i>
-            Zapisz nick
+            <i data-lucide="save"></i> Zapisz nick
           </button>
         </div>
       </form>
     </section>
 
-    <!-- ════════════════════════════════
-         SEKCJA: E-MAIL
-    ════════════════════════════════ -->
-    <section class="settings-section card" id="email">
+    <!-- ── E-MAIL ── -->
+    <section class="settings-section card" id="section-email">
       <div class="settings-section__header">
-        <div class="settings-section__icon" style="background:rgba(99,179,237,0.15); color:#63b3ed;">
+        <div class="settings-section__icon" style="background:rgba(99,179,237,0.15);color:#63b3ed;">
           <i data-lucide="mail"></i>
         </div>
         <div>
@@ -153,30 +142,19 @@
           <p class="settings-section__desc">Aktualny: <strong>{{ request.user.email }}</strong></p>
         </div>
       </div>
-
       <form method="POST" action="{% url 'users:change_email' %}">
         {% csrf_token %}
         <div class="form-group">
           <label class="form-label">Nowy adres e-mail</label>
-          <input
-            type="email"
-            name="email"
-            class="form-input"
-            placeholder="nowy@email.com"
-            required
-          >
+          <input type="email" name="email" class="form-input"
+                 placeholder="nowy@email.com" required>
         </div>
         <div class="form-group">
           <label class="form-label">Potwierdź aktualnym hasłem</label>
           <div class="input-password-wrap">
-            <input
-              type="password"
-              name="password"
-              class="form-input"
-              placeholder="Aktualne hasło"
-              id="emailPasswordInput"
-              required
-            >
+            <input type="password" name="password" class="form-input"
+                   placeholder="Aktualne hasło"
+                   id="emailPasswordInput" required>
             <button type="button" class="input-eye-btn"
                     onclick="togglePasswordVisibility('emailPasswordInput', this)">
               <i data-lucide="eye"></i>
@@ -185,19 +163,16 @@
         </div>
         <div class="settings-section__footer">
           <button type="submit" class="btn btn--accent btn--sm">
-            <i data-lucide="save"></i>
-            Zapisz e-mail
+            <i data-lucide="save"></i> Zapisz e-mail
           </button>
         </div>
       </form>
     </section>
 
-    <!-- ════════════════════════════════
-         SEKCJA: HASŁO
-    ════════════════════════════════ -->
-    <section class="settings-section card" id="password">
+    <!-- ── HASŁO ── -->
+    <section class="settings-section card" id="section-password">
       <div class="settings-section__header">
-        <div class="settings-section__icon" style="background:rgba(245,158,11,0.15); color:#f59e0b;">
+        <div class="settings-section__icon" style="background:rgba(245,158,11,0.15);color:#f59e0b;">
           <i data-lucide="lock"></i>
         </div>
         <div>
@@ -205,14 +180,14 @@
           <p class="settings-section__desc">Użyj silnego hasła z min. 8 znaków</p>
         </div>
       </div>
-
       <form method="POST" action="{% url 'users:change_password' %}">
         {% csrf_token %}
         <div class="form-group">
           <label class="form-label">Aktualne hasło</label>
           <div class="input-password-wrap">
             <input type="password" name="current_password" class="form-input"
-                   placeholder="Aktualne hasło" id="currentPwdInput" required>
+                   placeholder="Aktualne hasło"
+                   id="currentPwdInput" required>
             <button type="button" class="input-eye-btn"
                     onclick="togglePasswordVisibility('currentPwdInput', this)">
               <i data-lucide="eye"></i>
@@ -223,14 +198,14 @@
           <label class="form-label">Nowe hasło</label>
           <div class="input-password-wrap">
             <input type="password" name="new_password" class="form-input"
-                   placeholder="Min. 8 znaków" id="newPwdInput"
+                   placeholder="Min. 8 znaków"
+                   id="newPwdInput"
                    oninput="updateStrength(this.value)" required>
             <button type="button" class="input-eye-btn"
                     onclick="togglePasswordVisibility('newPwdInput', this)">
               <i data-lucide="eye"></i>
             </button>
           </div>
-          <!-- Pasek siły hasła -->
           <div class="pwd-strength" id="pwdStrength" style="display:none;">
             <div class="pwd-strength__bar">
               <div class="pwd-strength__fill" id="pwdStrengthFill"></div>
@@ -242,7 +217,8 @@
           <label class="form-label">Powtórz nowe hasło</label>
           <div class="input-password-wrap">
             <input type="password" name="confirm_password" class="form-input"
-                   placeholder="Powtórz nowe hasło" id="confirmPwdInput" required>
+                   placeholder="Powtórz nowe hasło"
+                   id="confirmPwdInput" required>
             <button type="button" class="input-eye-btn"
                     onclick="togglePasswordVisibility('confirmPwdInput', this)">
               <i data-lucide="eye"></i>
@@ -251,19 +227,16 @@
         </div>
         <div class="settings-section__footer">
           <button type="submit" class="btn btn--accent btn--sm">
-            <i data-lucide="save"></i>
-            Zmień hasło
+            <i data-lucide="save"></i> Zmień hasło
           </button>
         </div>
       </form>
     </section>
 
-    <!-- ════════════════════════════════
-         SEKCJA: STREFA NIEBEZPIECZNA
-    ════════════════════════════════ -->
-    <section class="settings-section settings-section--danger card" id="danger">
+    <!-- ── STREFA NIEBEZPIECZNA ── -->
+    <section class="settings-section settings-section--danger card" id="section-danger">
       <div class="settings-section__header">
-        <div class="settings-section__icon" style="background:rgba(239,68,68,0.15); color:#ef4444;">
+        <div class="settings-section__icon" style="background:rgba(239,68,68,0.15);color:#ef4444;">
           <i data-lucide="triangle-alert"></i>
         </div>
         <div>
@@ -271,7 +244,6 @@
           <p class="settings-section__desc">Tych operacji nie można cofnąć.</p>
         </div>
       </div>
-
       <div class="danger-zone">
         <div class="danger-zone__item">
           <div>
@@ -282,64 +254,66 @@
           </div>
           <button type="button" class="btn btn--danger btn--sm"
                   onclick="openDeleteAccountModal()">
-            <i data-lucide="trash-2"></i>
-            Usuń konto
+            <i data-lucide="trash-2"></i> Usuń konto
           </button>
         </div>
       </div>
     </section>
 
-  </div>
-</div>
+  </div><!-- /settings-content -->
+</div><!-- /settings-layout -->
 
 
-<!-- ════════════════════════════════════════
+<!-- ══════════════════════════════════════
      MODAL — Usuń konto
-════════════════════════════════════════ -->
-<div class="modal-overlay" id="deleteAccountModal" role="dialog" aria-modal="true">
+══════════════════════════════════════ -->
+<div id="deleteAccountModal" role="dialog" aria-modal="true">
   <div class="modal">
-    <div class="modal__icon" style="background:rgba(239,68,68,0.1); border-color:rgba(239,68,68,0.3); color:#ef4444;">
+    <div class="modal__icon"
+         style="background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.3);color:#ef4444;">
       <i data-lucide="triangle-alert"></i>
     </div>
     <h3 class="modal__title">Usuń konto</h3>
     <p class="modal__desc">
       Wpisz swoje hasło aby potwierdzić.<br>
-      <span style="color:#ef4444; font-size:12px;">Wszystkie CV i dane zostaną trwale usunięte.</span>
+      <span style="color:#ef4444;font-size:12px;">
+        Wszystkie CV i dane zostaną trwale usunięte.
+      </span>
     </p>
     <form method="POST" action="{% url 'users:delete_account' %}" style="width:100%;">
       {% csrf_token %}
       <div class="form-group" style="margin-bottom:12px;">
         <div class="input-password-wrap">
           <input type="password" name="password" class="form-input"
-                 placeholder="Wpisz hasło" id="deleteAccountPwd" required>
+                 placeholder="Wpisz hasło"
+                 id="deleteAccountPwd" required>
           <button type="button" class="input-eye-btn"
                   onclick="togglePasswordVisibility('deleteAccountPwd', this)">
             <i data-lucide="eye"></i>
           </button>
         </div>
       </div>
-      <label class="checkbox-label" style="margin-bottom:16px; display:flex; gap:8px; align-items:flex-start; font-size:12px; color:var(--color-text-muted); cursor:pointer;">
-        <input type="checkbox" name="confirm" required style="margin-top:2px; accent-color:#ef4444;">
+      <label style="display:flex;gap:8px;align-items:flex-start;font-size:12px;
+                    color:var(--color-text-muted);cursor:pointer;margin-bottom:16px;">
+        <input type="checkbox" name="confirm" required
+               style="margin-top:2px;accent-color:#ef4444;">
         Rozumiem, że tej operacji nie można cofnąć.
       </label>
       <div class="modal__actions">
-        <button type="button" class="btn btn--ghost" onclick="closeDeleteAccountModal()">
-          Anuluj
-        </button>
+        <button type="button" class="btn btn--ghost"
+                onclick="closeDeleteAccountModal()">Anuluj</button>
         <button type="submit" class="btn btn--danger">
-          <i data-lucide="trash-2"></i>
-          Usuń na zawsze
+          <i data-lucide="trash-2"></i> Usuń na zawsze
         </button>
       </div>
     </form>
   </div>
 </div>
 
-
-<!-- ════════════════════════════════════════
+<!-- ══════════════════════════════════════
      MODAL — Usuń avatar
-════════════════════════════════════════ -->
-<div class="modal-overlay" id="removeAvatarModal" role="dialog" aria-modal="true">
+══════════════════════════════════════ -->
+<div id="removeAvatarModal"  role="dialog" aria-modal="true">
   <div class="modal">
     <div class="modal__icon">
       <i data-lucide="image-off"></i>
@@ -347,15 +321,14 @@
     <h3 class="modal__title">Usuń zdjęcie profilowe</h3>
     <p class="modal__desc">Czy na pewno chcesz usunąć swój avatar?</p>
     <div class="modal__actions">
-      <button type="button" class="btn btn--ghost" onclick="closeRemoveAvatarModal()">
-        Anuluj
-      </button>
-      <form method="POST" action="{% url 'users:upload_avatar' %}" enctype="multipart/form-data">
+      <button type="button" class="btn btn--ghost"
+              onclick="closeRemoveAvatarModal()">Anuluj</button>
+      <form method="POST" action="{% url 'users:upload_avatar' %}"
+            enctype="multipart/form-data">
         {% csrf_token %}
         <input type="hidden" name="remove_avatar" value="1">
         <button type="submit" class="btn btn--danger">
-          <i data-lucide="trash-2"></i>
-          Usuń avatar
+          <i data-lucide="trash-2"></i> Usuń avatar
         </button>
       </form>
     </div>
@@ -363,9 +336,6 @@
 </div>
 
 
-<!-- ════════════════════════════════════════
-     STYLE
-════════════════════════════════════════ -->
 <style>
   .settings-layout {
     display: grid;
@@ -374,7 +344,7 @@
     align-items: start;
   }
 
-  /* ── Nawigacja boczna ── */
+  /* ── Nawigacja ── */
   .settings-nav {
     position: sticky;
     top: 24px;
@@ -395,7 +365,6 @@
     color: var(--color-text-muted);
     text-decoration: none;
     transition: background 0.15s, color 0.15s;
-    cursor: pointer;
   }
 
   .settings-nav__item i {
@@ -456,10 +425,7 @@
     flex-shrink: 0;
   }
 
-  .settings-section__icon i {
-    width: 18px;
-    height: 18px;
-  }
+  .settings-section__icon i { width: 18px; height: 18px; }
 
   .settings-section__title {
     font-size: 15px;
@@ -513,10 +479,7 @@
     opacity: 0.5;
   }
 
-  .avatar-placeholder i {
-    width: 32px;
-    height: 32px;
-  }
+  .avatar-placeholder i { width: 32px; height: 32px; }
 
   .avatar-dropzone {
     flex: 1;
@@ -538,22 +501,9 @@
     background: var(--color-accent-glow);
   }
 
-  .avatar-dropzone i {
-    width: 28px;
-    height: 28px;
-    color: var(--color-text-muted);
-  }
-
-  .avatar-dropzone__label {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--color-text);
-  }
-
-  .avatar-dropzone__sub {
-    font-size: 11px;
-    color: var(--color-text-muted);
-  }
+  .avatar-dropzone i { width: 28px; height: 28px; color: var(--color-text-muted); }
+  .avatar-dropzone__label { font-size: 13px; font-weight: 600; color: var(--color-text); }
+  .avatar-dropzone__sub   { font-size: 11px; color: var(--color-text-muted); }
 
   /* ── Formularze ── */
   .form-group {
@@ -590,14 +540,8 @@
     box-shadow: 0 0 0 3px rgba(108,99,255,0.15);
   }
 
-  /* ── Input z okiem ── */
-  .input-password-wrap {
-    position: relative;
-  }
-
-  .input-password-wrap .form-input {
-    padding-right: 44px;
-  }
+  .input-password-wrap { position: relative; }
+  .input-password-wrap .form-input { padding-right: 44px; }
 
   .input-eye-btn {
     position: absolute;
@@ -610,7 +554,6 @@
     color: var(--color-text-muted);
     display: flex;
     align-items: center;
-    justify-content: center;
     padding: 4px;
     border-radius: var(--radius-sm);
     transition: color 0.15s;
@@ -682,7 +625,6 @@
       position: static;
       flex-direction: row;
       flex-wrap: wrap;
-      gap: 4px;
     }
 
     .settings-nav__item--danger {
@@ -696,17 +638,142 @@
       align-items: flex-start;
     }
 
-    .avatar-dropzone {
-      width: 100%;
-    }
-
     .danger-zone__item {
       flex-direction: column;
       align-items: flex-start;
     }
   }
-</style>
 
+    /* ══════════════════════════════════════
+    SETTINGS — MODAL OVERRIDE
+    Wymusza styl zgodny z dashboard-layout
+    ══════════════════════════════════════ */
+
+    #deleteAccountModal,
+    #removeAvatarModal {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 9999 !important;
+    background: rgba(0, 0, 0, 0.7) !important;
+    backdrop-filter: blur(4px) !important;
+    display: none;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 20px !important;
+    /* Reset wszystkiego co mogło przyjść z .settings-layout */
+    grid-template-columns: unset !important;
+    gap: unset !important;
+    }
+
+    #deleteAccountModal.modal--open,
+    #removeAvatarModal.modal--open {
+    display: flex !important;
+    }
+
+    #deleteAccountModal .modal,
+    #removeAvatarModal .modal {
+    background: var(--color-surface) !important;
+    border: 1px solid var(--color-border) !important;
+    border-radius: var(--radius-2xl) !important;
+    padding: 32px !important;
+    width: 100% !important;
+    max-width: 420px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 16px !important;
+    text-align: center !important;
+    box-shadow: var(--shadow-xl) !important;
+    animation: modalIn 0.2s ease !important;
+    /* Reset grid który mógł się odziedziczyć */
+    grid-template-columns: unset !important;
+    position: relative !important;
+    inset: unset !important;
+    }
+
+    #deleteAccountModal .modal__icon,
+    #removeAvatarModal .modal__icon {
+    width: 56px !important;
+    height: 56px !important;
+    border-radius: 50% !important;
+    background: rgba(239, 68, 68, 0.1) !important;
+    border: 1px solid rgba(239, 68, 68, 0.3) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #ef4444 !important;
+    flex-shrink: 0 !important;
+    }
+
+    #deleteAccountModal .modal__icon i,
+    #removeAvatarModal .modal__icon i {
+    width: 24px !important;
+    height: 24px !important;
+    }
+
+    #deleteAccountModal .modal__title,
+    #removeAvatarModal .modal__title {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: var(--color-text) !important;
+    margin: 0 !important;
+    }
+
+    #deleteAccountModal .modal__desc,
+    #removeAvatarModal .modal__desc {
+    font-size: 14px !important;
+    color: var(--color-text-muted) !important;
+    line-height: 1.6 !important;
+    margin: 0 !important;
+    }
+
+    #deleteAccountModal .modal__actions,
+    #removeAvatarModal .modal__actions {
+    display: flex !important;
+    gap: 10px !important;
+    width: 100% !important;
+    justify-content: center !important;
+    margin-top: 4px !important;
+    }
+
+    #deleteAccountModal .modal__actions .btn,
+    #removeAvatarModal .modal__actions .btn {
+    flex: 1 !important;
+    justify-content: center !important;
+    }
+
+    #deleteAccountModal .modal__actions form,
+    #removeAvatarModal .modal__actions form {
+    flex: 1 !important;
+    display: flex !important;
+    }
+
+    #deleteAccountModal .modal__actions form .btn,
+    #removeAvatarModal .modal__actions form .btn {
+    width: 100% !important;
+    }
+
+    /* Inputy wewnątrz modala */
+    #deleteAccountModal .form-input,
+    #removeAvatarModal .form-input {
+    text-align: left !important;
+    }
+
+    #deleteAccountModal form,
+    #removeAvatarModal form {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0 !important;
+    }
+
+    @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95) translateY(8px); }
+    to   { opacity: 1; transform: scale(1)    translateY(0);   }
+    }
+
+</style>
 
 {% endblock %}
 
@@ -714,11 +781,10 @@
 <script>
 'use strict';
 
-// ── Podgląd avatara przed uploadem ──
+// ── Avatar podgląd ──
 function previewAvatar(input) {
   const file = input.files[0];
   if (!file) return;
-
   const img         = document.getElementById('avatarImg');
   const placeholder = document.getElementById('avatarPlaceholder');
   const saveBtn     = document.getElementById('avatarSaveBtn');
@@ -726,10 +792,10 @@ function previewAvatar(input) {
 
   const reader = new FileReader();
   reader.onload = e => {
-    img.src          = e.target.result;
+    img.src           = e.target.result;
     img.style.display = 'block';
     if (placeholder) placeholder.style.display = 'none';
-    if (saveBtn) saveBtn.disabled = false;
+    if (saveBtn)     saveBtn.disabled = false;
     if (dropzone) {
       dropzone.querySelector('.avatar-dropzone__label').textContent = file.name;
       dropzone.querySelector('.avatar-dropzone__sub').textContent =
@@ -783,16 +849,15 @@ function updateStrength(value) {
   const fill  = document.getElementById('pwdStrengthFill');
   const label = document.getElementById('pwdStrengthLabel');
   if (!wrap) return;
-
   if (!value) { wrap.style.display = 'none'; return; }
   wrap.style.display = 'flex';
 
   let score = 0;
-  if (value.length >= 8)                    score++;
-  if (value.length >= 12)                   score++;
-  if (/[A-Z]/.test(value))                  score++;
-  if (/[0-9]/.test(value))                  score++;
-  if (/[^A-Za-z0-9]/.test(value))           score++;
+  if (value.length >= 8)           score++;
+  if (value.length >= 12)          score++;
+  if (/[A-Z]/.test(value))         score++;
+  if (/[0-9]/.test(value))         score++;
+  if (/[^A-Za-z0-9]/.test(value))  score++;
 
   const levels = [
     { pct: '20%',  color: '#ef4444', text: 'Bardzo słabe' },
@@ -801,7 +866,6 @@ function updateStrength(value) {
     { pct: '80%',  color: '#84cc16', text: 'Silne'        },
     { pct: '100%', color: '#10b981', text: 'Bardzo silne' },
   ];
-
   const lvl = levels[Math.min(score - 1, 4)] || levels[0];
   fill.style.width      = lvl.pct;
   fill.style.background = lvl.color;
@@ -811,55 +875,55 @@ function updateStrength(value) {
 
 // ── Modals ──
 function openDeleteAccountModal() {
-  document.getElementById('deleteAccountModal').classList.add('modal-overlay--active');
+  document.getElementById('deleteAccountModal').classList.add('modal--open');
   document.body.style.overflow = 'hidden';
 }
-
 function closeDeleteAccountModal() {
-  document.getElementById('deleteAccountModal').classList.remove('modal-overlay--active');
+  document.getElementById('deleteAccountModal').classList.remove('modal--open');
   document.body.style.overflow = '';
 }
-
 function openRemoveAvatarModal() {
-  document.getElementById('removeAvatarModal').classList.add('modal-overlay--active');
+  document.getElementById('removeAvatarModal').classList.add('modal--open');
   document.body.style.overflow = 'hidden';
 }
-
 function closeRemoveAvatarModal() {
-  document.getElementById('removeAvatarModal').classList.remove('modal-overlay--active');
+  document.getElementById('removeAvatarModal').classList.remove('modal--open');
   document.body.style.overflow = '';
 }
 
-// Zamknij modal klikając w overlay
+// Zamknij klikając w overlay
 ['deleteAccountModal', 'removeAvatarModal'].forEach(id => {
   const el = document.getElementById(id);
   if (el) el.addEventListener('click', e => {
     if (e.target === el) {
-      el.classList.remove('modal-overlay--active');
+      el.classList.remove('modal--open');
       document.body.style.overflow = '';
     }
   });
 });
 
-// Escape zamyka modals
+// Escape
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     ['deleteAccountModal', 'removeAvatarModal'].forEach(id => {
-      document.getElementById(id)?.classList.remove('modal-overlay--active');
+      document.getElementById(id)?.classList.remove('modal--open');
     });
     document.body.style.overflow = '';
   }
 });
 
-// ── Aktywny link w nawigacji bocznej ──
+
+// ── Aktywny link w nav ──
 const sections = document.querySelectorAll('.settings-section');
 const navItems = document.querySelectorAll('.settings-nav__item');
 
 const observer = new IntersectionObserver(entries => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
-      navItems.forEach(item => item.classList.remove('settings-nav__item--active'));
-      const active = document.querySelector(`.settings-nav__item[href="#${entry.target.id}"]`);
+      navItems.forEach(i => i.classList.remove('settings-nav__item--active'));
+      const active = document.querySelector(
+        `.settings-nav__item[href="#${entry.target.id}"]`
+      );
       if (active) active.classList.add('settings-nav__item--active');
     }
   });
@@ -867,7 +931,7 @@ const observer = new IntersectionObserver(entries => {
 
 sections.forEach(s => observer.observe(s));
 
-// Auto-ukryj messages
+// ── Auto-ukryj messages ──
 document.querySelectorAll('.message').forEach(msg => {
   setTimeout(() => {
     msg.style.transition = 'opacity 0.4s';
