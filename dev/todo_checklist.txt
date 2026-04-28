@@ -34,17 +34,5 @@
 
 🧹 PORZĄDKI TECHNICZNE
 
-[ ] LOGIN_REDIRECT_URL zmienić z /users/dashboard/ na /dashboard/
 [ ] Dodać @login_required do wszystkich widoków dashboardu
-[ ] favicon.ico — dodać do static/ (teraz 404)
 [ ] Obsługa błędów 404 / 500 — własne strony błędów
-[ ] Zmienne środowiskowe — upewnić się że SECRET_KEY i dane DB są w .env
-
-
-
-
-
-
-
-
-
