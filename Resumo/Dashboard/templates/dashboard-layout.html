@@ -715,56 +715,61 @@
     <!-- Nawigacja -->
     <nav class="sidebar__nav">
 
-      <!-- Główne -->
-      <span class="sidebar__nav-label">Menu</span>
+    <!-- Główne -->
+    <span class="sidebar__nav-label">Menu</span>
 
-      <a href="{% url 'dashboard:dashboard' %}" class="sidebar__nav-item sidebar__nav-item--active">
-        <i data-lucide="home"></i>
-        Moje CV
-      </a>
+    <a href="{% url 'dashboard:dashboard' %}"
+      class="sidebar__nav-item {% if request.resolver_match.url_name == 'dashboard' %}sidebar__nav-item--active{% endif %}">
+      <i data-lucide="home"></i>
+      Moje CV
+    </a>
 
-      <a href="{% url 'dashboard:create_cv' %}" class="sidebar__nav-item sidebar__nav-item--accent">
-        <i data-lucide="plus-circle"></i>
-        Nowe CV
-      </a>
+    <a href="{% url 'dashboard:create_cv' %}" class="sidebar__nav-item sidebar__nav-item--accent">
+      <i data-lucide="plus-circle"></i>
+      Nowe CV
+    </a>
 
-      <a href="{% url 'dashboard:create_cv' %}" class="sidebar__nav-item">
-        <i data-lucide="layout-template"></i>
-        Szablony
-      </a>
+    <a href="{% url 'dashboard:create_cv' %}"
+      class="sidebar__nav-item {% if request.resolver_match.url_name == 'create_cv' %}sidebar__nav-item--active{% endif %}">
+      <i data-lucide="layout-template"></i>
+      Szablony
+    </a>
 
-      <a href="{% url 'dashboard:share_dashboard' %}" class="sidebar__nav-item">
-        <i data-lucide="share-2"></i>
-        Udostępnij CV
-      </a>
+    <a href="{% url 'dashboard:share_dashboard' %}"
+      class="sidebar__nav-item {% if request.resolver_match.url_name == 'share_dashboard' %}sidebar__nav-item--active{% endif %}">
+      <i data-lucide="share-2"></i>
+      Udostępnij CV
+    </a>
 
-      <!-- Narzędzia -->
-      <span class="sidebar__nav-label">Narzędzia</span>
+    <!-- Narzędzia -->
+    <span class="sidebar__nav-label">Narzędzia</span>
 
-      <a href="#" class="sidebar__nav-item">
-        <i data-lucide="sparkles"></i>
-        Analiza AI
-        <span class="sidebar__badge sidebar__badge--soon">Wkrótce</span>
-      </a>
+    <a href="#" class="sidebar__nav-item">
+      <i data-lucide="sparkles"></i>
+      Analiza AI
+      <span class="sidebar__badge sidebar__badge--soon">Wkrótce</span>
+    </a>
 
-      <a href="#" class="sidebar__nav-item">
-        <i data-lucide="briefcase"></i>
-        Aplikacje
-        <span class="sidebar__badge sidebar__badge--soon">Wkrótce</span>
-      </a>
+    <a href="#" class="sidebar__nav-item">
+      <i data-lucide="briefcase"></i>
+      Aplikacje
+      <span class="sidebar__badge sidebar__badge--soon">Wkrótce</span>
+    </a>
 
-      <!-- Konto -->
-      <span class="sidebar__nav-label">Konto</span>
+    <!-- Konto -->
+    <span class="sidebar__nav-label">Konto</span>
 
-      <a href="#" class="sidebar__nav-item">
-        <i data-lucide="settings"></i>
-        Ustawienia
-      </a>
+    <a href="#"
+      class="sidebar__nav-item {% if request.resolver_match.url_name == 'settings' %}sidebar__nav-item--active{% endif %}">
+      <i data-lucide="settings"></i>
+      Ustawienia
+    </a>
 
-      <a href="#" class="sidebar__nav-item">
-        <i data-lucide="help-circle"></i>
-        Pomoc
-      </a>
+    <a href="#" class="sidebar__nav-item">
+      <i data-lucide="help-circle"></i>
+      Pomoc
+    </a>
+
 
     </nav>
 
