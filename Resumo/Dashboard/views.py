@@ -202,6 +202,15 @@ def dashboard(request):
         'profile_completion': profile_completion,
         'activity_days':      activity_days,
     }
+
+    if profile_completion == 100:
+            from Notifications.utils import notify_profile_complete
+            from Notifications.models import Notification
+            if not Notification.objects.filter(
+                user=request.user, type='profile'
+            ).exists():
+                notify_profile_complete(request.user)
+
     return render(request, 'dashboard/dashboard.html', context)
 
 

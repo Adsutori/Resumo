@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     # Local
     'Users',
     'Dashboard',
+    'Notifications',
 ]
 
 MIDDLEWARE = [

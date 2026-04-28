@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from Notifications.utils import notify_welcome, notify_feature
 
 app_name = 'users'
 
