@@ -25,6 +25,9 @@ urlpatterns = [
     path('', views.landing_page, name="landing_page"),
     path('users/', include("Users.urls")),
     path('dashboard/', include('Dashboard.urls')),
-    path('notifications/', include('Notifications.urls', namespace='notifications')),   
+    path('notifications/', include('Notifications.urls', namespace='notifications')),
+    path('ai/',        include('AI_analysis.urls',    namespace='ai_analysis')),
+    path('jobs/',      include('Nob_tracker.urls',     namespace='job_tracker')),
+    path('linkedin/',  include('LinkedIn_import.urls', namespace='linkedin_import')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

@@ -1066,15 +1066,24 @@
     <!-- Narzędzia -->
     <span class="sidebar__nav-label">Narzędzia</span>
 
-    <a href="#" class="sidebar__nav-item">
+    <a href="{% url 'ai_analysis:index' %}"
+      class="sidebar__nav-item {% if request.resolver_match.app_name == 'ai_analysis' %}sidebar__nav-item--active{% endif %}">
       <i data-lucide="sparkles"></i>
       Analiza AI
       <span class="sidebar__badge sidebar__badge--soon">Wkrótce</span>
     </a>
 
-    <a href="#" class="sidebar__nav-item">
+    <a href="{% url 'job_tracker:index' %}"
+      class="sidebar__nav-item {% if request.resolver_match.app_name == 'job_tracker' %}sidebar__nav-item--active{% endif %}">
       <i data-lucide="briefcase"></i>
       Aplikacje
+      <span class="sidebar__badge sidebar__badge--soon">Wkrótce</span>
+    </a>
+
+    <a href="{% url 'linkedin_import:index' %}"
+      class="sidebar__nav-item {% if request.resolver_match.app_name == 'linkedin_import' %}sidebar__nav-item--active{% endif %}">
+      <i data-lucide="linkedin"></i>
+      Import LinkedIn
       <span class="sidebar__badge sidebar__badge--soon">Wkrótce</span>
     </a>
 

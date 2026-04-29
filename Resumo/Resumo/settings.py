@@ -38,6 +38,9 @@ INSTALLED_APPS = [
     'Users',
     'Dashboard',
     'Notifications',
+    'AI_analysis',
+    'Job_tracker',
+    'LinkedIn_import',
 ]
 
 MIDDLEWARE = [
