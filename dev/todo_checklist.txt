@@ -1,8 +1,5 @@
-🔜 WKRÓTCE (placeholder na teraz)
-
-[ ] Analiza CV przez AI — badge "Wkrótce", docelowo integracja z OpenAI API - dodać aplikację (nazwac jakos typu AI) i w niej dac template, gdzie bedzie napisane 'wkrotce' i moze tam dac jakies male demo jak to bedzie dzialac
-[ ] Śledzenie aplikacji — tabela z aplikacjami o pracę (firma, stanowisko, status) - dodać aplikację (nazwac jakos) i w niej dac template, gdzie bedzie napisane 'wkrotce' i moze tam dac jakies male demo jak to bedzie dzialac
-[ ] Import z LinkedIn — wymaga LinkedIn API lub parsowania PDF eksportu - dodać aplikację (nazwac jakos) i w niej dac template, gdzie bedzie napisane 'wkrotce' i moze tam dac jakies male demo jak to bedzie dzialac
+FIX:
+- inne konta nie mogą pobrac CV - zrobic zeby cv bylo po udostepnieniu dostepne do pobrania nawet dla nie zalogowanych userow
 
 
 ✅ REGULAMIN I POLITYKA PRYWATNOŚCI
@@ -14,3 +11,12 @@
 
 [ ] Dodać @login_required do wszystkich widoków dashboardu
 [ ] Obsługa błędów 404 / 500 — własne strony błędów
+
+
+📋 Lista "przed upublicznieniem"
+
+[ ] Napisz Politykę Prywatności (możesz użyć generatora np. iubenda.com)
+[ ] Napisz Regulamin serwisu
+[ ] Dodaj banner cookies jeśli używasz analityki
+[ ] Zamień fikcyjne dane demo na neutralne nazwy firm
+[ ] Usuń lub zastąp loga marek w mockupach
