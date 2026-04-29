@@ -1,0 +1,73 @@
+{% extends 'landing-layout.html' %}
+
+{% block title %}Nie znaleziono strony — Resumo{% endblock %}
+
+{% block content %}
+
+<section class="error-section">
+  <div class="container error-container">
+
+    <div class="error-visual" aria-hidden="true">
+      <div class="error-visual__code">404</div>
+      <div class="error-visual__glow"></div>
+    </div>
+
+    <div class="error-content">
+
+      <div class="error-badge">
+        <i data-lucide="map-pin-off" aria-hidden="true"></i>
+        <span>Strona nie istnieje</span>
+      </div>
+
+      <h1 class="error-title">Ups, zgubiłeś się?</h1>
+
+      <p class="error-desc">
+        Strona, której szukasz, nie istnieje lub została przeniesiona.
+        Sprawdź adres URL albo wróć tam, skąd przyszedłeś.
+      </p>
+
+      <div class="error-actions">
+        <a href="/" class="btn btn--accent btn--lg">
+          <i data-lucide="house" aria-hidden="true"></i>
+          Strona główna
+        </a>
+        <button onclick="history.back()" class="btn btn--ghost btn--lg">
+          <i data-lucide="arrow-left" aria-hidden="true"></i>
+          Poprzednia strona
+        </button>
+      </div>
+
+      <div class="error-links">
+        <p class="error-links__label">Może szukałeś:</p>
+        <div class="error-links__grid">
+          {% if user.is_authenticated %}
+            <a href="{% url 'dashboard:dashboard' %}" class="error-quicklink">
+              <i data-lucide="layout-dashboard" aria-hidden="true"></i>
+              Dashboard
+            </a>
+          {% else %}
+            <a href="{% url 'users:login' %}" class="error-quicklink">
+              <i data-lucide="log-in" aria-hidden="true"></i>
+              Logowanie
+            </a>
+            <a href="{% url 'users:register' %}" class="error-quicklink">
+              <i data-lucide="user-plus" aria-hidden="true"></i>
+              Rejestracja
+            </a>
+          {% endif %}
+          <a href="/terms" class="error-quicklink">
+            <i data-lucide="scroll-text" aria-hidden="true"></i>
+            Regulamin
+          </a>
+          <a href="/privacy" class="error-quicklink">
+            <i data-lucide="shield-check" aria-hidden="true"></i>
+            Prywatność
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

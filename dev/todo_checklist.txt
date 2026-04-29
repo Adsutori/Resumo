@@ -2,11 +2,6 @@ FIX:
 - inne konta nie mogą pobrac CV - zrobic zeby cv bylo po udostepnieniu dostepne do pobrania nawet dla nie zalogowanych userow
 
 
-✅ REGULAMIN I POLITYKA PRYWATNOŚCI
-
-[ ] Dodać podstrony
-
-
 🧹 PORZĄDKI TECHNICZNE
 
 [ ] Dodać @login_required do wszystkich widoków dashboardu

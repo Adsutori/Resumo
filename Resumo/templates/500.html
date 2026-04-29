@@ -1,0 +1,70 @@
+{% extends 'landing-layout.html' %}
+
+{% block title %}Błąd serwera — Resumo{% endblock %}
+
+{% block content %}
+
+<section class="error-section">
+  <div class="container error-container">
+
+    <div class="error-visual error-visual--red" aria-hidden="true">
+      <div class="error-visual__code">500</div>
+      <div class="error-visual__glow error-visual__glow--red"></div>
+    </div>
+
+    <div class="error-content">
+
+      <div class="error-badge error-badge--red">
+        <i data-lucide="server-crash" aria-hidden="true"></i>
+        <span>Błąd serwera</span>
+      </div>
+
+      <h1 class="error-title">Coś poszło nie tak</h1>
+
+      <p class="error-desc">
+        Po naszej stronie wystąpił nieoczekiwany błąd. Pracujemy nad jego naprawą.
+        Spróbuj ponownie za chwilę lub wróć na stronę główną.
+      </p>
+
+      <div class="error-notice">
+        <i data-lucide="info" aria-hidden="true"></i>
+        <p>To jest projekt studencki w fazie beta — błędy mogą się zdarzać. Jeśli problem się powtarza, napisz do nas.</p>
+      </div>
+
+      <div class="error-actions">
+        <a href="/" class="btn btn--accent btn--lg">
+          <i data-lucide="house" aria-hidden="true"></i>
+          Strona główna
+        </a>
+        <button onclick="location.reload()" class="btn btn--ghost btn--lg">
+          <i data-lucide="refresh-cw" aria-hidden="true"></i>
+          Odśwież stronę
+        </button>
+      </div>
+
+      <div class="error-links">
+        <p class="error-links__label">Przydatne linki:</p>
+        <div class="error-links__grid">
+          {% if user.is_authenticated %}
+            <a href="{% url 'dashboard:dashboard' %}" class="error-quicklink">
+              <i data-lucide="layout-dashboard" aria-hidden="true"></i>
+              Dashboard
+            </a>
+          {% else %}
+            <a href="{% url 'users:login' %}" class="error-quicklink">
+              <i data-lucide="log-in" aria-hidden="true"></i>
+              Logowanie
+            </a>
+          {% endif %}
+          <a href="mailto:twoj@email.pl" class="error-quicklink">
+            <i data-lucide="mail" aria-hidden="true"></i>
+            Napisz do nas
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

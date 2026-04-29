@@ -20,6 +20,9 @@ from . import views
 from django.conf.urls.static import static
 from django.conf import settings
 
+handler404 = 'Resumo.views.error_404'
+handler500 = 'Resumo.views.error_500'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.landing_page, name="landing_page"),
@@ -31,5 +34,7 @@ urlpatterns = [
     path('ai/',        include('AI_analysis.urls',    namespace='ai_analysis')),
     path('jobs/',      include('Job_tracker.urls',     namespace='job_tracker')),
     path('linkedin/',  include('LinkedIn_import.urls', namespace='linkedin_import')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('test-404/', views.test_404),
+    path('test-500/', views.test_500),
+] + static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
 
