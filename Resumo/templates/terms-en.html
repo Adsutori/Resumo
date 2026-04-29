@@ -1,0 +1,227 @@
+{# templates/terms.html #}
+{% extends 'landing-layout.html' %}
+
+{% block title %}Terms of Service — Resumo{% endblock %}
+
+{% block content %}
+
+<section class="legal-section">
+  <div class="container legal-container">
+
+    <!-- Sidebar nav -->
+    <aside class="legal-sidebar" aria-label="Table of contents">
+      <div class="legal-sidebar__inner">
+        <p class="legal-sidebar__label">On this page</p>
+        <nav>
+          <a href="#general"       class="legal-sidebar__link">§1. General</a>
+          <a href="#nature"        class="legal-sidebar__link">§2. Nature of service</a>
+          <a href="#account"       class="legal-sidebar__link">§3. Account</a>
+          <a href="#rules"         class="legal-sidebar__link">§4. Usage rules</a>
+          <a href="#ip"            class="legal-sidebar__link">§5. Intellectual property</a>
+          <a href="#liability"     class="legal-sidebar__link">§6. Liability</a>
+          <a href="#privacy-ref"   class="legal-sidebar__link">§7. Privacy</a>
+          <a href="#changes"       class="legal-sidebar__link">§8. Changes</a>
+          <a href="#final"         class="legal-sidebar__link">§9. Final provisions</a>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <article class="legal-content" aria-labelledby="terms-heading">
+
+      <!-- Header -->
+      <div class="legal-header">
+        <div class="legal-header__icon">
+          <i data-lucide="scroll-text" aria-hidden="true"></i>
+        </div>
+        <div>
+          <h1 class="legal-header__title" id="terms-heading">Terms of Service</h1>
+          <p class="legal-header__meta">
+            <i data-lucide="calendar" aria-hidden="true"></i>
+            Version 1.0 &nbsp;·&nbsp; Effective: 29 April 2026
+          </p>
+        </div>
+      </div>
+
+      <!-- Student project notice -->
+      <div class="legal-notice legal-notice--info">
+        <i data-lucide="info" aria-hidden="true"></i>
+        <div>
+          <strong>Student project notice</strong>
+          <p>Resumo is a student portfolio project created for educational and demonstration purposes. It is not a commercial product. Do not store real sensitive personal data in this service.</p>
+        </div>
+      </div>
+
+      <!-- §1 -->
+      <section class="legal-section-block" id="general">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">§1</span>
+          General provisions
+        </h2>
+        <ol class="legal-list">
+          <li>The service <strong>Resumo</strong> (hereinafter: "Service") is a student / portfolio project available at the web address indicated by the Administrator.</li>
+          <li>The Administrator and operator of the Service is an individual running the project for educational and demonstration purposes (hereinafter: "Administrator").</li>
+          <li>Using the Service constitutes full acceptance of these Terms.</li>
+          <li>The Service is provided <strong>free of charge</strong>, for demonstration and testing purposes only.</li>
+        </ol>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- §2 -->
+      <section class="legal-section-block" id="nature">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">§2</span>
+          Nature of the service
+        </h2>
+        <ol class="legal-list">
+          <li>Resumo is a <strong>student project</strong> created for educational and portfolio purposes.</li>
+          <li>The Service is not a commercial product. The Administrator does not guarantee continuity of operation, availability, or durability of stored data.</li>
+          <li>The User acknowledges that data entered into the Service may be deleted at any time without prior notice.</li>
+          <li class="legal-list__highlight">The Service is <strong>not intended for storing real, sensitive personal data.</strong> Users are asked to use fictitious or test data.</li>
+        </ol>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- §3 -->
+      <section class="legal-section-block" id="account">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">§3</span>
+          Registration and user account
+        </h2>
+        <ol class="legal-list">
+          <li>Full use of the Service requires creating an account.</li>
+          <li>The User agrees to:
+            <ul class="legal-sublist">
+              <li>provide accurate data upon registration (or test data — in accordance with §2 point 4),</li>
+              <li>keep their account password confidential,</li>
+              <li>immediately notify the Administrator of any unauthorized access to their account.</li>
+            </ul>
+          </li>
+          <li>One user may hold one account.</li>
+          <li>The Administrator reserves the right to delete an account without stating a reason, in particular in the event of a breach of these Terms.</li>
+        </ol>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- §4 -->
+      <section class="legal-section-block" id="rules">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">§4</span>
+          Usage rules
+        </h2>
+        <p class="legal-lead">The User agrees to:</p>
+        <ul class="legal-checklist">
+          <li><i data-lucide="check" aria-hidden="true"></i> Use the Service in accordance with applicable law and these Terms.</li>
+          <li><i data-lucide="check" aria-hidden="true"></i> Not upload content that infringes third-party rights, including copyright.</li>
+          <li><i data-lucide="check" aria-hidden="true"></i> Not use the Service for commercial purposes without the Administrator's consent.</li>
+          <li><i data-lucide="x" aria-hidden="true" class="icon--danger"></i> Not attempt to break in, test vulnerabilities, or overload the Service infrastructure.</li>
+          <li><i data-lucide="x" aria-hidden="true" class="icon--danger"></i> Not automate access to the Service (bots, scrapers) without the Administrator's written consent.</li>
+        </ul>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- §5 -->
+      <section class="legal-section-block" id="ip">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">§5</span>
+          Intellectual property
+        </h2>
+        <ol class="legal-list">
+          <li>All graphic elements, source code, and the concept of the Service are the property of the Administrator and are protected by copyright law.</li>
+          <li>The User retains full rights to content they have entered into the Service (CV content, profile data).</li>
+          <li>The User grants the Administrator a non-exclusive, royalty-free licence to store and display the entered content solely for the purpose of providing the Service.</li>
+        </ol>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- §6 -->
+      <section class="legal-section-block" id="liability">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">§6</span>
+          Limitation of liability
+        </h2>
+        <div class="legal-notice legal-notice--warning">
+          <i data-lucide="triangle-alert" aria-hidden="true"></i>
+          <p>The Service is provided <strong>"as-is"</strong>, without any warranties of any kind.</p>
+        </div>
+        <ol class="legal-list">
+          <li>The Administrator shall not be liable for:
+            <ul class="legal-sublist">
+              <li>loss of data caused by a technical failure or service interruption,</li>
+              <li>damages resulting from interruptions in Service availability,</li>
+              <li>actions of third parties, including hacking attacks,</li>
+              <li>decisions made by the User based on content generated by the Service.</li>
+            </ul>
+          </li>
+          <li>Due to the student and demonstrative nature of the project, the Administrator does not guarantee Service availability at any SLA level.</li>
+          <li>The Administrator's total liability to the User is limited to PLN 0, unless mandatory applicable law provides otherwise.</li>
+        </ol>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- §7 -->
+      <section class="legal-section-block" id="privacy-ref">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">§7</span>
+          Personal data
+        </h2>
+        <p class="legal-lead">
+          The principles of personal data processing are described in detail in the
+          <a href="/privacy" class="legal-link">Privacy Policy</a>,
+          which forms an integral part of these Terms.
+        </p>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- §8 -->
+      <section class="legal-section-block" id="changes">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">§8</span>
+          Changes to the Terms
+        </h2>
+        <ol class="legal-list">
+          <li>The Administrator reserves the right to amend these Terms at any time.</li>
+          <li>Users will be notified of material changes via a notification in the Service.</li>
+          <li>Continued use of the Service after changes have been introduced constitutes acceptance of those changes.</li>
+        </ol>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- §9 -->
+      <section class="legal-section-block" id="final">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">§9</span>
+          Final provisions
+        </h2>
+        <ol class="legal-list">
+          <li>Matters not regulated by these Terms shall be governed by Polish law, in particular the Civil Code.</li>
+          <li>Any disputes shall be resolved by the court with jurisdiction over the Administrator's place of residence.</li>
+          <li>For questions regarding these Terms, contact the Administrator via the contact form or the e-mail address provided in the Service.</li>
+        </ol>
+      </section>
+
+      <!-- Footer nav -->
+      <div class="legal-footer-nav">
+        <a href="/" class="btn btn--ghost">
+          <i data-lucide="arrow-left" aria-hidden="true"></i>
+          Back to home
+        </a>
+        <a href="/privacy" class="btn btn--accent">
+          Privacy Policy
+          <i data-lucide="arrow-right" aria-hidden="true"></i>
+        </a>
+      </div>
+
+    </article>
+  </div>
+</section>
+
+{% endblock %}

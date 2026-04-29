@@ -1,0 +1,53 @@
+📄 REGULAMIN KORZYSTANIA Z SERWISU RESUMO
+Wersja 1.0 | Obowiązuje od: 29 kwietnia 2026 r.
+
+§1. Postanowienia ogólne
+Serwis Resumo (dalej: „Serwis") jest projektem studenckim / portfolio, dostępnym pod adresem internetowym wskazanym przez administratora.
+Administratorem i operatorem Serwisu jest osoba fizyczna prowadząca projekt w celach edukacyjnych i demonstracyjnych (dalej: „Administrator").
+Korzystanie z Serwisu oznacza akceptację niniejszego Regulaminu w całości.
+Serwis jest udostępniany bezpłatnie, w celach demonstracyjnych i testowych.
+§2. Charakter serwisu
+Resumo jest projektem studenckim stworzonym w celach edukacyjnych i prezentacyjnych (portfolio).
+Serwis nie jest produktem komercyjnym. Administrator nie gwarantuje ciągłości działania, dostępności ani trwałości przechowywanych danych.
+Użytkownik przyjmuje do wiadomości, że dane wprowadzone do Serwisu mogą zostać usunięte w dowolnym momencie, bez uprzedniego powiadomienia.
+Serwis nie jest przeznaczony do przechowywania rzeczywistych, wrażliwych danych osobowych. Użytkownicy proszeni są o korzystanie z fikcyjnych lub testowych danych.
+§3. Rejestracja i konto użytkownika
+Korzystanie z pełnej funkcjonalności Serwisu wymaga założenia konta.
+Użytkownik zobowiązuje się do:
+podania prawdziwych danych przy rejestracji (lub danych testowych — zgodnie z §2 pkt 4),
+zachowania poufności hasła do konta,
+niezwłocznego poinformowania Administratora o nieautoryzowanym dostępie do konta.
+Jeden użytkownik może posiadać jedno konto.
+Administrator zastrzega sobie prawo do usunięcia konta bez podania przyczyny, w szczególności w przypadku naruszenia Regulaminu.
+§4. Zasady korzystania z serwisu
+Użytkownik zobowiązuje się do:
+
+Korzystania z Serwisu zgodnie z obowiązującym prawem i niniejszym Regulaminem.
+Nieprzesyłania treści naruszających prawa osób trzecich, w tym praw autorskich.
+Nieużywania Serwisu do celów komercyjnych bez zgody Administratora.
+Niepodejmowania prób włamania, testowania podatności ani przeciążania infrastruktury Serwisu.
+Nieautomatyzowania dostępu do Serwisu (boty, scrapery) bez pisemnej zgody Administratora.
+§5. Własność intelektualna
+Wszelkie elementy graficzne, kod źródłowy i koncepcja Serwisu stanowią własność Administratora i są chronione prawem autorskim.
+Użytkownik zachowuje pełne prawa do treści które sam wprowadził do Serwisu (treść CV, dane profilu).
+Użytkownik udziela Administratorowi niewyłącznej, nieodpłatnej licencji na przechowywanie i wyświetlanie wprowadzonych treści wyłącznie w celu świadczenia usług Serwisu.
+§6. Ograniczenie odpowiedzialności
+Serwis jest udostępniany w stanie „takim jaki jest" (as-is), bez jakichkolwiek gwarancji.
+Administrator nie ponosi odpowiedzialności za:
+utratę danych spowodowaną awarią techniczną lub przerwą w działaniu Serwisu,
+szkody wynikłe z przerw w dostępności Serwisu,
+działania osób trzecich, w tym ataki hakerskie,
+decyzje podjęte przez Użytkownika na podstawie treści wygenerowanych przez Serwis.
+Ze względu na studencki i demonstracyjny charakter projektu, Administrator nie gwarantuje dostępności Serwisu na poziomie SLA.
+Całkowita odpowiedzialność Administratora wobec Użytkownika jest ograniczona do kwoty 0 zł, o ile przepisy bezwzględnie obowiązującego prawa nie stanowią inaczej.
+§7. Dane osobowe
+Zasady przetwarzania danych osobowych opisane są szczegółowo w Polityce Prywatności, stanowiącej integralną część niniejszego Regulaminu.
+
+§8. Zmiany Regulaminu
+Administrator zastrzega sobie prawo do zmiany Regulaminu w dowolnym czasie.
+O istotnych zmianach Użytkownicy zostaną poinformowani poprzez powiadomienie w Serwisie.
+Dalsze korzystanie z Serwisu po wprowadzeniu zmian oznacza ich akceptację.
+§9. Postanowienia końcowe
+W sprawach nieuregulowanych niniejszym Regulaminem zastosowanie mają przepisy prawa polskiego, w szczególności Kodeksu Cywilnego.
+Wszelkie spory będą rozstrzygane przez sąd właściwy dla miejsca zamieszkania Administratora.
+Jeśli masz pytania dotyczące Regulaminu, skontaktuj się z Administratorem przez formularz kontaktowy lub adres e-mail podany w Serwisie.

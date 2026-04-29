@@ -1,0 +1,406 @@
+{# templates/privacy.html #}
+{% extends 'landing-layout.html' %}
+
+{% block title %}Privacy Policy — Resumo{% endblock %}
+
+{% block content %}
+
+<section class="legal-section">
+  <div class="container legal-container">
+
+    <!-- Sidebar nav -->
+    <aside class="legal-sidebar" aria-label="Table of contents">
+      <div class="legal-sidebar__inner">
+        <p class="legal-sidebar__label">On this page</p>
+        <nav>
+          <a href="#administrator"  class="legal-sidebar__link">1. Administrator</a>
+          <a href="#notice"         class="legal-sidebar__link">2. Project notice</a>
+          <a href="#data-collected" class="legal-sidebar__link">3. Data we collect</a>
+          <a href="#purpose"        class="legal-sidebar__link">4. Purpose &amp; legal basis</a>
+          <a href="#retention"      class="legal-sidebar__link">5. Retention</a>
+          <a href="#recipients"     class="legal-sidebar__link">6. Recipients</a>
+          <a href="#rights"         class="legal-sidebar__link">7. Your rights</a>
+          <a href="#security"       class="legal-sidebar__link">8. Security</a>
+          <a href="#cookies"        class="legal-sidebar__link">9. Cookies</a>
+          <a href="#children"       class="legal-sidebar__link">10. Children</a>
+          <a href="#contact-priv"   class="legal-sidebar__link">11. Contact</a>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <article class="legal-content" aria-labelledby="privacy-heading">
+
+      <!-- Header -->
+      <div class="legal-header">
+        <div class="legal-header__icon legal-header__icon--green">
+          <i data-lucide="shield-check" aria-hidden="true"></i>
+        </div>
+        <div>
+          <h1 class="legal-header__title" id="privacy-heading">Privacy Policy</h1>
+          <p class="legal-header__meta">
+            <i data-lucide="calendar" aria-hidden="true"></i>
+            Version 1.0 &nbsp;·&nbsp; Effective: 29 April 2026
+          </p>
+        </div>
+      </div>
+
+      <!-- 1. Administrator -->
+      <section class="legal-section-block" id="administrator">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">1</span>
+          Administrator
+        </h2>
+        <p class="legal-lead">
+          The administrator of your personal data is the operator of the Resumo service — an individual running a student / portfolio project.
+        </p>
+        <div class="legal-contact-card">
+          <i data-lucide="mail" aria-hidden="true"></i>
+          <div>
+            <strong>Privacy contact</strong>
+            <a href="mailto:your@email.com" class="legal-link">your@email.com</a>
+          </div>
+        </div>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- 2. Notice -->
+      <section class="legal-section-block" id="notice">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">2</span>
+          Project notice
+        </h2>
+        <div class="legal-notice legal-notice--warning">
+          <i data-lucide="triangle-alert" aria-hidden="true"></i>
+          <div>
+            <strong>Resumo is a student project in beta / demo phase.</strong>
+            <p>We do not recommend storing real, sensitive personal data. Data may be deleted without notice. You use the Service at your own risk to the extent permitted by law.</p>
+          </div>
+        </div>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- 3. Data collected -->
+      <section class="legal-section-block" id="data-collected">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">3</span>
+          What data we collect
+        </h2>
+
+        <h3 class="legal-subsection-title">Data provided at registration</h3>
+        <ul class="legal-tag-list">
+          <li><i data-lucide="at-sign" aria-hidden="true"></i> E-mail address</li>
+          <li><i data-lucide="user" aria-hidden="true"></i> Username (nickname)</li>
+          <li><i data-lucide="lock" aria-hidden="true"></i> Password (stored only as a hash — bcrypt / Argon2)</li>
+        </ul>
+
+        <h3 class="legal-subsection-title">Data provided voluntarily</h3>
+        <ul class="legal-tag-list">
+          <li><i data-lucide="image" aria-hidden="true"></i> Profile picture (avatar)</li>
+          <li><i data-lucide="file-text" aria-hidden="true"></i> CV content (professional data, education, experience)</li>
+        </ul>
+
+        <h3 class="legal-subsection-title">Data collected automatically</h3>
+        <ul class="legal-tag-list">
+          <li><i data-lucide="globe" aria-hidden="true"></i> IP address (server logs)</li>
+          <li><i data-lucide="monitor" aria-hidden="true"></i> Browser and OS information (User-Agent)</li>
+          <li><i data-lucide="clock" aria-hidden="true"></i> Date and time of login</li>
+        </ul>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- 4. Purpose -->
+      <section class="legal-section-block" id="purpose">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">4</span>
+          Purpose and legal basis for processing
+        </h2>
+        <div class="legal-table-wrap">
+          <table class="legal-table">
+            <thead>
+              <tr>
+                <th>Purpose</th>
+                <th>Legal basis (GDPR)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Providing Service features (account, CV)</td>
+                <td>Art. 6(1)(b) — performance of a contract</td>
+              </tr>
+              <tr>
+                <td>Security and abuse prevention</td>
+                <td>Art. 6(1)(f) — legitimate interest</td>
+              </tr>
+              <tr>
+                <td>Sending system notifications</td>
+                <td>Art. 6(1)(b) — performance of a contract</td>
+              </tr>
+              <tr>
+                <td>Server logs</td>
+                <td>Art. 6(1)(f) — legitimate interest</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- 5. Retention -->
+      <section class="legal-section-block" id="retention">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">5</span>
+          How long we store data
+        </h2>
+        <div class="legal-table-wrap">
+          <table class="legal-table">
+            <thead>
+              <tr>
+                <th>Data type</th>
+                <th>Retention period</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Account data</td>
+                <td>For the duration of the account + 30 days after deletion (backups)</td>
+              </tr>
+              <tr>
+                <td>CV content</td>
+                <td>For the duration of the account</td>
+              </tr>
+              <tr>
+                <td>Server logs</td>
+                <td>Maximum 90 days</td>
+              </tr>
+              <tr>
+                <td>Profile picture</td>
+                <td>Until deleted by the user or account deletion</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- 6. Recipients -->
+      <section class="legal-section-block" id="recipients">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">6</span>
+          Who we share data with
+        </h2>
+        <p class="legal-lead">Your data may be transferred only to the following entities:</p>
+        <div class="legal-table-wrap">
+          <table class="legal-table">
+            <thead>
+              <tr>
+                <th>Entity</th>
+                <th>Purpose</th>
+                <th>Basis</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>PythonAnywhere</strong></td>
+                <td>Server hosting</td>
+                <td>Data processing agreement</td>
+              </tr>
+              <tr>
+                <td><strong>Neon.tech</strong></td>
+                <td>PostgreSQL database</td>
+                <td>Data processing agreement</td>
+              </tr>
+              <tr>
+                <td><strong>Cloudinary / AWS S3</strong> <em>(if used)</em></td>
+                <td>Avatar storage</td>
+                <td>Data processing agreement</td>
+              </tr>
+              <tr>
+                <td><strong>OpenAI</strong> <em>(if AI feature active)</em></td>
+                <td>CV content analysis</td>
+                <td>Data processing agreement + user consent</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="legal-notice legal-notice--success">
+          <i data-lucide="shield-check" aria-hidden="true"></i>
+          <p>We do <strong>not</strong> sell, rent, or share your data with third parties for marketing purposes.</p>
+        </div>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- 7. Rights -->
+      <section class="legal-section-block" id="rights">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">7</span>
+          Your rights (GDPR)
+        </h2>
+        <div class="legal-rights-grid">
+          <div class="legal-right-card">
+            <i data-lucide="eye" aria-hidden="true"></i>
+            <div>
+              <strong>Right of access</strong>
+              <p>You can request information about what data we hold.</p>
+            </div>
+          </div>
+          <div class="legal-right-card">
+            <i data-lucide="pencil" aria-hidden="true"></i>
+            <div>
+              <strong>Right to rectification</strong>
+              <p>You can correct inaccurate data.</p>
+            </div>
+          </div>
+          <div class="legal-right-card">
+            <i data-lucide="trash-2" aria-hidden="true"></i>
+            <div>
+              <strong>Right to erasure</strong>
+              <p>You can delete your account and all data — available in Settings ✅</p>
+            </div>
+          </div>
+          <div class="legal-right-card">
+            <i data-lucide="download" aria-hidden="true"></i>
+            <div>
+              <strong>Right to portability</strong>
+              <p>You can request an export of your data.</p>
+            </div>
+          </div>
+          <div class="legal-right-card">
+            <i data-lucide="pause-circle" aria-hidden="true"></i>
+            <div>
+              <strong>Right to restriction</strong>
+              <p>You can request suspension of processing.</p>
+            </div>
+          </div>
+          <div class="legal-right-card">
+            <i data-lucide="flag" aria-hidden="true"></i>
+            <div>
+              <strong>Right to lodge a complaint</strong>
+              <p>To the President of the Personal Data Protection Office (UODO), ul. Stawki 2, Warsaw.</p>
+            </div>
+          </div>
+        </div>
+        <div class="legal-contact-card" style="margin-top: 24px;">
+          <i data-lucide="mail" aria-hidden="true"></i>
+          <div>
+            <strong>To exercise your rights, contact us:</strong>
+            <a href="mailto:your@email.com" class="legal-link">your@email.com</a>
+          </div>
+        </div>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- 8. Security -->
+      <section class="legal-section-block" id="security">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">8</span>
+          Security
+        </h2>
+        <p class="legal-lead">We apply the following security measures:</p>
+        <ul class="legal-checklist">
+          <li><i data-lucide="check" aria-hidden="true"></i> Password hashing (Django — Argon2 / bcrypt)</li>
+          <li><i data-lucide="check" aria-hidden="true"></i> Encrypted connection — HTTPS / TLS</li>
+          <li><i data-lucide="check" aria-hidden="true"></i> CSRF protection (Django middleware)</li>
+          <li><i data-lucide="check" aria-hidden="true"></i> SQL injection protection (Django ORM)</li>
+          <li><i data-lucide="check" aria-hidden="true"></i> Encrypted database connection (SSL)</li>
+          <li><i data-lucide="check" aria-hidden="true"></i> Restricted access to the admin panel</li>
+        </ul>
+        <div class="legal-notice legal-notice--info" style="margin-top: 20px;">
+          <i data-lucide="info" aria-hidden="true"></i>
+          <p>No IT system is 100% secure. In the event of a data breach, we will notify affected users and report the incident to UODO within 72 hours as required by GDPR.</p>
+        </div>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- 9. Cookies -->
+      <section class="legal-section-block" id="cookies">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">9</span>
+          Cookies
+        </h2>
+        <p class="legal-lead">The Service uses only <strong>essential cookies</strong> required for session management:</p>
+        <div class="legal-table-wrap">
+          <table class="legal-table">
+            <thead>
+              <tr>
+                <th>Cookie</th>
+                <th>Purpose</th>
+                <th>Lifetime</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>sessionid</code></td>
+                <td>Maintaining the logged-in user session</td>
+                <td>Until browser close / 2 weeks</td>
+              </tr>
+              <tr>
+                <td><code>csrftoken</code></td>
+                <td>Protection against CSRF attacks</td>
+                <td>1 year</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="legal-notice legal-notice--success" style="margin-top:16px;">
+          <i data-lucide="shield-check" aria-hidden="true"></i>
+          <p>We do <strong>not</strong> use advertising, tracking, or analytics cookies (e.g. Google Analytics).</p>
+        </div>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- 10. Children -->
+      <section class="legal-section-block" id="children">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">10</span>
+          Children's data
+        </h2>
+        <p class="legal-lead">
+          The Service is not intended for persons under the age of 16. If you become aware that a child under 16 has created an account, please contact us so we can delete their data.
+        </p>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- 11. Contact -->
+      <section class="legal-section-block" id="contact-priv">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">11</span>
+          Contact
+        </h2>
+        <p class="legal-lead">For all privacy and personal data matters:</p>
+        <div class="legal-contact-card">
+          <i data-lucide="mail" aria-hidden="true"></i>
+          <div>
+            <strong>E-mail</strong>
+            <a href="mailto:your@email.com" class="legal-link">your@email.com</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer nav -->
+      <div class="legal-footer-nav">
+        <a href="/" class="btn btn--ghost">
+          <i data-lucide="arrow-left" aria-hidden="true"></i>
+          Back to home
+        </a>
+        <a href="/terms" class="btn btn--accent">
+          Terms of Service
+          <i data-lucide="arrow-right" aria-hidden="true"></i>
+        </a>
+      </div>
+
+    </article>
+  </div>
+</section>
+
+{% endblock %}

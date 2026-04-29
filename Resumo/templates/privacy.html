@@ -1,0 +1,406 @@
+{# templates/privacy.html #}
+{% extends 'landing-layout.html' %}
+
+{% block title %}Polityka Prywatności — Resumo{% endblock %}
+
+{% block content %}
+
+<section class="legal-section">
+  <div class="container legal-container">
+
+    <!-- Sidebar nav -->
+    <aside class="legal-sidebar" aria-label="Spis treści">
+      <div class="legal-sidebar__inner">
+        <p class="legal-sidebar__label">Na tej stronie</p>
+        <nav>
+          <a href="#administrator"  class="legal-sidebar__link">1. Administrator</a>
+          <a href="#notice"         class="legal-sidebar__link">2. Charakter projektu</a>
+          <a href="#data-collected" class="legal-sidebar__link">3. Jakie dane zbieramy</a>
+          <a href="#purpose"        class="legal-sidebar__link">4. Cel i podstawa prawna</a>
+          <a href="#retention"      class="legal-sidebar__link">5. Czas przechowywania</a>
+          <a href="#recipients"     class="legal-sidebar__link">6. Odbiorcy danych</a>
+          <a href="#rights"         class="legal-sidebar__link">7. Twoje prawa</a>
+          <a href="#security"       class="legal-sidebar__link">8. Bezpieczeństwo</a>
+          <a href="#cookies"        class="legal-sidebar__link">9. Pliki cookies</a>
+          <a href="#children"       class="legal-sidebar__link">10. Dane dzieci</a>
+          <a href="#contact-priv"   class="legal-sidebar__link">11. Kontakt</a>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <article class="legal-content" aria-labelledby="privacy-heading">
+
+      <!-- Header -->
+      <div class="legal-header">
+        <div class="legal-header__icon legal-header__icon--green">
+          <i data-lucide="shield-check" aria-hidden="true"></i>
+        </div>
+        <div>
+          <h1 class="legal-header__title" id="privacy-heading">Polityka Prywatności</h1>
+          <p class="legal-header__meta">
+            <i data-lucide="calendar" aria-hidden="true"></i>
+            Wersja 1.0 &nbsp;·&nbsp; Obowiązuje od: 29 kwietnia 2026 r.
+          </p>
+        </div>
+      </div>
+
+      <!-- 1. Administrator -->
+      <section class="legal-section-block" id="administrator">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">1</span>
+          Administrator danych
+        </h2>
+        <p class="legal-lead">
+          Administratorem Twoich danych osobowych jest operator serwisu Resumo — osoba fizyczna prowadząca projekt studencki / portfolio.
+        </p>
+        <div class="legal-contact-card">
+          <i data-lucide="mail" aria-hidden="true"></i>
+          <div>
+            <strong>Kontakt w sprawach prywatności</strong>
+            <a href="mailto:twoj@email.pl" class="legal-link">twoj@email.pl</a>
+          </div>
+        </div>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- 2. Charakter projektu -->
+      <section class="legal-section-block" id="notice">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">2</span>
+          Charakter projektu
+        </h2>
+        <div class="legal-notice legal-notice--warning">
+          <i data-lucide="triangle-alert" aria-hidden="true"></i>
+          <div>
+            <strong>Resumo jest projektem studenckim w fazie beta / demonstracyjnej.</strong>
+            <p>Nie zalecamy przechowywania rzeczywistych, wrażliwych danych osobowych. Dane mogą zostać usunięte bez uprzedzenia. Korzystasz z Serwisu na własne ryzyko w zakresie dopuszczalnym przez prawo.</p>
+          </div>
+        </div>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- 3. Jakie dane zbieramy -->
+      <section class="legal-section-block" id="data-collected">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">3</span>
+          Jakie dane zbieramy
+        </h2>
+
+        <h3 class="legal-subsection-title">Dane podawane przy rejestracji</h3>
+        <ul class="legal-tag-list">
+          <li><i data-lucide="at-sign" aria-hidden="true"></i> Adres e-mail</li>
+          <li><i data-lucide="user" aria-hidden="true"></i> Nick (pseudonim)</li>
+          <li><i data-lucide="lock" aria-hidden="true"></i> Hasło (przechowywane wyłącznie jako hash — bcrypt / Argon2)</li>
+        </ul>
+
+        <h3 class="legal-subsection-title">Dane podawane dobrowolnie</h3>
+        <ul class="legal-tag-list">
+          <li><i data-lucide="image" aria-hidden="true"></i> Zdjęcie profilowe (avatar)</li>
+          <li><i data-lucide="file-text" aria-hidden="true"></i> Treść CV (dane zawodowe, wykształcenie, doświadczenie)</li>
+        </ul>
+
+        <h3 class="legal-subsection-title">Dane zbierane automatycznie</h3>
+        <ul class="legal-tag-list">
+          <li><i data-lucide="globe" aria-hidden="true"></i> Adres IP (logi serwera)</li>
+          <li><i data-lucide="monitor" aria-hidden="true"></i> Informacje o przeglądarce i systemie operacyjnym (User-Agent)</li>
+          <li><i data-lucide="clock" aria-hidden="true"></i> Data i godzina logowania</li>
+        </ul>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- 4. Cel i podstawa prawna -->
+      <section class="legal-section-block" id="purpose">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">4</span>
+          Cel i podstawa prawna przetwarzania
+        </h2>
+        <div class="legal-table-wrap">
+          <table class="legal-table">
+            <thead>
+              <tr>
+                <th>Cel przetwarzania</th>
+                <th>Podstawa prawna (RODO)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Świadczenie usług Serwisu (konto, CV)</td>
+                <td>Art. 6 ust. 1 lit. b — wykonanie umowy</td>
+              </tr>
+              <tr>
+                <td>Bezpieczeństwo i zapobieganie nadużyciom</td>
+                <td>Art. 6 ust. 1 lit. f — prawnie uzasadniony interes</td>
+              </tr>
+              <tr>
+                <td>Wysyłka powiadomień systemowych</td>
+                <td>Art. 6 ust. 1 lit. b — wykonanie umowy</td>
+              </tr>
+              <tr>
+                <td>Logi serwera</td>
+                <td>Art. 6 ust. 1 lit. f — prawnie uzasadniony interes</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- 5. Czas przechowywania -->
+      <section class="legal-section-block" id="retention">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">5</span>
+          Jak długo przechowujemy dane
+        </h2>
+        <div class="legal-table-wrap">
+          <table class="legal-table">
+            <thead>
+              <tr>
+                <th>Rodzaj danych</th>
+                <th>Okres przechowywania</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Dane konta</td>
+                <td>Przez czas istnienia konta + 30 dni po jego usunięciu (kopie zapasowe)</td>
+              </tr>
+              <tr>
+                <td>Treść CV</td>
+                <td>Przez czas istnienia konta</td>
+              </tr>
+              <tr>
+                <td>Logi serwera</td>
+                <td>Maksymalnie 90 dni</td>
+              </tr>
+              <tr>
+                <td>Zdjęcie profilowe</td>
+                <td>Do momentu usunięcia przez użytkownika lub usunięcia konta</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- 6. Odbiorcy danych -->
+      <section class="legal-section-block" id="recipients">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">6</span>
+          Komu przekazujemy dane
+        </h2>
+        <p class="legal-lead">Twoje dane mogą być przekazywane wyłącznie następującym podmiotom:</p>
+        <div class="legal-table-wrap">
+          <table class="legal-table">
+            <thead>
+              <tr>
+                <th>Podmiot</th>
+                <th>Cel</th>
+                <th>Podstawa</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>PythonAnywhere</strong></td>
+                <td>Hosting serwera</td>
+                <td>Umowa powierzenia przetwarzania</td>
+              </tr>
+              <tr>
+                <td><strong>Neon.tech</strong></td>
+                <td>Baza danych PostgreSQL</td>
+                <td>Umowa powierzenia przetwarzania</td>
+              </tr>
+              <tr>
+                <td><strong>Cloudinary / AWS S3</strong> <em>(jeśli używane)</em></td>
+                <td>Przechowywanie avatarów</td>
+                <td>Umowa powierzenia przetwarzania</td>
+              </tr>
+              <tr>
+                <td><strong>OpenAI</strong> <em>(jeśli funkcja AI aktywna)</em></td>
+                <td>Analiza treści CV</td>
+                <td>Umowa powierzenia + zgoda użytkownika</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="legal-notice legal-notice--success">
+          <i data-lucide="shield-check" aria-hidden="true"></i>
+          <p>Nie sprzedajemy, nie wynajmujemy ani nie udostępniamy Twoich danych podmiotom trzecim w celach marketingowych.</p>
+        </div>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- 7. Twoje prawa -->
+      <section class="legal-section-block" id="rights">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">7</span>
+          Twoje prawa (RODO)
+        </h2>
+        <div class="legal-rights-grid">
+          <div class="legal-right-card">
+            <i data-lucide="eye" aria-hidden="true"></i>
+            <div>
+              <strong>Prawo dostępu</strong>
+              <p>Możesz zażądać informacji, jakie dane przechowujemy.</p>
+            </div>
+          </div>
+          <div class="legal-right-card">
+            <i data-lucide="pencil" aria-hidden="true"></i>
+            <div>
+              <strong>Prawo do sprostowania</strong>
+              <p>Możesz poprawić nieprawidłowe dane.</p>
+            </div>
+          </div>
+          <div class="legal-right-card">
+            <i data-lucide="trash-2" aria-hidden="true"></i>
+            <div>
+              <strong>Prawo do usunięcia</strong>
+              <p>Możesz usunąć konto i wszystkie dane — dostępne w Ustawieniach ✅</p>
+            </div>
+          </div>
+          <div class="legal-right-card">
+            <i data-lucide="download" aria-hidden="true"></i>
+            <div>
+              <strong>Prawo do przenoszenia</strong>
+              <p>Możesz zażądać eksportu swoich danych.</p>
+            </div>
+          </div>
+          <div class="legal-right-card">
+            <i data-lucide="pause-circle" aria-hidden="true"></i>
+            <div>
+              <strong>Prawo do ograniczenia</strong>
+              <p>Możesz zażądać wstrzymania przetwarzania danych.</p>
+            </div>
+          </div>
+          <div class="legal-right-card">
+            <i data-lucide="flag" aria-hidden="true"></i>
+            <div>
+              <strong>Prawo do skargi</strong>
+              <p>Do Prezesa Urzędu Ochrony Danych Osobowych (UODO), ul. Stawki 2, Warszawa.</p>
+            </div>
+          </div>
+        </div>
+        <div class="legal-contact-card" style="margin-top: 24px;">
+          <i data-lucide="mail" aria-hidden="true"></i>
+          <div>
+            <strong>Aby skorzystać z praw, skontaktuj się:</strong>
+            <a href="mailto:twoj@email.pl" class="legal-link">twoj@email.pl</a>
+          </div>
+        </div>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- 8. Bezpieczeństwo -->
+      <section class="legal-section-block" id="security">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">8</span>
+          Bezpieczeństwo danych
+        </h2>
+        <p class="legal-lead">Stosujemy następujące środki bezpieczeństwa:</p>
+        <ul class="legal-checklist">
+          <li><i data-lucide="check" aria-hidden="true"></i> Szyfrowanie haseł (Django — Argon2 / bcrypt)</li>
+          <li><i data-lucide="check" aria-hidden="true"></i> Szyfrowane połączenie HTTPS / TLS</li>
+          <li><i data-lucide="check" aria-hidden="true"></i> Ochrona przed CSRF (Django middleware)</li>
+          <li><i data-lucide="check" aria-hidden="true"></i> Ochrona przed SQL Injection (Django ORM)</li>
+          <li><i data-lucide="check" aria-hidden="true"></i> Szyfrowane połączenie z bazą danych (SSL)</li>
+          <li><i data-lucide="check" aria-hidden="true"></i> Ograniczony dostęp do panelu administracyjnego</li>
+        </ul>
+        <div class="legal-notice legal-notice--info" style="margin-top: 20px;">
+          <i data-lucide="info" aria-hidden="true"></i>
+          <p>Żaden system informatyczny nie jest w 100% bezpieczny. W przypadku naruszenia bezpieczeństwa danych poinformujemy Cię i zgłosimy incydent do UODO zgodnie z wymogami RODO (w ciągu 72 godzin).</p>
+        </div>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- 9. Cookies -->
+      <section class="legal-section-block" id="cookies">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">9</span>
+          Pliki cookies
+        </h2>
+        <p class="legal-lead">Serwis używa wyłącznie <strong>niezbędnych plików cookies</strong> do obsługi sesji użytkownika:</p>
+        <div class="legal-table-wrap">
+          <table class="legal-table">
+            <thead>
+              <tr>
+                <th>Cookie</th>
+                <th>Cel</th>
+                <th>Czas życia</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>sessionid</code></td>
+                <td>Utrzymanie sesji zalogowanego użytkownika</td>
+                <td>Do zamknięcia przeglądarki / 2 tygodnie</td>
+              </tr>
+              <tr>
+                <td><code>csrftoken</code></td>
+                <td>Ochrona przed atakami CSRF</td>
+                <td>1 rok</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="legal-notice legal-notice--success" style="margin-top: 16px;">
+          <i data-lucide="shield-check" aria-hidden="true"></i>
+          <p>Nie używamy cookies reklamowych, śledzących ani analitycznych (np. Google Analytics).</p>
+        </div>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- 10. Dane dzieci -->
+      <section class="legal-section-block" id="children">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">10</span>
+          Dane dzieci
+        </h2>
+        <p class="legal-lead">
+          Serwis nie jest przeznaczony dla osób poniżej 16. roku życia. Jeśli dowiesz się, że dziecko poniżej 16 lat założyło konto, skontaktuj się z nami w celu usunięcia danych.
+        </p>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- 11. Kontakt -->
+      <section class="legal-section-block" id="contact-priv">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">11</span>
+          Kontakt
+        </h2>
+        <p class="legal-lead">W sprawach dotyczących prywatności i danych osobowych:</p>
+        <div class="legal-contact-card">
+          <i data-lucide="mail" aria-hidden="true"></i>
+          <div>
+            <strong>E-mail</strong>
+            <a href="mailto:twoj@email.pl" class="legal-link">twoj@email.pl</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer nav -->
+      <div class="legal-footer-nav">
+        <a href="/" class="btn btn--ghost">
+          <i data-lucide="arrow-left" aria-hidden="true"></i>
+          Wróć na stronę główną
+        </a>
+        <a href="/terms" class="btn btn--accent">
+          Regulamin
+          <i data-lucide="arrow-right" aria-hidden="true"></i>
+        </a>
+      </div>
+
+    </article>
+  </div>
+</section>
+
+{% endblock %}

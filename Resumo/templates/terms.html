@@ -1,0 +1,227 @@
+{# templates/terms.html #}
+{% extends 'landing-layout.html' %}
+
+{% block title %}Regulamin — Resumo{% endblock %}
+
+{% block content %}
+
+<section class="legal-section">
+  <div class="container legal-container">
+
+    <!-- Sidebar nav -->
+    <aside class="legal-sidebar" aria-label="Spis treści">
+      <div class="legal-sidebar__inner">
+        <p class="legal-sidebar__label">Na tej stronie</p>
+        <nav>
+          <a href="#general"       class="legal-sidebar__link">§1. Postanowienia ogólne</a>
+          <a href="#nature"        class="legal-sidebar__link">§2. Charakter serwisu</a>
+          <a href="#account"       class="legal-sidebar__link">§3. Konto użytkownika</a>
+          <a href="#rules"         class="legal-sidebar__link">§4. Zasady korzystania</a>
+          <a href="#ip"            class="legal-sidebar__link">§5. Własność intelektualna</a>
+          <a href="#liability"     class="legal-sidebar__link">§6. Odpowiedzialność</a>
+          <a href="#privacy-ref"   class="legal-sidebar__link">§7. Dane osobowe</a>
+          <a href="#changes"       class="legal-sidebar__link">§8. Zmiany regulaminu</a>
+          <a href="#final"         class="legal-sidebar__link">§9. Postanowienia końcowe</a>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <article class="legal-content" aria-labelledby="terms-heading">
+
+      <!-- Header -->
+      <div class="legal-header">
+        <div class="legal-header__icon">
+          <i data-lucide="scroll-text" aria-hidden="true"></i>
+        </div>
+        <div>
+          <h1 class="legal-header__title" id="terms-heading">Regulamin korzystania z serwisu</h1>
+          <p class="legal-header__meta">
+            <i data-lucide="calendar" aria-hidden="true"></i>
+            Wersja 1.0 &nbsp;·&nbsp; Obowiązuje od: 29 kwietnia 2026 r.
+          </p>
+        </div>
+      </div>
+
+      <!-- Informacja o projekcie studenckim -->
+      <div class="legal-notice legal-notice--info">
+        <i data-lucide="info" aria-hidden="true"></i>
+        <div>
+          <strong>Projekt studencki</strong>
+          <p>Resumo to projekt studencki / portfolio stworzony w celach edukacyjnych i demonstracyjnych. Nie jest to (jeszcze) produkt komercyjny. Nie przechowuj w serwisie prawdziwych, wrażliwych danych osobowych.</p>
+        </div>
+      </div>
+
+      <!-- §1 -->
+      <section class="legal-section-block" id="general">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">§1</span>
+          Postanowienia ogólne
+        </h2>
+        <ol class="legal-list">
+          <li>Serwis <strong>Resumo</strong> (dalej: „Serwis") jest projektem studenckim / portfolio, dostępnym pod adresem internetowym wskazanym przez Administratora.</li>
+          <li>Administratorem i operatorem Serwisu jest osoba fizyczna prowadząca projekt w celach edukacyjnych i demonstracyjnych (dalej: „Administrator").</li>
+          <li>Korzystanie z Serwisu oznacza akceptację niniejszego Regulaminu w całości.</li>
+          <li>Serwis jest udostępniany <strong>bezpłatnie</strong>, w celach demonstracyjnych i testowych.</li>
+        </ol>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- §2 -->
+      <section class="legal-section-block" id="nature">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">§2</span>
+          Charakter serwisu
+        </h2>
+        <ol class="legal-list">
+          <li>Resumo jest <strong>projektem studenckim</strong> stworzonym w celach edukacyjnych i prezentacyjnych (portfolio).</li>
+          <li>Serwis nie jest produktem komercyjnym. Administrator nie gwarantuje ciągłości działania, dostępności ani trwałości przechowywanych danych.</li>
+          <li>Użytkownik przyjmuje do wiadomości, że dane wprowadzone do Serwisu mogą zostać usunięte w dowolnym momencie, bez uprzedniego powiadomienia.</li>
+          <li class="legal-list__highlight">Serwis <strong>nie jest przeznaczony do przechowywania rzeczywistych, wrażliwych danych osobowych.</strong> Użytkownicy proszeni są o korzystanie z fikcyjnych lub testowych danych.</li>
+        </ol>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- §3 -->
+      <section class="legal-section-block" id="account">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">§3</span>
+          Rejestracja i konto użytkownika
+        </h2>
+        <ol class="legal-list">
+          <li>Korzystanie z pełnej funkcjonalności Serwisu wymaga założenia konta.</li>
+          <li>Użytkownik zobowiązuje się do:
+            <ul class="legal-sublist">
+              <li>podania prawdziwych danych przy rejestracji (lub danych testowych — zgodnie z §2 pkt 4),</li>
+              <li>zachowania poufności hasła do konta,</li>
+              <li>niezwłocznego poinformowania Administratora o nieautoryzowanym dostępie do konta.</li>
+            </ul>
+          </li>
+          <li>Jeden użytkownik może posiadać jedno konto.</li>
+          <li>Administrator zastrzega sobie prawo do usunięcia konta bez podania przyczyny, w szczególności w przypadku naruszenia Regulaminu.</li>
+        </ol>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- §4 -->
+      <section class="legal-section-block" id="rules">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">§4</span>
+          Zasady korzystania z serwisu
+        </h2>
+        <p class="legal-lead">Użytkownik zobowiązuje się do:</p>
+        <ul class="legal-checklist">
+          <li><i data-lucide="check" aria-hidden="true"></i> Korzystania z Serwisu zgodnie z obowiązującym prawem i niniejszym Regulaminem.</li>
+          <li><i data-lucide="check" aria-hidden="true"></i> Nieprzesyłania treści naruszających prawa osób trzecich, w tym praw autorskich.</li>
+          <li><i data-lucide="check" aria-hidden="true"></i> Nieużywania Serwisu do celów komercyjnych bez zgody Administratora.</li>
+          <li><i data-lucide="x" aria-hidden="true" class="icon--danger"></i> Niepodejmowania prób włamania, testowania podatności ani przeciążania infrastruktury Serwisu.</li>
+          <li><i data-lucide="x" aria-hidden="true" class="icon--danger"></i> Nieautomatyzowania dostępu do Serwisu (boty, scrapery) bez pisemnej zgody Administratora.</li>
+        </ul>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- §5 -->
+      <section class="legal-section-block" id="ip">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">§5</span>
+          Własność intelektualna
+        </h2>
+        <ol class="legal-list">
+          <li>Wszelkie elementy graficzne, kod źródłowy i koncepcja Serwisu stanowią własność Administratora i są chronione prawem autorskim.</li>
+          <li>Użytkownik zachowuje pełne prawa do treści, które sam wprowadził do Serwisu (treść CV, dane profilu).</li>
+          <li>Użytkownik udziela Administratorowi niewyłącznej, nieodpłatnej licencji na przechowywanie i wyświetlanie wprowadzonych treści wyłącznie w celu świadczenia usług Serwisu.</li>
+        </ol>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- §6 -->
+      <section class="legal-section-block" id="liability">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">§6</span>
+          Ograniczenie odpowiedzialności
+        </h2>
+        <div class="legal-notice legal-notice--warning">
+          <i data-lucide="triangle-alert" aria-hidden="true"></i>
+          <p>Serwis jest udostępniany <strong>„w stanie takim, jaki jest"</strong> (<em>as-is</em>), bez jakichkolwiek gwarancji.</p>
+        </div>
+        <ol class="legal-list">
+          <li>Administrator nie ponosi odpowiedzialności za:
+            <ul class="legal-sublist">
+              <li>utratę danych spowodowaną awarią techniczną lub przerwą w działaniu Serwisu,</li>
+              <li>szkody wynikłe z przerw w dostępności Serwisu,</li>
+              <li>działania osób trzecich, w tym ataki hakerskie,</li>
+              <li>decyzje podjęte przez Użytkownika na podstawie treści wygenerowanych przez Serwis.</li>
+            </ul>
+          </li>
+          <li>Ze względu na studencki i demonstracyjny charakter projektu, Administrator nie gwarantuje dostępności Serwisu na poziomie SLA.</li>
+          <li>Całkowita odpowiedzialność Administratora wobec Użytkownika jest ograniczona do kwoty 0 zł, o ile przepisy bezwzględnie obowiązującego prawa nie stanowią inaczej.</li>
+        </ol>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- §7 -->
+      <section class="legal-section-block" id="privacy-ref">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">§7</span>
+          Dane osobowe
+        </h2>
+        <p class="legal-lead">
+          Zasady przetwarzania danych osobowych opisane są szczegółowo w
+          <a href="/privacy" class="legal-link">Polityce Prywatności</a>,
+          stanowiącej integralną część niniejszego Regulaminu.
+        </p>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- §8 -->
+      <section class="legal-section-block" id="changes">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">§8</span>
+          Zmiany Regulaminu
+        </h2>
+        <ol class="legal-list">
+          <li>Administrator zastrzega sobie prawo do zmiany Regulaminu w dowolnym czasie.</li>
+          <li>O istotnych zmianach Użytkownicy zostaną poinformowani poprzez powiadomienie w Serwisie.</li>
+          <li>Dalsze korzystanie z Serwisu po wprowadzeniu zmian oznacza ich akceptację.</li>
+        </ol>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- §9 -->
+      <section class="legal-section-block" id="final">
+        <h2 class="legal-section-block__title">
+          <span class="legal-section-block__num">§9</span>
+          Postanowienia końcowe
+        </h2>
+        <ol class="legal-list">
+          <li>W sprawach nieuregulowanych niniejszym Regulaminem zastosowanie mają przepisy prawa polskiego, w szczególności Kodeksu Cywilnego.</li>
+          <li>Wszelkie spory będą rozstrzygane przez sąd właściwy dla miejsca zamieszkania Administratora.</li>
+          <li>W razie pytań dotyczących Regulaminu skontaktuj się z Administratorem przez formularz kontaktowy lub adres e-mail podany w Serwisie.</li>
+        </ol>
+      </section>
+
+      <!-- Footer nav -->
+      <div class="legal-footer-nav">
+        <a href="/" class="btn btn--ghost">
+          <i data-lucide="arrow-left" aria-hidden="true"></i>
+          Wróć na stronę główną
+        </a>
+        <a href="/privacy" class="btn btn--accent">
+          Polityka Prywatności
+          <i data-lucide="arrow-right" aria-hidden="true"></i>
+        </a>
+      </div>
+
+    </article>
+  </div>
+</section>
+
+{% endblock %}

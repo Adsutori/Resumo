@@ -23,6 +23,8 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.landing_page, name="landing_page"),
+    path('privacy/', views.privacy, name='privacy'),
+    path('terms/', views.terms, name='terms'),
     path('users/', include("Users.urls")),
     path('dashboard/', include('Dashboard.urls')),
     path('notifications/', include('Notifications.urls', namespace='notifications')),

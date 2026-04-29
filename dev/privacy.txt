@@ -1,0 +1,83 @@
+🔒 POLITYKA PRYWATNOŚCI SERWISU RESUMO
+Wersja 1.0 | Obowiązuje od: 29 kwietnia 2026 r.
+
+1. Administrator danych
+Administratorem Twoich danych osobowych jest operator serwisu Resumo — osoba fizyczna prowadząca projekt studencki/portfolio. Kontakt w sprawach prywatności: [twój-email@domena.pl]
+
+2. Charakter projektu i ostrzeżenie
+⚠️ Resumo jest projektem studenckim w fazie beta/demonstracyjnej. Nie zalecamy przechowywania rzeczywistych, wrażliwych danych osobowych. Dane mogą zostać usunięte bez uprzedzenia. Korzystasz z Serwisu na własne ryzyko w zakresie dopuszczalnym przez prawo.
+
+3. Jakie dane zbieramy
+Dane podawane przy rejestracji:
+Adres e-mail
+Nick (pseudonim)
+Hasło (przechowywane wyłącznie w postaci zaszyfrowanej — hash bcrypt/Argon2)
+Dane podawane dobrowolnie:
+Zdjęcie profilowe (avatar)
+Treść CV (dane zawodowe, wykształcenie, doświadczenie)
+Dane zbierane automatycznie:
+Adres IP (w logach serwera)
+Informacje o przeglądarce i systemie operacyjnym (User-Agent)
+Data i godzina logowania
+4. Cel i podstawa prawna przetwarzania
+Cel przetwarzania	Podstawa prawna
+Świadczenie usług Serwisu (konto, CV)	Art. 6 ust. 1 lit. b RODO — wykonanie umowy
+Bezpieczeństwo i zapobieganie nadużyciom	Art. 6 ust. 1 lit. f RODO — prawnie uzasadniony interes
+Wysyłka powiadomień systemowych	Art. 6 ust. 1 lit. b RODO — wykonanie umowy
+Logi serwera	Art. 6 ust. 1 lit. f RODO — prawnie uzasadniony interes
+5. Jak długo przechowujemy dane
+Dane konta — przez czas istnienia konta + 30 dni po jego usunięciu (kopie zapasowe)
+Treść CV — przez czas istnienia konta
+Logi serwera — maksymalnie 90 dni
+Zdjęcie profilowe — do momentu usunięcia przez użytkownika lub usunięcia konta
+6. Komu przekazujemy dane
+Twoje dane mogą być przekazywane wyłącznie:
+
+Podmiot	Cel	Podstawa
+PythonAnywhere (hosting)	Przechowywanie danych na serwerze	Umowa powierzenia przetwarzania
+Neon.tech (baza danych PostgreSQL)	Przechowywanie danych	Umowa powierzenia przetwarzania
+Cloudinary / AWS S3 (jeśli używane)	Przechowywanie avatarów	Umowa powierzenia przetwarzania
+OpenAI (jeśli funkcja AI aktywna)	Analiza treści CV	Umowa powierzenia + zgoda użytkownika
+Nie sprzedajemy, nie wynajmujemy ani nie udostępniamy Twoich danych podmiotom trzecim w celach marketingowych.
+
+7. Twoje prawa (RODO)
+Przysługują Ci następujące prawa:
+
+Prawo dostępu — możesz zażądać informacji jakie dane przechowujemy
+Prawo do sprostowania — możesz poprawić nieprawidłowe dane
+Prawo do usunięcia — możesz usunąć konto i wszystkie dane (funkcja dostępna w Ustawieniach ✅)
+Prawo do przenoszenia — możesz zażądać eksportu swoich danych
+Prawo do ograniczenia przetwarzania — możesz zażądać wstrzymania przetwarzania
+Prawo sprzeciwu — wobec przetwarzania opartego na prawnie uzasadnionym interesie
+Prawo do skargi — do Prezesa Urzędu Ochrony Danych Osobowych (UODO), ul. Stawki 2, Warszawa
+Aby skorzystać z praw, skontaktuj się: [twój-email@domena.pl]
+
+8. Bezpieczeństwo danych
+Stosujemy następujące środki bezpieczeństwa:
+
+Copy
+✅ Szyfrowanie haseł (Django — Argon2/bcrypt)
+✅ Połączenie szyfrowane HTTPS (SSL/TLS)
+✅ Ochrona przed CSRF (Django middleware)
+✅ Ochrona przed SQL Injection (Django ORM)
+✅ Szyfrowane połączenie z bazą danych (SSL)
+✅ Ograniczony dostęp do panelu administracyjnego
+Jednocześnie informujemy, że żaden system informatyczny nie jest w 100% bezpieczny. W przypadku naruszenia bezpieczeństwa danych poinformujemy Cię i zgłosimy incydent do UODO zgodnie z wymogami RODO (w ciągu 72 godzin).
+
+9. Cookies
+Serwis używa wyłącznie niezbędnych plików cookies do obsługi sesji użytkownika:
+
+Cookie	Cel	Czas życia
+sessionid	Utrzymanie sesji zalogowanego użytkownika	Do zamknięcia przeglądarki / 2 tygodnie
+csrftoken	Ochrona przed atakami CSRF	1 rok
+Nie używamy cookies reklamowych, śledzących ani analitycznych (Google Analytics itp.).
+
+10. Dane dzieci
+Serwis nie jest przeznaczony dla osób poniżej 16 roku życia. Jeśli dowiesz się, że dziecko poniżej 16 lat założyło konto, skontaktuj się z nami w celu usunięcia danych.
+
+11. Zmiany Polityki Prywatności
+O istotnych zmianach w Polityce Prywatności poinformujemy poprzez powiadomienie w Serwisie lub e-mail. Data ostatniej aktualizacji widoczna jest na górze dokumentu.
+
+12. Kontakt
+W sprawach dotyczących prywatności i danych osobowych:
+📧 [twój-email@domena.pl]
