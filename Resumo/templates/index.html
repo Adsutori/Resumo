@@ -37,12 +37,12 @@
 
       <div class="hero__cta-group">
         {% if user.is_authenticated %}
-          <a href="{% url 'dashboard:create_cv' %}" class="btn btn--signup btn--lg btn--shine" aria-label="Zacznij tworzyć CV za darmo">
+          <a href="{% url 'dashboard:create_cv' %}" class="btn btn--signup btn--lg btn--hero-cta" aria-label="Zacznij tworzyć CV za darmo">
             <i data-lucide="pencil" aria-hidden="true"></i>
             Stwórz swoje CV — to darmowe
           </a>        
         {% else %}
-          <a href="{% url 'users:register' %}" class="btn btn--signup btn--lg btn--shine" aria-label="Zacznij tworzyć CV za darmo">
+          <a href="{% url 'users:register' %}" class="btn btn--signup btn--lg btn--hero-cta" aria-label="Zacznij tworzyć CV za darmo">
             <i data-lucide="pencil" aria-hidden="true"></i>
             Stwórz swoje CV — to darmowe
           </a>
@@ -231,13 +231,6 @@
 
     </ul>
 
-    <div class="templates__cta reveal">
-      <a href="/builder" class="btn btn--signup btn--lg btn--shine">
-        <i data-lucide="pencil" aria-hidden="true"></i>
-        Zacznij od dowolnego szablonu
-      </a>
-    </div>
-
   </div>
 </section>
 
@@ -252,12 +245,19 @@
       Gotowy na stworzenie CV?
     </h2>
     <p class="cta-banner__sub">
-      Nie potrzebujesz konta, żeby zacząć. Zarejestruj się tylko, gdy chcesz zapisać.
+      Zarejestruj się, zacznij tworzyć swoje CV i zwiększ szanse na lepszą pracę!
     </p>
-    <a href="/builder" class="btn btn--white btn--lg btn--shine">
-      <i data-lucide="arrow-right" aria-hidden="true"></i>
-      Zacznij teraz
-    </a>
+    {% if user.is_authenticated %}
+      <a href="{% url 'dashboard:create_cv' %}" class="btn btn--white btn--lg btn--shine">
+        <i data-lucide="arrow-right" aria-hidden="true"></i>
+        Zacznij teraz
+      </a>
+    {% else %}
+      <a href="{% url 'users:register' %}" class="btn btn--white btn--lg btn--shine">
+        <i data-lucide="arrow-right" aria-hidden="true"></i>
+        Zacznij teraz
+      </a>     
+    {% endif %}
   </div>
 </section>
 

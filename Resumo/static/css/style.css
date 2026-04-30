@@ -3084,3 +3084,150 @@ html.dark .hero__orb {
     animation: none !important;
   }
 }
+
+/* ============================================================
+   HERO CTA — attention-grabbing button effects
+   ============================================================ */
+
+/* ── Bazowy reset dla głównego CTA ── */
+.btn--hero-cta {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+
+  /* Pop-up pulse — co 4s */
+  animation: cta-pop 10s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite;
+}
+
+/* ── Shine sweep — co 4s, z opóźnieniem ── */
+.btn--hero-cta::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 55%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 80%
+  );
+  transform: skewX(-18deg);
+  animation: cta-shine 10s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Glow ring pulse w tle ── */
+.btn--hero-cta::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa);
+  z-index: -1;
+  opacity: 0;
+  animation: cta-glow-ring 4s ease-in-out infinite;
+  filter: blur(8px);
+}
+
+/* ── Pop-up keyframes — delikatne wyskoczenie ── */
+@keyframes cta-pop {
+  0%   { transform: scale(1)    translateY(0);    }
+  72%  { transform: scale(1)    translateY(0);    }  /* długa pauza */
+  76%  { transform: scale(1.04) translateY(-3px); }  /* wyskok */
+  80%  { transform: scale(0.98) translateY(1px);  }  /* odbicie */
+  84%  { transform: scale(1.02) translateY(-1px); }  /* małe echo */
+  88%  { transform: scale(1)    translateY(0);    }  /* powrót */
+  100% { transform: scale(1)    translateY(0);    }
+}
+
+/* ── Shine sweep keyframes ── */
+@keyframes cta-shine {
+  0%   { left: -120%; opacity: 0;   }
+  68%  { left: -120%; opacity: 0;   }  /* czeka razem z pop */
+  72%  { left: -120%; opacity: 1;   }  /* start sweep */
+  88%  { left:  130%; opacity: 1;   }  /* koniec sweep */
+  89%  { left:  130%; opacity: 0;   }
+  100% { left:  130%; opacity: 0;   }
+}
+
+/* ── Glow ring keyframes ── */
+@keyframes cta-glow-ring {
+  0%   { opacity: 0;    }
+  70%  { opacity: 0;    }
+  76%  { opacity: 0.7;  }
+  88%  { opacity: 0;    }
+  100% { opacity: 0;    }
+}
+
+/* ── Hover — wzmocnienie efektów ── */
+.btn--hero-cta:hover {
+  animation-play-state: paused;  /* zatrzymaj auto-animację podczas hover */
+  transform: scale(1.04) translateY(-2px) !important;
+  box-shadow:
+    0 8px 30px rgba(99, 102, 241, 0.55),
+    0 0 0 3px rgba(139, 92, 246, 0.25);
+}
+
+.btn--hero-cta:hover::before {
+  animation: btn-shine-hover 0.55s ease forwards;
+}
+
+.btn--hero-cta:hover::after {
+  opacity: 0.5;
+  animation: none;
+}
+
+@keyframes btn-shine-hover {
+  from { left: -120%; opacity: 1; }
+  to   { left:  130%; opacity: 1; }
+}
+
+/* ── Active (kliknięcie) ── */
+.btn--hero-cta:active {
+  transform: scale(0.97) translateY(1px) !important;
+  box-shadow: 0 2px 10px rgba(99, 102, 241, 0.3);
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .btn--hero-cta {
+    animation: none !important;
+  }
+  .btn--hero-cta::before,
+  .btn--hero-cta::after {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+}
+
+/* ============================================================
+   CUSTOM SCROLLBAR
+   ============================================================ */
+
+/* ── Webkit (Chrome, Edge, Safari) ── */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-muted);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-accent);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-dark);
+}
+
+/* ── Firefox ── */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-accent) var(--color-bg-muted);
+}
