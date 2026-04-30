@@ -69,7 +69,7 @@ TEMPLATES = [
                 'django.template.context_processors.media',
             ],
             'builtins': [
-                'lucide.templatetags.lucide',  # usuń jeśli nie używasz django-lucide
+                'lucide.templatetags.lucide',
             ],
         },
     },

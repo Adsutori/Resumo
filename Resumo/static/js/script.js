@@ -487,3 +487,62 @@ function getPasswordScore(pw) {
   if (/[^A-Za-z0-9]/.test(pw))      score++;
   return score;
 }
+
+/* ============================================================
+   LANDING PAGE — Scroll Reveal + Stats Counter
+   ============================================================ */
+
+document.addEventListener('DOMContentLoaded', () => {
+  initScrollReveal();
+  initStatsCounter();
+});
+
+/* ── Scroll Reveal ── */
+function initScrollReveal() {
+  const elements = document.querySelectorAll('.reveal');
+  if (!elements.length) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.12,
+    rootMargin: '0px 0px -40px 0px'
+  });
+
+  elements.forEach(el => observer.observe(el));
+}
+
+/* ── Stats Counter ── */
+function initStatsCounter() {
+  const nums = document.querySelectorAll('.hero__stat-num[data-count]');
+  if (!nums.length) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el     = entry.target;
+      const target = parseInt(el.dataset.count, 10);
+      const dur    = 1800;
+      const start  = performance.now();
+
+      function tick(now) {
+        const elapsed  = now - start;
+        const progress = Math.min(elapsed / dur, 1);
+        // easeOutExpo
+        const ease = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+        el.textContent = Math.floor(ease * target).toLocaleString();
+        if (progress < 1) requestAnimationFrame(tick);
+      }
+
+      requestAnimationFrame(tick);
+      observer.unobserve(el);
+    });
+  }, { threshold: 0.5 });
+
+  nums.forEach(el => observer.observe(el));
+}
