@@ -193,3 +193,7 @@ SESSION_COOKIE_AGE = 60 * 60 * 24 * 14
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
 APSCHEDULER_RUN_NOW_TIMEOUT = 25
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://resumo.com.pl',
+    'https://www.resumo.com.pl',
+]
