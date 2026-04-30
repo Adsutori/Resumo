@@ -14,7 +14,7 @@ def send_verification_email(user):
 
     send_mail(
         subject='Activate your PocketUp account!',
-        message=f'Your verification code: \n\n{code}\n\nThe code will expire in 15 minutes.',
+        message=f'Twój kod weryfikacyjny: \n\n{code}\n\nKod wygaśnie w ciągu 15 minut.',
         from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=[user.email],
     )
