@@ -366,3 +366,8 @@ def delete_account(request):
             for error in field_errors:
                 messages.error(request, error)
     return redirect('users:settings')
+
+
+@login_required
+def help_view(request):
+    return render(request, 'users/help.html')

@@ -1,0 +1,802 @@
+{% extends 'dashboard-layout.html' %}
+{% load static %}
+
+{% block title %}Pomoc — Resumo{% endblock %}
+{% block page_title %}Pomoc{% endblock %}
+
+{% block content %}
+
+<div class="settings-layout">
+
+  <!-- ══════════════════════════════
+       SIDEBAR
+  ══════════════════════════════ -->
+  <nav class="settings-nav card">
+    <a href="#section-start"     class="settings-nav__item">
+      <i data-lucide="rocket"></i> Pierwsze kroki
+    </a>
+    <a href="#section-cv"        class="settings-nav__item">
+      <i data-lucide="file-text"></i> Tworzenie CV
+    </a>
+    <a href="#section-account"   class="settings-nav__item">
+      <i data-lucide="user"></i> Konto
+    </a>
+    <a href="#section-faq"       class="settings-nav__item">
+      <i data-lucide="help-circle"></i> FAQ
+    </a>
+    <a href="#section-contact"   class="settings-nav__item settings-nav__item--contact">
+      <i data-lucide="mail"></i> Kontakt
+    </a>
+  </nav>
+
+  <!-- ══════════════════════════════
+       TREŚĆ
+  ══════════════════════════════ -->
+  <div class="settings-content">
+
+    <!-- ── PIERWSZE KROKI ── -->
+    <section class="settings-section card" id="section-start">
+      <div class="settings-section__header">
+        <div class="settings-section__icon" style="background:rgba(108,99,255,0.15);color:var(--color-accent);">
+          <i data-lucide="rocket"></i>
+        </div>
+        <div>
+          <h3 class="settings-section__title">Pierwsze kroki</h3>
+          <p class="settings-section__desc">Jak zacząć korzystać z Resumo w 3 minuty</p>
+        </div>
+      </div>
+
+      <div class="help-steps">
+        {% comment %} <div class="help-step">
+          <div class="help-step__number">1</div>
+          <div class="help-step__content">
+            <h4 class="help-step__title">Utwórz konto</h4>
+            <p class="help-step__desc">
+              Zarejestruj się podając nick, adres e-mail i hasło. Po rejestracji otrzymasz
+              e-mail z linkiem aktywacyjnym — kliknij go, żeby odblokować pełny dostęp.
+            </p>
+          </div>
+        </div> {% endcomment %}
+
+        <div class="help-step">
+          <div class="help-step__number">1</div>
+          <div class="help-step__content">
+            <h4 class="help-step__title">Przejdź do dashboardu</h4>
+            <p class="help-step__desc">
+              Po zalogowaniu trafiasz do panelu głównego. Stąd masz dostęp do wszystkich
+              swoich CV, ustawień konta i tej strony pomocy.
+            </p>
+          </div>
+        </div>
+
+        <div class="help-step">
+          <div class="help-step__number">2</div>
+          <div class="help-step__content">
+            <h4 class="help-step__title">Stwórz swoje pierwsze CV</h4>
+            <p class="help-step__desc">
+              Kliknij przycisk <strong>„Nowe CV"</strong> w dashboardzie, wypełnij formularz
+              i wybierz szablon. Gotowe CV możesz pobrać jako PDF jednym kliknięciem.
+            </p>
+          </div>
+        </div>
+
+        <div class="help-step">
+          <div class="help-step__number">3</div>
+          <div class="help-step__content">
+            <h4 class="help-step__title">Zarządzaj swoimi CV</h4>
+            <p class="help-step__desc">
+              Wszystkie stworzone CV znajdziesz na liście w dashboardzie. Możesz je edytować,
+              duplikować, pobierać lub usuwać w dowolnym momencie.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TWORZENIE CV ── -->
+    <section class="settings-section card" id="section-cv">
+      <div class="settings-section__header">
+        <div class="settings-section__icon" style="background:rgba(16,185,129,0.15);color:#10b981;">
+          <i data-lucide="file-text"></i>
+        </div>
+        <div>
+          <h3 class="settings-section__title">Tworzenie CV</h3>
+          <p class="settings-section__desc">Jak wypełnić formularz i uzyskać najlepszy efekt</p>
+        </div>
+      </div>
+
+      <div class="help-cards">
+
+        <div class="help-card">
+          <div class="help-card__icon" style="background:rgba(108,99,255,0.12);color:var(--color-accent);">
+            <i data-lucide="user-check"></i>
+          </div>
+          <div class="help-card__body">
+            <h4 class="help-card__title">Dane osobowe</h4>
+            <p class="help-card__desc">
+              Wypełnij imię, nazwisko, stanowisko i dane kontaktowe. Zdjęcie jest opcjonalne,
+              ale zwiększa profesjonalny wygląd dokumentu.
+            </p>
+          </div>
+        </div>
+
+        <div class="help-card">
+          <div class="help-card__icon" style="background:rgba(16,185,129,0.12);color:#10b981;">
+            <i data-lucide="briefcase"></i>
+          </div>
+          <div class="help-card__body">
+            <h4 class="help-card__title">Doświadczenie zawodowe</h4>
+            <p class="help-card__desc">
+              Dodaj miejsca pracy od najnowszego do najstarszego. Dla każdego wpisu opisz
+              zakres obowiązków — krótko i konkretnie.
+            </p>
+          </div>
+        </div>
+
+        <div class="help-card">
+          <div class="help-card__icon" style="background:rgba(99,179,237,0.12);color:#63b3ed;">
+            <i data-lucide="graduation-cap"></i>
+          </div>
+          <div class="help-card__body">
+            <h4 class="help-card__title">Wykształcenie</h4>
+            <p class="help-card__desc">
+              Podaj szkołę, kierunek i lata nauki. Jeśli jesteś studentem, możesz wpisać
+              przewidywany rok ukończenia.
+            </p>
+          </div>
+        </div>
+
+        <div class="help-card">
+          <div class="help-card__icon" style="background:rgba(245,158,11,0.12);color:#f59e0b;">
+            <i data-lucide="zap"></i>
+          </div>
+          <div class="help-card__body">
+            <h4 class="help-card__title">Umiejętności</h4>
+            <p class="help-card__desc">
+              Dodaj umiejętności techniczne i miękkie. Staraj się dopasować je do ogłoszenia
+              o pracę, na które aplikujesz.
+            </p>
+          </div>
+        </div>
+
+        <div class="help-card">
+          <div class="help-card__icon" style="background:rgba(239,68,68,0.12);color:#ef4444;">
+            <i data-lucide="download"></i>
+          </div>
+          <div class="help-card__body">
+            <h4 class="help-card__title">Pobieranie PDF</h4>
+            <p class="help-card__desc">
+              Po zapisaniu CV kliknij <strong>„Pobierz PDF"</strong>. Plik jest gotowy do
+              wysłania rekruterowi — bez znaków wodnych, w pełnej jakości.
+            </p>
+          </div>
+        </div>
+
+        <div class="help-card">
+          <div class="help-card__icon" style="background:rgba(168,85,247,0.12);color:#a855f7;">
+            <i data-lucide="copy"></i>
+          </div>
+          <div class="help-card__body">
+            <h4 class="help-card__title">Duplikowanie CV</h4>
+            <p class="help-card__desc">
+              Masz jedno bazowe CV? Zduplikuj je i dostosuj pod konkretną ofertę pracy.
+              Oszczędzasz czas i masz porządek w dokumentach.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── KONTO ── -->
+    <section class="settings-section card" id="section-account">
+      <div class="settings-section__header">
+        <div class="settings-section__icon" style="background:rgba(99,179,237,0.15);color:#63b3ed;">
+          <i data-lucide="user"></i>
+        </div>
+        <div>
+          <h3 class="settings-section__title">Zarządzanie kontem</h3>
+          <p class="settings-section__desc">Ustawienia profilu i bezpieczeństwo</p>
+        </div>
+      </div>
+
+      <div class="help-list">
+
+        <div class="help-list__item">
+          <div class="help-list__icon">
+            <i data-lucide="image"></i>
+          </div>
+          <div class="help-list__body">
+            <span class="help-list__label">Zmiana avatara</span>
+            <span class="help-list__desc">
+              Przejdź do <strong>Ustawienia → Zdjęcie profilowe</strong>. Obsługiwane formaty:
+              JPG, PNG, WEBP do 5 MB. Możesz też przeciągnąć plik na pole uploadu.
+            </span>
+          </div>
+        </div>
+
+        <div class="help-list__item">
+          <div class="help-list__icon">
+            <i data-lucide="at-sign"></i>
+          </div>
+          <div class="help-list__body">
+            <span class="help-list__label">Zmiana nicku</span>
+            <span class="help-list__desc">
+              Nick to Twoja wyświetlana nazwa w aplikacji. Możesz go zmienić w dowolnym
+              momencie w <strong>Ustawieniach</strong>.
+            </span>
+          </div>
+        </div>
+
+        <div class="help-list__item">
+          <div class="help-list__icon">
+            <i data-lucide="mail"></i>
+          </div>
+          <div class="help-list__body">
+            <span class="help-list__label">Zmiana e-maila</span>
+            <span class="help-list__desc">
+              Aby zmienić adres e-mail, musisz potwierdzić operację aktualnym hasłem.
+              Nowy adres będzie używany do logowania i powiadomień.
+            </span>
+          </div>
+        </div>
+
+        <div class="help-list__item">
+          <div class="help-list__icon">
+            <i data-lucide="lock"></i>
+          </div>
+          <div class="help-list__body">
+            <span class="help-list__label">Zmiana hasła</span>
+            <span class="help-list__desc">
+              Używaj silnego hasła — minimum 8 znaków, najlepiej z cyframi i znakami
+              specjalnymi. Wskaźnik siły hasła podpowie Ci, czy jest wystarczająco bezpieczne.
+            </span>
+          </div>
+        </div>
+
+        <div class="help-list__item help-list__item--warning">
+          <div class="help-list__icon" style="color:#ef4444;">
+            <i data-lucide="trash-2"></i>
+          </div>
+          <div class="help-list__body">
+            <span class="help-list__label" style="color:#ef4444;">Usunięcie konta</span>
+            <span class="help-list__desc">
+              Usunięcie konta jest <strong>nieodwracalne</strong> — wszystkie CV i dane
+              zostaną trwale skasowane. Przed usunięciem pobierz swoje dokumenty.
+            </span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── FAQ ── -->
+    <section class="settings-section card" id="section-faq">
+      <div class="settings-section__header">
+        <div class="settings-section__icon" style="background:rgba(245,158,11,0.15);color:#f59e0b;">
+          <i data-lucide="help-circle"></i>
+        </div>
+        <div>
+          <h3 class="settings-section__title">Najczęstsze pytania</h3>
+          <p class="settings-section__desc">Odpowiedzi na pytania, które zadają użytkownicy</p>
+        </div>
+      </div>
+
+      <div class="faq-list">
+
+        <div class="faq-item">
+          <button class="faq-item__question" onclick="toggleFaq(this)">
+            <span>Czy Resumo jest darmowe?</span>
+            <i data-lucide="chevron-down" class="faq-item__chevron"></i>
+          </button>
+          <div class="faq-item__answer">
+            <p>Tak — Resumo jest w pełni darmowe. Tworzysz CV, pobierasz PDF i zarządzasz
+            dokumentami bez żadnych opłat ani ukrytych kosztów.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-item__question" onclick="toggleFaq(this)">
+            <span>Ile CV mogę stworzyć?</span>
+            <i data-lucide="chevron-down" class="faq-item__chevron"></i>
+          </button>
+          <div class="faq-item__answer">
+            <p>Nie ma limitu — możesz tworzyć dowolną liczbę CV i przechowywać je
+            wszystkie w swoim koncie.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-item__question" onclick="toggleFaq(this)">
+            <span>Czy moje dane są bezpieczne?</span>
+            <i data-lucide="chevron-down" class="faq-item__chevron"></i>
+          </button>
+          <div class="faq-item__answer">
+            <p>Tak. Hasła są przechowywane w formie zaszyfrowanej (hash). Twoje dane
+            osobowe i CV są widoczne wyłącznie dla Ciebie i nie są udostępniane
+            osobom trzecim.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-item__question" onclick="toggleFaq(this)">
+            <span>Nie dostałem e-maila aktywacyjnego — co robić?</span>
+            <i data-lucide="chevron-down" class="faq-item__chevron"></i>
+          </button>
+          <div class="faq-item__answer">
+            <p>Sprawdź folder <strong>Spam / Oferty</strong> w swojej skrzynce. Jeśli
+            tam też go nie ma, napisz do nas na adres podany w sekcji Kontakt poniżej —
+            aktywujemy konto ręcznie.</p>
+          </div>
+        </div>
+
+        {% comment %} <div class="faq-item">
+          <button class="faq-item__question" onclick="toggleFaq(this)">
+            <span>Zapomniałem hasła — jak je zresetować?</span>
+            <i data-lucide="chevron-down" class="faq-item__chevron"></i>
+          </button>
+          <div class="faq-item__answer">
+            <p>Na stronie logowania kliknij <strong>„Zapomniałem hasła"</strong>.
+            Wyślemy Ci link do resetowania hasła na adres e-mail przypisany do konta.</p>
+          </div>
+        </div> {% endcomment %}
+
+        <div class="faq-item">
+          <button class="faq-item__question" onclick="toggleFaq(this)">
+            <span>Czy mogę edytować CV po jego zapisaniu?</span>
+            <i data-lucide="chevron-down" class="faq-item__chevron"></i>
+          </button>
+          <div class="faq-item__answer">
+            <p>Oczywiście — każde CV możesz edytować dowolną liczbę razy. Po każdej
+            edycji możesz pobrać zaktualizowany plik PDF.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── KONTAKT ── -->
+    <section class="settings-section card" id="section-contact">
+      <div class="settings-section__header">
+        <div class="settings-section__icon" style="background:rgba(168,85,247,0.15);color:#a855f7;">
+          <i data-lucide="mail"></i>
+        </div>
+        <div>
+          <h3 class="settings-section__title">Kontakt z Resumo</h3>
+          <p class="settings-section__desc">Masz pytanie lub problem? Jesteśmy tu dla Ciebie</p>
+        </div>
+      </div>
+
+      <div class="contact-grid">
+
+        <a href="mailto:kontakt@resumo.com.pl" class="contact-card">
+          <div class="contact-card__icon" style="background:rgba(108,99,255,0.12);color:var(--color-accent);">
+            <i data-lucide="mail"></i>
+          </div>
+          <div class="contact-card__body">
+            <span class="contact-card__label">E-mail</span>
+            <span class="contact-card__value">kontakt@resumo.com.pl</span>
+            <span class="contact-card__hint">Odpowiadamy w ciągu 24–48 godzin</span>
+          </div>
+          <i data-lucide="arrow-right" class="contact-card__arrow"></i>
+        </a>
+
+        <a href="mailto:support@resumo.com.pl" class="contact-card">
+          <div class="contact-card__icon" style="background:rgba(16,185,129,0.12);color:#10b981;">
+            <i data-lucide="life-buoy"></i>
+          </div>
+          <div class="contact-card__body">
+            <span class="contact-card__label">Wsparcie techniczne</span>
+            <span class="contact-card__value">support@resumo.com.pl</span>
+            <span class="contact-card__hint">Problemy z kontem, błędy, awarie</span>
+          </div>
+          <i data-lucide="arrow-right" class="contact-card__arrow"></i>
+        </a>
+
+      </div>
+
+      <div class="contact-note">
+        <i data-lucide="info"></i>
+        <p>Opisz dokładnie swój problem — podaj nick lub adres e-mail konta oraz
+        co się stało. Dzięki temu szybciej Ci pomożemy.</p>
+      </div>
+
+    </section>
+
+  </div><!-- /settings-content -->
+</div><!-- /settings-layout -->
+
+
+<style>
+  /* ── Layout (dziedziczony ze settings) ── */
+  .settings-layout {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .settings-nav {
+    position: sticky;
+    top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px;
+  }
+
+  .settings-nav__item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .settings-nav__item i { width: 15px; height: 15px; flex-shrink: 0; }
+
+  .settings-nav__item:hover,
+  .settings-nav__item--active {
+    background: var(--color-surface-2);
+    color: var(--color-text);
+  }
+
+  .settings-nav__item--contact {
+    color: #a855f7;
+    margin-top: 8px;
+    border-top: 1px solid var(--color-border);
+    padding-top: 12px;
+  }
+
+  .settings-nav__item--contact:hover {
+    background: rgba(168,85,247,0.08);
+    color: #a855f7;
+  }
+
+  .settings-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .settings-section { padding: 24px; }
+
+  .settings-section__header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .settings-section__icon {
+    width: 40px; height: 40px;
+    border-radius: var(--radius-lg);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .settings-section__icon i { width: 18px; height: 18px; }
+
+  .settings-section__title {
+    font-size: 15px; font-weight: 700;
+    color: var(--color-text); margin-bottom: 2px;
+  }
+
+  .settings-section__desc { font-size: 12px; color: var(--color-text-muted); }
+
+  /* ── Kroki (Pierwsze kroki) ── */
+  .help-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .help-step {
+    display: flex;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .help-step:last-child { border-bottom: none; padding-bottom: 0; }
+  .help-step:first-child { padding-top: 0; }
+
+  .help-step__number {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--color-accent-glow);
+    border: 1px solid rgba(108,99,255,0.3);
+    color: var(--color-accent);
+    font-size: 13px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .help-step__title {
+    font-size: 14px; font-weight: 600;
+    color: var(--color-text); margin-bottom: 4px;
+  }
+
+  .help-step__desc {
+    font-size: 13px; color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  /* ── Karty (Tworzenie CV) ── */
+  .help-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .help-card {
+    display: flex;
+    gap: 12px;
+    padding: 14px;
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    transition: border-color 0.15s;
+  }
+
+  .help-card:hover { border-color: var(--color-accent); }
+
+  .help-card__icon {
+    width: 36px; height: 36px;
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .help-card__icon i { width: 16px; height: 16px; }
+
+  .help-card__title {
+    font-size: 13px; font-weight: 600;
+    color: var(--color-text); margin-bottom: 4px;
+  }
+
+  .help-card__desc {
+    font-size: 12px; color: var(--color-text-muted);
+    line-height: 1.5;
+  }
+
+  /* ── Lista (Konto) ── */
+  .help-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .help-list__item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .help-list__item:last-child { border-bottom: none; padding-bottom: 0; }
+  .help-list__item:first-child { padding-top: 0; }
+
+  .help-list__icon {
+    width: 32px; height: 32px;
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    color: var(--color-text-muted);
+  }
+
+  .help-list__icon i { width: 15px; height: 15px; }
+
+  .help-list__body {
+    display: flex; flex-direction: column; gap: 3px;
+  }
+
+  .help-list__label {
+    font-size: 13px; font-weight: 600; color: var(--color-text);
+  }
+
+  .help-list__desc {
+    font-size: 12px; color: var(--color-text-muted); line-height: 1.5;
+  }
+
+  /* ── FAQ ── */
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .faq-item {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .faq-item:last-child { border-bottom: none; }
+
+  .faq-item__question {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text);
+    text-align: left;
+    transition: color 0.15s;
+  }
+
+  .faq-item__question:hover { color: var(--color-accent); }
+
+  .faq-item__chevron {
+    width: 16px; height: 16px;
+    flex-shrink: 0;
+    color: var(--color-text-muted);
+    transition: transform 0.2s ease;
+  }
+
+  .faq-item--open .faq-item__chevron {
+    transform: rotate(180deg);
+  }
+
+  .faq-item__answer {
+    display: none;
+    padding: 0 0 14px 0;
+    font-size: 13px;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  .faq-item--open .faq-item__answer {
+    display: block;
+  }
+
+  /* ── Kontakt ── */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .contact-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .contact-card:hover {
+    border-color: var(--color-accent);
+    background: var(--color-accent-glow);
+  }
+
+  .contact-card__icon {
+    width: 40px; height: 40px;
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .contact-card__icon i { width: 18px; height: 18px; }
+
+  .contact-card__body {
+    display: flex; flex-direction: column; gap: 2px; flex: 1;
+  }
+
+  .contact-card__label {
+    font-size: 11px; font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  .contact-card__value {
+    font-size: 13px; font-weight: 600; color: var(--color-text);
+  }
+
+  .contact-card__hint {
+    font-size: 11px; color: var(--color-text-muted);
+  }
+
+  .contact-card__arrow {
+    width: 16px; height: 16px;
+    color: var(--color-text-muted); flex-shrink: 0;
+  }
+
+  .contact-note {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 14px;
+    background: var(--color-accent-glow);
+    border: 1px solid rgba(108,99,255,0.2);
+    border-radius: var(--radius-lg);
+  }
+
+  .contact-note i {
+    width: 16px; height: 16px;
+    color: var(--color-accent); flex-shrink: 0; margin-top: 1px;
+  }
+
+  .contact-note p {
+    font-size: 12px; color: var(--color-text-muted); line-height: 1.6; margin: 0;
+  }
+
+  /* ── Responsywność ── */
+  @media (max-width: 768px) {
+    .settings-layout { grid-template-columns: 1fr; }
+
+    .settings-nav {
+      position: static;
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+
+    .settings-nav__item--contact {
+      border-top: none; padding-top: 10px; margin-top: 0;
+    }
+
+    .help-cards { grid-template-columns: 1fr; }
+    .contact-grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+'use strict';
+
+// ── FAQ accordion ──
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const isOpen = item.classList.contains('faq-item--open');
+
+  // Zamknij wszystkie
+  document.querySelectorAll('.faq-item--open').forEach(el => {
+    el.classList.remove('faq-item--open');
+  });
+
+  // Otwórz kliknięty (jeśli był zamknięty)
+  if (!isOpen) item.classList.add('faq-item--open');
+}
+
+// ── Aktywny link w nav (IntersectionObserver) ──
+const sections = document.querySelectorAll('.settings-section');
+const navItems = document.querySelectorAll('.settings-nav__item');
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navItems.forEach(i => i.classList.remove('settings-nav__item--active'));
+      const active = document.querySelector(
+        `.settings-nav__item[href="#${entry.target.id}"]`
+      );
+      if (active) active.classList.add('settings-nav__item--active');
+    }
+  });
+}, { threshold: 0.4 });
+
+sections.forEach(s => observer.observe(s));
+</script>
+{% endblock %}

@@ -460,6 +460,29 @@
       border-radius: 3px;
     }
 
+    /* ── Sidebar nav — custom scrollbar ── */
+    .sidebar__nav::-webkit-scrollbar {
+      width: 3px;
+    }
+
+    .sidebar__nav::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .sidebar__nav::-webkit-scrollbar-thumb {
+      background: var(--color-accent);
+      border-radius: var(--radius-full);
+    }
+
+    .sidebar__nav::-webkit-scrollbar-thumb:hover {
+      background: var(--color-accent-dark);
+    }
+
+    .sidebar__nav {
+      scrollbar-width: thin;
+      scrollbar-color: var(--color-border) transparent;
+    }
+
     /* ============================================================
        OVERLAY — tło przy otwartym sidebarze na mobile
     ============================================================ */
@@ -1088,7 +1111,7 @@
     </a>
 
     <!-- Konto -->
-    <span class="sidebar__nav-label">Konto</span>
+    <span class="sidebar__nav-label">Konto i pomoc</span>
 
     <a href="{% url 'users:settings' %}"
       class="sidebar__nav-item {% if request.resolver_match.url_name == 'settings' %}sidebar__nav-item--active{% endif %}">
@@ -1096,7 +1119,7 @@
       Ustawienia
     </a>
 
-    <a href="#" class="sidebar__nav-item">
+    <a href="{% url 'users:help' %}" class="sidebar__nav-item">
       <i data-lucide="help-circle"></i>
       Pomoc
     </a>

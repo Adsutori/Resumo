@@ -1,17 +1,40 @@
-FIX:
-- inne konta nie mogą pobrac CV - zrobic zeby cv bylo po udostepnieniu dostepne do pobrania nawet dla nie zalogowanych userow
-
-
-🧹 PORZĄDKI TECHNICZNE
-
-[ ] Dodać @login_required do wszystkich widoków dashboardu
-[ ] Obsługa błędów 404 / 500 — własne strony błędów
-
-
 📋 Lista "przed upublicznieniem"
 
-[ ] Napisz Politykę Prywatności (możesz użyć generatora np. iubenda.com)
-[ ] Napisz Regulamin serwisu
-[ ] Dodaj banner cookies jeśli używasz analityki
 [ ] Zamień fikcyjne dane demo na neutralne nazwy firm
 [ ] Usuń lub zastąp loga marek w mockupach
+
+
+
+
+
+
+LANDING:
+
+- 
+
+
+
+
+
+
+DASHBOARD:
+
+- po dodaniu zdjecia profilowego nie ładuje się ono w sidebarze, naprawić to.
+- MOJE CV:
+    - user ciągle dostaje powiadomienia "Witaj w Resumo, Adsutori! 🎉". Zmienić to, aby tylko po stworzeniu konta takie cos się pokazywało userowi.
+    - user ciągle dostaje "Nowość: Udostępnianie CV z QR kodem! 🔗". zmienić to aby pokazało się to userowi z 3 razy max, w odstępach co kilka dni może?
+    - dodać logo linkedina w szybkich akcjach ('Importuj z LinkedIn')
+    - w sekcji 'Moje CV' dać podgląd danego cv jako baner każdego z elementów 
+    - zmienić też napisy 'AKTYWNE' żeby faktycznie pokazywały czy CV jest obecnie udostepniane czy nie, poki co wyświetla się cały czas AKTYWNE
+    - zmienić na polski "Edytowano 1 week, 2 days temu"
+    - dodać link w sekcji SZABLONY do 'Zobacz wszystkie'
+- SZABLONY: 
+    - zrobić całą nową podstronę, tak żeby to nie było /cv/new/ tylko żeby tam wyświetlały się wszystkie szablony po prostu i żeby można było wybrac dany szablon i go edytowac
+    - niech na końcu podstrony będzie jakoś oznaczone że kolejne szablony pojawią się niedługo, pracujemy nad nimi czy coś takiego
+    - dodać faktyczne screeny zrobionych przykladowych cv
+- UDOSTEPNIJ CV:
+    - inne konta nie mogą pobrac CV - zrobic zeby cv bylo po udostepnieniu dostepne do pobrania nawet dla nie zalogowanych userow
+- Import z LinkedIn:
+    - coś zmienić z tym AI PARSER bo brzydko, tak randomowo jest on ułożony
+- USTAWIENIA:
+    - po dodaniu swojego zdjęcia nie wyświetla się ono
