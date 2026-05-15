@@ -3,6 +3,7 @@
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
+from django.utils.timezone import localtime
 from .models import Notification
 
 
@@ -25,7 +26,7 @@ def notifications_list(request):
             'title':      n.title,
             'message':    n.message,
             'is_read':    n.is_read,
-            'created_at': n.created_at.strftime('%d.%m.%Y %H:%M'),
+            'created_at': localtime(n.created_at).strftime('%d.%m.%Y %H:%M'),  # ← zmiana
         }
         for n in notifications
     ]
