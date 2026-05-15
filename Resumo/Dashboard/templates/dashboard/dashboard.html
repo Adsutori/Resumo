@@ -1,24 +1,19 @@
 {% extends 'dashboard-layout.html' %}
 {% load static %}
+{% load dashboard_extras %}
 
 {% block title %}Moje CV — Resumo{% endblock %}
-
 {% block page_title %}Moje CV{% endblock %}
 
 {% block content %}
 
-<!-- ── Django messages ── -->
 {% if messages %}
 <div class="messages-wrap">
   {% for message in messages %}
   <div class="message message--{{ message.tags }}" role="alert">
-    {% if message.tags == 'success' %}
-      <i data-lucide="check-circle"></i>
-    {% elif message.tags == 'error' %}
-      <i data-lucide="alert-circle"></i>
-    {% else %}
-      <i data-lucide="info"></i>
-    {% endif %}
+    {% if message.tags == 'success' %}<i data-lucide="check-circle"></i>
+    {% elif message.tags == 'error' %}<i data-lucide="alert-circle"></i>
+    {% else %}<i data-lucide="info"></i>{% endif %}
     <span>{{ message }}</span>
     <button type="button" class="message__close" onclick="this.parentElement.remove()">
       <i data-lucide="x"></i>
@@ -28,15 +23,12 @@
 </div>
 {% endif %}
 
-
 <!-- ============================================================
      SEKCJA 1 — POWITANIE
 ============================================================ -->
 <div class="welcome">
   <div class="welcome__text">
-    <h2 class="welcome__heading">
-      Cześć, {{ user.nick }}! 👋
-    </h2>
+    <h2 class="welcome__heading">Cześć, {{ user.nick }}! 👋</h2>
     <p class="welcome__sub">Co dziś tworzymy?</p>
   </div>
   <div class="welcome__date">
@@ -59,7 +51,7 @@
 
   <!-- Nowe CV od zera -->
   <div class="quick-card quick-card--accent">
-    <div class="quick-card__icon" style="background: rgba(108,99,255,0.15); color: var(--color-accent);">
+    <div class="quick-card__icon" style="background:rgba(108,99,255,0.15);color:var(--color-accent);">
       <i data-lucide="file-plus"></i>
     </div>
     <div class="quick-card__body">
@@ -70,42 +62,40 @@
       {% csrf_token %}
       <input type="hidden" name="template" value="classic">
       <input type="hidden" name="title" value="Moje CV">
-      <button type="submit" class="btn btn--accent btn--sm" style='width: 100%;'>
-        <i data-lucide="arrow-right"></i>
-        Zacznij
+      <button type="submit" class="btn btn--accent btn--sm" style="width:100%;">
+        <i data-lucide="arrow-right"></i> Zacznij
       </button>
     </form>
-
   </div>
 
   <!-- Użyj szablonu -->
   <div class="quick-card">
-    <div class="quick-card__icon" style="background: rgba(16,185,129,0.15); color: #10b981;">
+    <div class="quick-card__icon" style="background:rgba(16,185,129,0.15);color:#10b981;">
       <i data-lucide="layout-template"></i>
     </div>
     <div class="quick-card__body">
       <h4 class="quick-card__title">Użyj szablonu</h4>
       <p class="quick-card__desc">Wybierz gotowy projekt i dostosuj go do siebie.</p>
     </div>
-    <a href="{% url 'dashboard:create_cv' %}" class="btn btn--ghost btn--sm">
-      <i data-lucide="arrow-right"></i>
-      Przeglądaj
+    <a href="{% url 'dashboard:templates' %}" class="btn btn--ghost btn--sm">
+      <i data-lucide="arrow-right"></i> Przeglądaj
     </a>
-
   </div>
 
   <!-- Importuj z LinkedIn -->
   <div class="quick-card">
-    <div class="quick-card__icon" style="background: rgba(0,119,181,0.15); color: #0077b5;">
-      <i data-lucide="linkedin"></i>
+    <div class="quick-card__icon" style="background:rgba(0,119,181,0.15);color:#0077b5;">
+      <!-- LinkedIn SVG — Lucide nie ma oficjalnej ikony LinkedIn -->
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
+        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+      </svg>
     </div>
     <div class="quick-card__body">
       <h4 class="quick-card__title">Importuj z LinkedIn</h4>
       <p class="quick-card__desc">Pobierz dane z profilu i stwórz CV w minutę.</p>
     </div>
-    <a href="#" class="btn btn--ghost btn--sm">
-      <i data-lucide="arrow-right"></i>
-      Importuj
+    <a href="{% url 'linkedin_import:index' %}" class="btn btn--ghost btn--sm">
+      <i data-lucide="arrow-right"></i> Importuj
     </a>
   </div>
 
@@ -122,61 +112,118 @@
       {{ cvs_count }}
       {% if cvs_count == 1 %}dokument
       {% elif cvs_count == 2 or cvs_count == 3 or cvs_count == 4 %}dokumenty
-      {% else %}dokumentów
-      {% endif %}
+      {% else %}dokumentów{% endif %}
     </span>
   </h3>
   <a href="{% url 'dashboard:create_cv' %}" class="btn btn--ghost btn--sm">
-    <i data-lucide="plus"></i>
-    Dodaj nowe
+    <i data-lucide="plus"></i> Dodaj nowe
   </a>
 </div>
-
 
 <div class="cv-grid">
 
   {% for cv in cvs %}
   <div class="cv-card card">
 
-    <!-- Miniatura -->
-    <div class="cv-card__preview cv-card__preview--{{ cv.template }}">
-      <a href="{% url 'dashboard:edit_cv' cv.id %}" class="cv-card__preview cv-card__preview--{{ cv.template }}">
-          <i data-lucide="file-text"></i>
-          <span class="cv-card__preview-label">CV</span>
-      </a>
-    </div>
+    <!-- ── Baner podglądu CV ── -->
+    <a href="{% url 'dashboard:edit_cv' cv.id %}" class="cv-card__banner cv-card__banner--{{ cv.template }}">
+      <div class="cv-card__banner-mock">
+        {% if cv.template == 'modern' %}
+        <div class="cv-mini cv-mini--modern">
+          <div class="cv-mini__sidebar">
+            <div class="cv-mini__avatar"></div>
+            <div class="cv-mini__line" style="width:70%;background:rgba(245,158,11,0.6);"></div>
+            <div class="cv-mini__line" style="width:55%;"></div>
+            <div class="cv-mini__bar"></div>
+            <div class="cv-mini__bar" style="width:60%;"></div>
+            <div class="cv-mini__bar" style="width:75%;"></div>
+          </div>
+          <div class="cv-mini__main">
+            <div class="cv-mini__line" style="width:90%;background:rgba(245,158,11,0.5);"></div>
+            <div class="cv-mini__line" style="width:65%;"></div>
+            <div class="cv-mini__gap"></div>
+            <div class="cv-mini__line" style="width:45%;background:rgba(245,158,11,0.35);"></div>
+            <div class="cv-mini__line" style="width:90%;"></div>
+            <div class="cv-mini__line" style="width:70%;"></div>
+            <div class="cv-mini__gap"></div>
+            <div class="cv-mini__line" style="width:45%;background:rgba(245,158,11,0.35);"></div>
+            <div class="cv-mini__line" style="width:80%;"></div>
+          </div>
+        </div>
+        {% elif cv.template == 'minimal' %}
+        <div class="cv-mini">
+          <div class="cv-mini__top cv-mini__top--minimal"></div>
+          <div class="cv-mini__body">
+            <div class="cv-mini__line" style="width:55%;background:rgba(16,185,129,0.6);"></div>
+            <div class="cv-mini__line" style="width:90%;"></div>
+            <div class="cv-mini__line" style="width:75%;"></div>
+            <div class="cv-mini__gap"></div>
+            <div class="cv-mini__line" style="width:55%;background:rgba(16,185,129,0.6);"></div>
+            <div class="cv-mini__line" style="width:85%;"></div>
+            <div class="cv-mini__line" style="width:60%;"></div>
+            <div class="cv-mini__gap"></div>
+            <div class="cv-mini__line" style="width:55%;background:rgba(16,185,129,0.6);"></div>
+            <div class="cv-mini__line" style="width:90%;"></div>
+          </div>
+        </div>
+        {% else %}
+        <!-- classic (default) -->
+        <div class="cv-mini">
+          <div class="cv-mini__top cv-mini__top--classic"></div>
+          <div class="cv-mini__body">
+            <div class="cv-mini__line" style="width:80%;"></div>
+            <div class="cv-mini__line" style="width:55%;"></div>
+            <div class="cv-mini__divider"></div>
+            <div class="cv-mini__line" style="width:40%;background:rgba(108,99,255,0.5);"></div>
+            <div class="cv-mini__line" style="width:90%;"></div>
+            <div class="cv-mini__line" style="width:70%;"></div>
+            <div class="cv-mini__divider"></div>
+            <div class="cv-mini__line" style="width:40%;background:rgba(108,99,255,0.5);"></div>
+            <div class="cv-mini__line" style="width:85%;"></div>
+            <div class="cv-mini__line" style="width:65%;"></div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+      <div class="cv-card__banner-overlay">
+        <span class="cv-card__banner-edit">
+          <i data-lucide="pencil"></i> Edytuj
+        </span>
+      </div>
+    </a>
 
     <!-- Treść karty -->
     <div class="cv-card__body">
 
-      <!-- Tytuł + badge -->
       <div class="cv-card__header">
         <h3 class="cv-card__title">{{ cv.title }}</h3>
-        {% if cv.is_active %}
-          <span class="badge badge--active">Aktywne</span>
+        {% if cv.is_shared %}
+          <span class="badge badge--success" title="CV jest udostępnione publicznie">
+            <i data-lucide="link-2" style="width:10px;height:10px;"></i>
+            Udostępnione
+          </span>
         {% else %}
-          <span class="badge badge--inactive">Nieaktywne</span>
+          <span class="badge badge--inactive" title="CV nie jest udostępnione">
+            Prywatne
+          </span>
         {% endif %}
       </div>
 
-      <!-- Data edycji -->
       <p class="cv-card__meta">
         <i data-lucide="clock"></i>
-        Edytowano {{ cv.updated_at|timesince }} temu
+        Edytowano {{ cv.updated_at|timesince_pl }} temu
       </p>
 
-      <!-- Pasek postępu -->
       <div class="cv-card__progress">
         <div class="cv-card__progress-header">
           <span>Wypełnienie</span>
           <span>{{ cv.progress }}%</span>
         </div>
         <div class="progress">
-          <div class="progress__fill" style="width: {{ cv.progress }}%;"></div>
+          <div class="progress__fill" style="width:{{ cv.progress }}%;"></div>
         </div>
       </div>
 
-      <!-- Akcje -->
       <div class="cv-card__actions">
         <a href="{% url 'dashboard:edit_cv' cv.id %}" class="btn btn--accent btn--sm">
           <i data-lucide="pencil"></i> Edytuj
@@ -198,7 +245,6 @@
           <i data-lucide="download"></i> PDF
         </a>
 
-        <!-- Duplikuj — formularz POST -->
         <form method="POST" action="{% url 'dashboard:duplicate_cv' cv.id %}" style="display:inline;">
           {% csrf_token %}
           <button type="submit" class="btn btn--ghost btn--sm">
@@ -206,40 +252,22 @@
           </button>
         </form>
 
-        <!-- Usuń — otwiera modal -->
         <button
           type="button"
           class="btn btn--danger btn--sm"
           onclick="openDeleteModal('{{ cv.id }}', '{{ cv.title|escapejs }}')"
-          title="Usuń CV"
         >
           <i data-lucide="trash-2"></i>
         </button>
       </div>
 
-
     </div>
   </div>
   {% endfor %}
 
-  {% comment %} {% if not cvs %}
-  <!-- Empty state — WEWNĄTRZ gridu -->
-  <div class="cv-card--empty">
-    <i data-lucide="file-x"></i>
-    <h3>Nie masz jeszcze żadnego CV</h3>
-    <p>Stwórz swoje pierwsze CV i zacznij aplikować!</p>
-    <a href="#" class="btn btn--accent">
-      <i data-lucide="plus"></i> Stwórz CV
-    </a>
-  </div>
-  {% endif %} {% endcomment %}
-
-  <!-- Karta "Nowe CV" — zawsze na końcu -->
   <a href="{% url 'dashboard:create_cv' %}" class="cv-card--add">
     <div class="cv-card--add__inner">
-      <div class="cv-card--add__icon">
-        <i data-lucide="plus"></i>
-      </div>
+      <div class="cv-card--add__icon"><i data-lucide="plus"></i></div>
       <span class="cv-card--add__label">Nowe CV</span>
       <span class="cv-card--add__sub">Kliknij, aby dodać</span>
     </div>
@@ -247,29 +275,15 @@
 
 </div>
 
-
-{% comment %} {% if not cvs %}
-<!-- Empty state — gdy user nie ma jeszcze żadnego CV -->
-<div class="empty-state">
-    <i data-lucide="file-x"></i>
-    <h3>Nie masz jeszcze żadnego CV</h3>
-    <p>Stwórz swoje pierwsze CV i zacznij aplikować!</p>
-    <a href="#" class="btn btn--primary">
-        <i data-lucide="plus"></i> Stwórz CV
-    </a>
-</div>
-{% endif %} {% endcomment %}
-
-
 <!-- ============================================================
      SEKCJA 4 — SZABLONY
 ============================================================ -->
-<div class="`-header" style="margin-top: 48px;">
+<div class="section-header" style="margin-top: 48px;">
   <h3 class="section-header__title">
     <i data-lucide="layout-template"></i>
     Wybierz szablon
   </h3>
-  <a href="#" class="btn btn--ghost btn--sm" style='margin-top:10px; margin-bottom: 14px;'>
+  <a href="{% url 'dashboard:templates' %}" class="btn btn--ghost btn--sm">
     Zobacz wszystkie
     <i data-lucide="arrow-right"></i>
   </a>
@@ -277,15 +291,10 @@
 
 <div class="templates-grid">
 
-  <!-- Szablon: Klasyczny -->
   <div class="template-card card">
     <div class="template-card__badge">
-      <span class="badge badge--accent">
-        <i data-lucide="star"></i>
-        Popularny
-      </span>
+      <span class="badge badge--accent"><i data-lucide="star"></i> Popularny</span>
     </div>
-    <!-- Mockup podglądu CV — CSS art -->
     <div class="template-card__preview template-card__preview--classic">
       <div class="cv-mock">
         <div class="cv-mock__header cv-mock__header--classic"></div>
@@ -299,41 +308,35 @@
           <div class="cv-mock__divider"></div>
           <div class="cv-mock__line cv-mock__line--short"></div>
           <div class="cv-mock__line cv-mock__line--long"></div>
-          <div class="cv-mock__line cv-mock__line--medium"></div>
         </div>
       </div>
     </div>
     <div class="template-card__info">
       <h4 class="template-card__name">Klasyczny</h4>
       <p class="template-card__desc">Sprawdzony układ dla każdej branży</p>
-      <a href="{% url 'dashboard:create_cv' %}?template=classic" class="btn btn--accent btn--sm" style="width: 100%; justify-content: center; margin-top: 12px;">
-        <i data-lucide="arrow-right"></i>
-        Użyj szablonu
+      <a href="{% url 'dashboard:templates' %}?t=classic" class="btn btn--accent btn--sm" style="width:100%;justify-content:center;margin-top:12px;">
+        <i data-lucide="arrow-right"></i> Użyj szablonu
       </a>
     </div>
   </div>
 
-  <!-- Szablon: Minimalistyczny -->
   <div class="template-card card">
     <div class="template-card__badge">
-      <span class="badge badge--success">
-        <i data-lucide="trending-up"></i>
-        Polecany
-      </span>
+      <span class="badge badge--success"><i data-lucide="trending-up"></i> Polecany</span>
     </div>
     <div class="template-card__preview template-card__preview--minimal">
       <div class="cv-mock">
         <div class="cv-mock__header cv-mock__header--minimal"></div>
         <div class="cv-mock__body">
-          <div class="cv-mock__line cv-mock__line--medium" style="background: rgba(16,185,129,0.4);"></div>
+          <div class="cv-mock__line cv-mock__line--medium" style="background:rgba(16,185,129,0.4);"></div>
           <div class="cv-mock__line cv-mock__line--long"></div>
           <div class="cv-mock__line cv-mock__line--long"></div>
           <div class="cv-mock__spacer"></div>
-          <div class="cv-mock__line cv-mock__line--medium" style="background: rgba(16,185,129,0.4);"></div>
+          <div class="cv-mock__line cv-mock__line--medium" style="background:rgba(16,185,129,0.4);"></div>
           <div class="cv-mock__line cv-mock__line--long"></div>
           <div class="cv-mock__line cv-mock__line--short"></div>
           <div class="cv-mock__spacer"></div>
-          <div class="cv-mock__line cv-mock__line--medium" style="background: rgba(16,185,129,0.4);"></div>
+          <div class="cv-mock__line cv-mock__line--medium" style="background:rgba(16,185,129,0.4);"></div>
           <div class="cv-mock__line cv-mock__line--long"></div>
         </div>
       </div>
@@ -341,42 +344,36 @@
     <div class="template-card__info">
       <h4 class="template-card__name">Minimalistyczny</h4>
       <p class="template-card__desc">Czysty, nowoczesny, bez zbędnych ozdób</p>
-      <a href="{% url 'dashboard:create_cv' %}?template=minimal" class="btn btn--sm" style="width: 100%; justify-content: center; margin-top: 12px; background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.3);">
-        <i data-lucide="arrow-right"></i>
-        Użyj szablonu
+      <a href="{% url 'dashboard:templates' %}?t=minimal" class="btn btn--sm" style="width:100%;justify-content:center;margin-top:12px;background:rgba(16,185,129,0.15);color:#10b981;border:1px solid rgba(16,185,129,0.3);">
+        <i data-lucide="arrow-right"></i> Użyj szablonu
       </a>
     </div>
   </div>
 
-  <!-- Szablon: Nowoczesny -->
   <div class="template-card card">
     <div class="template-card__badge">
-      <span class="badge badge--warning">
-        <i data-lucide="sparkles"></i>
-        Nowy
-      </span>
+      <span class="badge badge--warning"><i data-lucide="sparkles"></i> Nowy</span>
     </div>
     <div class="template-card__preview template-card__preview--modern">
       <div class="cv-mock cv-mock--modern">
         <div class="cv-mock__sidebar-col">
           <div class="cv-mock__avatar"></div>
-          <div class="cv-mock__line cv-mock__line--short" style="background: rgba(245,158,11,0.5); margin: 6px auto; width: 60%;"></div>
-          <div class="cv-mock__line cv-mock__line--short" style="width: 80%; margin: 4px auto;"></div>
-          <div class="cv-mock__line cv-mock__line--short" style="width: 70%; margin: 4px auto;"></div>
+          <div class="cv-mock__line cv-mock__line--short" style="background:rgba(245,158,11,0.5);margin:6px auto;width:60%;"></div>
+          <div class="cv-mock__line cv-mock__line--short" style="width:80%;margin:4px auto;"></div>
           <div class="cv-mock__spacer"></div>
           <div class="cv-mock__skill-bar"></div>
           <div class="cv-mock__skill-bar cv-mock__skill-bar--short"></div>
           <div class="cv-mock__skill-bar cv-mock__skill-bar--medium"></div>
         </div>
         <div class="cv-mock__main-col">
-          <div class="cv-mock__line cv-mock__line--long" style="background: rgba(245,158,11,0.5);"></div>
+          <div class="cv-mock__line cv-mock__line--long" style="background:rgba(245,158,11,0.5);"></div>
           <div class="cv-mock__line cv-mock__line--medium"></div>
           <div class="cv-mock__spacer"></div>
-          <div class="cv-mock__line cv-mock__line--short" style="background: rgba(245,158,11,0.3);"></div>
+          <div class="cv-mock__line cv-mock__line--short" style="background:rgba(245,158,11,0.3);"></div>
           <div class="cv-mock__line cv-mock__line--long"></div>
           <div class="cv-mock__line cv-mock__line--medium"></div>
           <div class="cv-mock__spacer"></div>
-          <div class="cv-mock__line cv-mock__line--short" style="background: rgba(245,158,11,0.3);"></div>
+          <div class="cv-mock__line cv-mock__line--short" style="background:rgba(245,158,11,0.3);"></div>
           <div class="cv-mock__line cv-mock__line--long"></div>
         </div>
       </div>
@@ -384,9 +381,8 @@
     <div class="template-card__info">
       <h4 class="template-card__name">Nowoczesny</h4>
       <p class="template-card__desc">Wyróżnij się z tłumu — kreatywny układ</p>
-      <a href="{% url 'dashboard:create_cv' %}?template=modern" class="btn btn--sm" style="width: 100%; justify-content: center; margin-top: 12px; background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3);">
-        <i data-lucide="arrow-right"></i>
-        Użyj szablonu
+      <a href="{% url 'dashboard:templates' %}?t=modern" class="btn btn--sm" style="width:100%;justify-content:center;margin-top:12px;background:rgba(245,158,11,0.15);color:#f59e0b;border:1px solid rgba(245,158,11,0.3);">
+        <i data-lucide="arrow-right"></i> Użyj szablonu
       </a>
     </div>
   </div>
@@ -396,11 +392,10 @@
 <!-- ============================================================
      SEKCJA 5 — STATYSTYKI
 ============================================================ -->
-<div class="stats-row" style="margin-top: 48px; margin-bottom: 40px;">
+<div class="stats-row" style="margin-top:48px;margin-bottom:40px;">
 
-  <!-- Pobrania PDF -->
   <div class="stat-card card">
-    <div class="stat-card__icon" style="color: var(--color-accent); background: var(--color-accent-glow);">
+    <div class="stat-card__icon" style="color:var(--color-accent);background:var(--color-accent-glow);">
       <i data-lucide="download"></i>
     </div>
     <div class="stat-card__body">
@@ -409,9 +404,8 @@
     </div>
   </div>
 
-  <!-- Wyświetlenia -->
   <div class="stat-card card">
-    <div class="stat-card__icon" style="color: #10b981; background: rgba(16,185,129,0.15);">
+    <div class="stat-card__icon" style="color:#10b981;background:rgba(16,185,129,0.15);">
       <i data-lucide="eye"></i>
     </div>
     <div class="stat-card__body">
@@ -420,22 +414,20 @@
     </div>
   </div>
 
-  <!-- Ukończenie profilu -->
   <div class="stat-card stat-card--wide card">
-    <div class="stat-card__icon" style="color: #f59e0b; background: rgba(245,158,11,0.15);">
+    <div class="stat-card__icon" style="color:#f59e0b;background:rgba(245,158,11,0.15);">
       <i data-lucide="user-check"></i>
     </div>
-    <div class="stat-card__body" style="flex: 1;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+    <div class="stat-card__body" style="flex:1;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
         <span class="stat-card__label">Ukończenie profilu</span>
         <span class="stat-card__value" style="font-size:18px;">{{ profile_completion }}%</span>
       </div>
       <div class="progress">
-        <div class="progress__fill progress__fill--warning"
-             style="width: {{ profile_completion }}%;"></div>
+        <div class="progress__fill progress__fill--warning" style="width:{{ profile_completion }}%;"></div>
       </div>
       {% if profile_completion < 100 %}
-      <div style="margin-top:6px; font-size:11px; color:var(--color-text-muted);">
+      <div style="margin-top:6px;font-size:11px;color:var(--color-text-muted);">
         {% if not request.user.avatar %}
           <span style="color:#f59e0b;">↑ Dodaj avatar +10%</span>
         {% elif profile_completion < 60 %}
@@ -446,9 +438,8 @@
     </div>
   </div>
 
-  <!-- Dni aktywności -->
   <div class="stat-card card">
-    <div class="stat-card__icon" style="color: #6C63FF; background: var(--color-accent-glow);">
+    <div class="stat-card__icon" style="color:#6C63FF;background:var(--color-accent-glow);">
       <i data-lucide="flame"></i>
     </div>
     <div class="stat-card__body">
@@ -459,13 +450,10 @@
 
 </div>
 
-
 <!-- ============================================================
-     STYLE SPECYFICZNE DLA DASHBOARDU
-     (wyjątkowo inline — layout nie zna tych komponentów)
+     STYLE
 ============================================================ -->
 <style>
-  /* Powitanie */
   .welcome {
     display: flex;
     align-items: flex-start;
@@ -473,38 +461,19 @@
     flex-wrap: wrap;
     gap: 12px;
   }
-
   .welcome__heading {
-    font-size: 26px;
-    font-weight: 800;
+    font-size: 26px; font-weight: 800;
     color: var(--color-text);
-    letter-spacing: -0.5px;
-    line-height: 1.2;
+    letter-spacing: -0.5px; line-height: 1.2;
   }
-
-  .welcome__sub {
-    font-size: 15px;
-    color: var(--color-text-muted);
-    margin-top: 4px;
-  }
-
+  .welcome__sub { font-size: 15px; color: var(--color-text-muted); margin-top: 4px; }
   .welcome__date {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    color: var(--color-text-muted);
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    padding: 6px 12px;
-    border-radius: var(--radius-md);
-    white-space: nowrap;
+    display: flex; align-items: center; gap: 6px;
+    font-size: 13px; color: var(--color-text-muted);
+    background: var(--color-surface); border: 1px solid var(--color-border);
+    padding: 6px 12px; border-radius: var(--radius-md); white-space: nowrap;
   }
-
-  .welcome__date i {
-    width: 14px;
-    height: 14px;
-  }
+  .welcome__date i { width: 14px; height: 14px; }
 
   /* Szybkie akcje */
   .quick-actions {
@@ -512,890 +481,500 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
   }
-
   .quick-card {
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-xl);
     padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    display: flex; flex-direction: column; gap: 12px;
     transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
   }
-
   .quick-card:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
     border-color: var(--color-surface-3);
   }
-
   .quick-card__icon {
-    width: 44px;
-    height: 44px;
+    width: 44px; height: 44px;
     border-radius: var(--radius-lg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
   }
+  .quick-card__icon i,
+  .quick-card__icon svg { width: 22px; height: 22px; }
+  .quick-card__title { font-size: 14px; font-weight: 700; color: var(--color-text); margin-bottom: 4px; }
+  .quick-card__desc  { font-size: 12px; color: var(--color-text-muted); line-height: 1.5; }
 
-  .quick-card__icon i {
-    width: 22px;
-    height: 22px;
-  }
-
-  .quick-card__title {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--color-text);
-    margin-bottom: 4px;
-  }
-
-  .quick-card__desc {
-    font-size: 12px;
-    color: var(--color-text-muted);
-    line-height: 1.5;
-  }
-
-  /* Siatka CV */
+  /* CV Grid */
   .cv-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 20px;
   }
+  .cv-card { display: flex; flex-direction: column; padding: 0; overflow: hidden; }
 
-  .cv-card {
-    display: flex;
-    flex-direction: column;
-    padding: 0;
+  /* ── Baner podglądu CV ── */
+  .cv-card__banner {
+    display: block;
+    position: relative;
+    height: 130px;
     overflow: hidden;
-  }
-
-  .cv-card__preview {
-    height: 120px;
-    background: linear-gradient(135deg, #1e1e2e, #2a2a3e);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    color: var(--color-accent);
     border-bottom: 1px solid var(--color-border);
+    text-decoration: none;
     flex-shrink: 0;
   }
+  .cv-card__banner--classic { background: linear-gradient(160deg, #1e1e2e 0%, #16162a 100%); }
+  .cv-card__banner--minimal { background: linear-gradient(160deg, #1a2e26 0%, #162620 100%); }
+  .cv-card__banner--modern  { background: linear-gradient(160deg, #2e2a1a 0%, #261e10 100%); }
 
-  .cv-card__preview--green {
-    color: #10b981;
-    background: linear-gradient(135deg, #1a2e26, #1e3a30);
-  }
-
-  .cv-card__preview--orange {
-    color: #f59e0b;
-    background: linear-gradient(135deg, #2e2a1a, #3a321e);
-  }
-
-  .cv-card__preview i {
-    width: 36px;
-    height: 36px;
-    opacity: 0.7;
-  }
-
-  .cv-card__preview-label {
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    opacity: 0.6;
-  }
-
-  .cv-card__body {
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    flex: 1;
-  }
-
-  .cv-card__header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 8px;
-  }
-
-  .cv-card__title {
-    font-size: 13.5px;
-    font-weight: 700;
-    color: var(--color-text);
-    line-height: 1.3;
-  }
-
-  .cv-card__meta {
+  .cv-card__banner-mock {
+    position: absolute;
+    inset: 0;
     display: flex;
     align-items: center;
-    gap: 5px;
-    font-size: 11px;
-    color: var(--color-text-muted);
+    justify-content: center;
+    padding: 12px;
   }
 
-  .cv-card__meta i {
-    width: 12px;
-    height: 12px;
+  /* Overlay na hover */
+  .cv-card__banner-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(108,99,255,0.75);
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
   }
+  .cv-card__banner--minimal .cv-card__banner-overlay { background: rgba(16,185,129,0.75); }
+  .cv-card__banner--modern  .cv-card__banner-overlay { background: rgba(245,158,11,0.75); }
 
-  .cv-card__progress {
+  .cv-card__banner:hover .cv-card__banner-overlay { opacity: 1; }
+
+  .cv-card__banner-edit {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: #fff; font-size: 13px; font-weight: 700;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 7px 16px; border-radius: var(--radius-lg);
+    pointer-events: none;
+  }
+  .cv-card__banner-edit i { width: 14px; height: 14px; }
+
+  /* Mini mockup CV w banerze */
+  .cv-mini {
+    width: 90px; height: 108px;
+    background: #fff;
+    border-radius: 3px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    flex-shrink: 0;
+  }
+  .cv-mini__top          { height: 22px; flex-shrink: 0; }
+  .cv-mini__top--classic { background: var(--color-accent); }
+  .cv-mini__top--minimal { height: 8px; background: #10b981; }
+  .cv-mini__body {
+    padding: 4px 5px;
+    display: flex; flex-direction: column; gap: 2px; flex: 1;
+  }
+  .cv-mini__line   { height: 3px; border-radius: 2px; background: #e0e0e0; }
+  .cv-mini__divider { height: 1px; background: #ececec; margin: 1px 0; }
+  .cv-mini__gap    { height: 3px; }
+  .cv-mini__bar    { height: 2px; border-radius: 2px; background: rgba(245,158,11,0.5); width: 80%; }
+
+  .cv-mini--modern { flex-direction: row; }
+  .cv-mini__sidebar {
+    width: 28px; background: rgba(245,158,11,0.12);
+    padding: 4px 3px;
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    flex-shrink: 0;
+  }
+  .cv-mini__avatar {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: rgba(245,158,11,0.6); margin-bottom: 3px; flex-shrink: 0;
+  }
+  .cv-mini__main {
+    flex: 1; padding: 4px 4px;
+    display: flex; flex-direction: column; gap: 2px;
   }
 
-  .cv-card__progress-header {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
+  /* Badge statusu */
+  .badge--inactive {
+    background: rgba(136,136,160,0.15);
     color: var(--color-text-muted);
+    border: 1px solid rgba(136,136,160,0.2);
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 8px; border-radius: 20px;
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px;
+  }
+  .badge--active,
+  .badge--success {
+    background: rgba(16,185,129,0.15);
+    color: #10b981;
+    border: 1px solid rgba(16,185,129,0.25);
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 8px; border-radius: 20px;
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px;
   }
 
-  .cv-card__actions {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    margin-top: auto;
-    padding-top: 4px;
-  }
+  .cv-card__body { padding: 16px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .cv-card__header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  .cv-card__title  { font-size: 13.5px; font-weight: 700; color: var(--color-text); line-height: 1.3; }
+  .cv-card__meta   { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--color-text-muted); }
+  .cv-card__meta i { width: 12px; height: 12px; }
+  .cv-card__progress { display: flex; flex-direction: column; gap: 6px; }
+  .cv-card__progress-header { display: flex; justify-content: space-between; font-size: 11px; color: var(--color-text-muted); }
+  .cv-card__actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: auto; padding-top: 4px; }
 
   /* Karta "Dodaj nowe" */
   .cv-card--add {
     min-height: 240px;
     border: 2px dashed var(--color-border);
     background: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     border-radius: var(--radius-xl);
     text-decoration: none;
     transition: border-color var(--transition), background var(--transition), transform var(--transition);
     cursor: pointer;
   }
-
   .cv-card--add:hover {
     border-color: var(--color-accent);
     background: var(--color-accent-glow);
     transform: translateY(-2px);
   }
-
-  .cv-card--add__inner {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    text-align: center;
-  }
-
+  .cv-card--add__inner { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; }
   .cv-card--add__icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
+    width: 48px; height: 48px; border-radius: 50%;
     background: var(--color-surface-2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     color: var(--color-text-muted);
     transition: background var(--transition), color var(--transition);
   }
+  .cv-card--add:hover .cv-card--add__icon { background: var(--color-accent); color: #fff; }
+  .cv-card--add__icon i { width: 22px; height: 22px; }
+  .cv-card--add__label { font-size: 14px; font-weight: 600; color: var(--color-text-muted); }
+  .cv-card--add__sub   { font-size: 12px; color: var(--color-text-muted); opacity: 0.6; }
 
-  .cv-card--add:hover .cv-card--add__icon {
-    background: var(--color-accent);
-    color: #fff;
-  }
-
-  .cv-card--add__icon i {
-    width: 22px;
-    height: 22px;
-  }
-
-  .cv-card--add__label {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--color-text-muted);
-  }
-
-  .cv-card--add__sub {
-    font-size: 12px;
-    color: var(--color-text-muted);
-    opacity: 0.6;
-  }
-
-  /* Siatka szablonów */
-  .templates-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-  }
-
-  .template-card {
-    padding: 0;
-    overflow: hidden;
-    position: relative;
-  }
-
-  .template-card__badge {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    z-index: 2;
-  }
-
-  /* Podgląd szablonu — CSS art */
+  /* Szablony */
+  .templates-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .template-card  { padding: 0; overflow: hidden; position: relative; }
+  .template-card__badge { position: absolute; top: 12px; right: 12px; z-index: 2; }
   .template-card__preview {
     height: 180px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-    border-bottom: 1px solid var(--color-border);
+    display: flex; align-items: center; justify-content: center;
+    padding: 16px; border-bottom: 1px solid var(--color-border);
   }
+  .template-card__preview--classic { background: linear-gradient(160deg, #1e1e2e, #16162a); }
+  .template-card__preview--minimal { background: linear-gradient(160deg, #1a2e26, #162620); }
+  .template-card__preview--modern  { background: linear-gradient(160deg, #2e2a1a, #261e10); }
 
-  .template-card__preview--classic {
-    background: linear-gradient(160deg, #1e1e2e 0%, #16162a 100%);
-  }
-
-  .template-card__preview--minimal {
-    background: linear-gradient(160deg, #1a2e26 0%, #162620 100%);
-  }
-
-  .template-card__preview--modern {
-    background: linear-gradient(160deg, #2e2a1a 0%, #261e10 100%);
-  }
-
-  /* Mockup CV */
   .cv-mock {
-    width: 110px;
-    height: 148px;
-    background: #fff;
-    border-radius: 4px;
-    overflow: hidden;
+    width: 110px; height: 148px; background: #fff;
+    border-radius: 4px; overflow: hidden;
     box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-    display: flex;
-    flex-direction: column;
+    display: flex; flex-direction: column;
   }
-
-  .cv-mock__header {
-    height: 32px;
-    flex-shrink: 0;
-  }
-
-  .cv-mock__header--classic {
-    background: var(--color-accent);
-  }
-
-  .cv-mock__header--minimal {
-    height: 12px;
-    background: #10b981;
-  }
-
-  .cv-mock__body {
-    padding: 6px 7px;
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    flex: 1;
-  }
-
-  .cv-mock__line {
-    height: 4px;
-    border-radius: 2px;
-    background: #e0e0e0;
-  }
-
+  .cv-mock__header          { height: 32px; flex-shrink: 0; }
+  .cv-mock__header--classic { background: var(--color-accent); }
+  .cv-mock__header--minimal { height: 12px; background: #10b981; }
+  .cv-mock__body { padding: 6px 7px; display: flex; flex-direction: column; gap: 3px; flex: 1; }
+  .cv-mock__line         { height: 4px; border-radius: 2px; background: #e0e0e0; }
   .cv-mock__line--long   { width: 100%; }
   .cv-mock__line--medium { width: 70%; }
   .cv-mock__line--short  { width: 45%; }
-
-  .cv-mock__divider {
-    height: 1px;
-    background: #e8e8e8;
-    margin: 2px 0;
-  }
-
-  .cv-mock__spacer {
-    height: 4px;
-  }
-
-  /* Nowoczesny mockup — dwukolumnowy */
-  .cv-mock--modern {
-    flex-direction: row;
-  }
-
-  .cv-mock__sidebar-col {
-    width: 38px;
-    background: rgba(245,158,11,0.15);
-    padding: 6px 4px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-    flex-shrink: 0;
-  }
-
-  .cv-mock__main-col {
-    flex: 1;
-    padding: 6px 5px;
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-  }
-
-  .cv-mock__avatar {
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: rgba(245,158,11,0.6);
-    margin-bottom: 4px;
-    flex-shrink: 0;
-  }
-
-  .cv-mock__skill-bar {
-    height: 3px;
-    border-radius: 2px;
-    background: rgba(245,158,11,0.5);
-    width: 80%;
-  }
-
+  .cv-mock__divider      { height: 1px; background: #e8e8e8; margin: 2px 0; }
+  .cv-mock__spacer       { height: 4px; }
+  .cv-mock--modern       { flex-direction: row; }
+  .cv-mock__sidebar-col  { width: 38px; background: rgba(245,158,11,0.15); padding: 6px 4px; display: flex; flex-direction: column; align-items: center; gap: 3px; flex-shrink: 0; }
+  .cv-mock__main-col     { flex: 1; padding: 6px 5px; display: flex; flex-direction: column; gap: 3px; }
+  .cv-mock__avatar       { width: 22px; height: 22px; border-radius: 50%; background: rgba(245,158,11,0.6); margin-bottom: 4px; flex-shrink: 0; }
+  .cv-mock__skill-bar         { height: 3px; border-radius: 2px; background: rgba(245,158,11,0.5); width: 80%; }
   .cv-mock__skill-bar--short  { width: 55%; }
   .cv-mock__skill-bar--medium { width: 70%; }
-
-  .template-card__info {
-    padding: 16px;
-  }
-
-  .template-card__name {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--color-text);
-    margin-bottom: 4px;
-  }
-
-  .template-card__desc {
-    font-size: 12px;
-    color: var(--color-text-muted);
-    line-height: 1.5;
-  }
+  .template-card__info { padding: 16px; }
+  .template-card__name { font-size: 15px; font-weight: 700; color: var(--color-text); margin-bottom: 4px; }
+  .template-card__desc { font-size: 12px; color: var(--color-text-muted); line-height: 1.5; }
 
   /* Statystyki */
-  .stats-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-  }
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .stat-card { display: flex; align-items: center; gap: 14px; padding: 18px 20px; }
+  .stat-card__icon { width: 42px; height: 42px; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .stat-card__icon i { width: 20px; height: 20px; }
+  .stat-card__body  { display: flex; flex-direction: column; gap: 2px; }
+  .stat-card__value { font-size: 24px; font-weight: 800; color: var(--color-text); letter-spacing: -0.5px; line-height: 1; }
+  .stat-card__label { font-size: 12px; color: var(--color-text-muted); }
 
-  .stat-card {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 18px 20px;
-  }
-
-  .stat-card--wide {
-    grid-column: span 1;
-  }
-
-  .stat-card__icon {
-    width: 42px;
-    height: 42px;
-    border-radius: var(--radius-lg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .stat-card__icon i {
-    width: 20px;
-    height: 20px;
-  }
-
-  .stat-card__body {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .stat-card__value {
-    font-size: 24px;
-    font-weight: 800;
-    color: var(--color-text);
-    letter-spacing: -0.5px;
-    line-height: 1;
-  }
-
-  .stat-card__label {
-    font-size: 12px;
-    color: var(--color-text-muted);
-  }
-
-  /* ── Responsywność dashboardu ── */
-  @media (max-width: 1100px) {
-    .stats-row {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    .templates-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  @media (max-width: 900px) {
-    .quick-actions {
-      grid-template-columns: 1fr;
-    }
-
-    .templates-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  @media (max-width: 768px) {
-    .welcome__heading {
-      font-size: 20px;
-    }
-
-    .cv-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .stats-row {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    .quick-actions {
-      grid-template-columns: 1fr;
-    }
-
-    .templates-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .stats-row {
-      grid-template-columns: 1fr;
-    }
-
-    .welcome {
-      flex-direction: column;
-    }
-
-    .cv-card__actions {
-      flex-wrap: wrap;
-    }
-  }
-
-  /* ── Messages ── */
-  .messages-wrap {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 24px;
-  }
-
-  .message {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 16px;
-    border-radius: var(--radius-lg);
-    font-size: 13px;
-    font-weight: 500;
-    border: 1px solid transparent;
-    animation: slideIn 0.2s ease;
-  }
-
-  .message i {
-    width: 16px;
-    height: 16px;
-    flex-shrink: 0;
-  }
-
-  .message span {
-    flex: 1;
-  }
-
-  .message--success {
-    background: rgba(16, 185, 129, 0.1);
-    border-color: rgba(16, 185, 129, 0.3);
-    color: #10b981;
-  }
-
-  .message--error {
-    background: rgba(239, 68, 68, 0.1);
-    border-color: rgba(239, 68, 68, 0.3);
-    color: var(--color-danger);
-  }
-
-  .message--info {
-    background: var(--color-accent-glow);
-    border-color: rgba(108, 99, 255, 0.3);
-    color: var(--color-accent);
-  }
-
-  .message__close {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    border-radius: var(--radius-sm);
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    color: inherit;
-    opacity: 0.6;
-    transition: opacity 0.15s;
-    flex-shrink: 0;
-  }
-
+  /* Messages */
+  .messages-wrap { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+  .message { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: var(--radius-lg); font-size: 13px; font-weight: 500; border: 1px solid transparent; animation: slideIn 0.2s ease; }
+  .message i    { width: 16px; height: 16px; flex-shrink: 0; }
+  .message span { flex: 1; }
+  .message--success { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.3); color: #10b981; }
+  .message--error   { background: rgba(239,68,68,0.1);  border-color: rgba(239,68,68,0.3);  color: var(--color-danger); }
+  .message--info    { background: var(--color-accent-glow); border-color: rgba(108,99,255,0.3); color: var(--color-accent); }
+  .message__close { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: var(--radius-sm); background: transparent; border: none; cursor: pointer; color: inherit; opacity: 0.6; transition: opacity 0.15s; flex-shrink: 0; }
   .message__close:hover { opacity: 1; }
   .message__close i { width: 13px; height: 13px; }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
 
-  @keyframes slideIn {
-    from { opacity: 0; transform: translateY(-8px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ── Modal ── */
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(4px);
-    z-index: 200;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .modal-overlay--active {
-    display: flex;
-  }
-
-  .modal {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-2xl);
-    padding: 32px;
-    width: 100%;
-    max-width: 400px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    text-align: center;
-    box-shadow: var(--shadow-xl);
-    animation: modalIn 0.2s ease;
-  }
-
-  @keyframes modalIn {
-    from { opacity: 0; transform: scale(0.95) translateY(8px); }
-    to   { opacity: 1; transform: scale(1) translateY(0); }
-  }
-
-  .modal__icon {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-danger);
-  }
-
+  /* Modal */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 200; align-items: center; justify-content: center; }
+  .modal-overlay--active { display: flex; }
+  .modal { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-2xl); padding: 32px; width: 100%; max-width: 400px; display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; box-shadow: var(--shadow-xl); animation: modalIn 0.2s ease; }
+  @keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+  .modal__icon { width: 56px; height: 56px; border-radius: 50%; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); display: flex; align-items: center; justify-content: center; color: var(--color-danger); }
   .modal__icon i { width: 24px; height: 24px; }
+  .modal__title { font-size: 18px; font-weight: 700; color: var(--color-text); margin: 0; }
+  .modal__desc  { font-size: 14px; color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+  .modal__actions { display: flex; gap: 10px; width: 100%; justify-content: center; margin-top: 4px; }
+  .modal__actions .btn { flex: 1; justify-content: center; }
+  .modal__actions form { flex: 1; display: flex; }
+  .modal__actions form .btn { width: 100%; }
 
-  .modal__title {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--color-text);
-    margin: 0;
+  /* Responsywność */
+  @media (max-width: 1100px) {
+    .stats-row      { grid-template-columns: repeat(2, 1fr); }
+    .templates-grid { grid-template-columns: repeat(2, 1fr); }
   }
-
-  .modal__desc {
-    font-size: 14px;
-    color: var(--color-text-muted);
-    line-height: 1.6;
-    margin: 0;
+  @media (max-width: 900px) {
+    .quick-actions  { grid-template-columns: 1fr; }
+    .templates-grid { grid-template-columns: 1fr; }
   }
-
-  .modal__actions {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-    justify-content: center;
-    margin-top: 4px;
+  @media (max-width: 768px) {
+    .welcome__heading { font-size: 20px; }
+    .cv-grid        { grid-template-columns: 1fr; }
+    .stats-row      { grid-template-columns: repeat(2, 1fr); }
   }
-
-  .modal__actions .btn {
-    flex: 1;
-    justify-content: center;
+  @media (max-width: 480px) {
+    .stats-row      { grid-template-columns: 1fr; }
+    .welcome        { flex-direction: column; }
+    .cv-card__actions { flex-wrap: wrap; }
   }
-
-  .modal__actions form {
-    flex: 1;
-    display: flex;
-  }
-
-  .modal__actions form .btn {
-    width: 100%;
-  }
-
 </style>
 
-<!-- ============================================================
-     MODAL — Potwierdzenie usunięcia CV
-============================================================ -->
+<!-- Modal usuwania -->
 <div class="modal-overlay" id="deleteModal" role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle">
   <div class="modal">
-    <div class="modal__icon">
-      <i data-lucide="trash-2"></i>
-    </div>
+    <div class="modal__icon"><i data-lucide="trash-2"></i></div>
     <h3 class="modal__title" id="deleteModalTitle">Usuń CV</h3>
     <p class="modal__desc">
       Czy na pewno chcesz usunąć <strong id="deleteCvTitle"></strong>?<br>
-      <span style="color: var(--color-danger); font-size: 12px;">Tej operacji nie można cofnąć.</span>
+      <span style="color:var(--color-danger);font-size:12px;">Tej operacji nie można cofnąć.</span>
     </p>
     <div class="modal__actions">
-      <button type="button" class="btn btn--ghost" onclick="closeDeleteModal()">
-        Anuluj
-      </button>
+      <button type="button" class="btn btn--ghost" onclick="closeDeleteModal()">Anuluj</button>
       <form id="deleteForm" method="POST" action="">
         {% csrf_token %}
         <button type="submit" class="btn btn--danger">
-          <i data-lucide="trash-2"></i>
-          Tak, usuń
+          <i data-lucide="trash-2"></i> Tak, usuń
         </button>
       </form>
     </div>
   </div>
 </div>
 
-
 {% endblock %}
 
 {% block extra_js %}
 <script>
-  // Wyświetl aktualną datę w powitaniu
-  const dateEl = document.getElementById('currentDate');
-  if (dateEl) {
-    const now = new Date();
-    dateEl.textContent = now.toLocaleDateString('pl-PL', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    });
-  }
+'use strict';
 
-  // ── Modal usuwania ──
-  function openDeleteModal(cvId, cvTitle) {
-    document.getElementById('deleteCvTitle').textContent = `„${cvTitle}"`;
-    document.getElementById('deleteForm').action = `/dashboard/cv/${cvId}/delete/`;
-    document.getElementById('deleteModal').classList.add('modal-overlay--active');
-    document.body.style.overflow = 'hidden';
-  }
+// ── Data ──
+const dateEl = document.getElementById('currentDate');
+if (dateEl) {
+  dateEl.textContent = new Date().toLocaleDateString('pl-PL', {
+    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+  });
+}
 
-  function closeDeleteModal() {
-    document.getElementById('deleteModal').classList.remove('modal-overlay--active');
-    document.body.style.overflow = '';
-  }
+// ══════════════════════════════════════════════════════════
+// POWIADOMIENIA — localStorage
+// ══════════════════════════════════════════════════════════
 
-  // Zamknij modal klikając w overlay (poza oknem)
-  document.getElementById('deleteModal').addEventListener('click', function (e) {
-    if (e.target === this) closeDeleteModal();
+const USER_ID = '{{ user.id }}';
+
+// ── 1. Powitanie — tylko raz po rejestracji ──
+// Backend powinien ustawić flagę w sesji/DB, ale jako fallback:
+// sprawdzamy localStorage czy już pokazaliśmy to powiadomienie
+(function checkWelcomeNotif() {
+  const key = `resumo_welcome_shown_${USER_ID}`;
+  if (localStorage.getItem(key)) return; // już pokazane — pomiń
+
+  // Oznacz jako pokazane PRZED fetch, żeby nie pokazać dwa razy
+  localStorage.setItem(key, '1');
+
+  // Sprawdź czy backend potwierdza że to pierwsze logowanie
+  fetch('/notifications/list/')
+    .then(r => r.json())
+    .then(data => {
+      // Jeśli powiadomienie powitalne istnieje i jest nieprzeczytane — OK, niech się wyświetli
+      // Jeśli nie — nie rób nic (nie tworzymy nowego)
+    })
+    .catch(() => {});
+})();
+
+// ── 2. Powiadomienie o QR — max 3×, co 3 dni ──
+(function checkQrNotif() {
+  const key      = `resumo_qr_notif_${USER_ID}`;
+  const raw      = localStorage.getItem(key);
+  const state    = raw ? JSON.parse(raw) : { count: 0, lastShown: 0 };
+  const now      = Date.now();
+  const threeDays = 3 * 24 * 60 * 60 * 1000;
+
+  if (state.count >= 3) return;                          // limit wyczerpany
+  if (now - state.lastShown < threeDays) return;         // za wcześnie
+
+  // Zapisz nowy stan
+  state.count++;
+  state.lastShown = now;
+  localStorage.setItem(key, JSON.stringify(state));
+
+  // Wyślij powiadomienie do backendu (opcjonalne — jeśli masz endpoint)
+  // fetch('/notifications/create/', { method: 'POST', ... })
+  // Alternatywnie — po prostu pokaż toast
+  setTimeout(() => {
+    showToast('Nowość: Udostępnianie CV z QR kodem! 🔗', 'info');
+  }, 2000);
+})();
+
+// ── Modal usuwania ──
+function openDeleteModal(cvId, cvTitle) {
+  document.getElementById('deleteCvTitle').textContent = `„${cvTitle}"`;
+  document.getElementById('deleteForm').action = `/dashboard/cv/${cvId}/delete/`;
+  document.getElementById('deleteModal').classList.add('modal-overlay--active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDeleteModal() {
+  document.getElementById('deleteModal').classList.remove('modal-overlay--active');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('deleteModal').addEventListener('click', function(e) {
+  if (e.target === this) closeDeleteModal();
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeDeleteModal();
+});
+
+// Auto-ukryj messages
+document.querySelectorAll('.message').forEach(msg => {
+  setTimeout(() => {
+    msg.style.transition = 'opacity 0.4s ease';
+    msg.style.opacity = '0';
+    setTimeout(() => msg.remove(), 400);
+  }, 5000);
+});
+
+// ── Toast ──
+function showToast(message, type = 'success') {
+  const existing = document.getElementById('cv-toast');
+  if (existing) existing.remove();
+
+  const icons = { success: 'check-circle', error: 'alert-circle', info: 'info' };
+  const borders = { success: 'var(--color-accent)', error: '#ef4444', info: '#0ea5e9' };
+
+  const toast = document.createElement('div');
+  toast.id = 'cv-toast';
+  toast.innerHTML = `<i data-lucide="${icons[type]||'info'}" style="width:16px;height:16px;flex-shrink:0;"></i><span>${message}</span>`;
+
+  Object.assign(toast.style, {
+    position: 'fixed', bottom: '28px', right: '28px', zIndex: '9999',
+    display: 'flex', alignItems: 'center', gap: '10px',
+    padding: '12px 20px', borderRadius: '12px',
+    background: 'var(--color-surface)', border: '1px solid var(--color-border)',
+    color: 'var(--color-text)', fontSize: '13px', fontWeight: '500',
+    boxShadow: '0 8px 32px rgba(0,0,0,0.35)',
+    opacity: '0', transform: 'translateY(12px)',
+    transition: 'opacity 0.25s ease, transform 0.25s ease',
+    maxWidth: '360px', fontFamily: 'inherit',
+    borderLeft: `3px solid ${borders[type]||'var(--color-accent)'}`,
   });
 
-  // Zamknij modal klawiszem Escape
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') closeDeleteModal();
-  });
+  document.body.appendChild(toast);
+  if (window.lucide) lucide.createIcons({ nodes: [toast] });
 
-  // Auto-ukryj messages po 5 sekundach
-  document.querySelectorAll('.message').forEach(msg => {
-    setTimeout(() => {
-      msg.style.transition = 'opacity 0.4s ease';
-      msg.style.opacity = '0';
-      setTimeout(() => msg.remove(), 400);
-    }, 5000);
-  });
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateY(0)';
+  }));
 
-  'use strict';
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(12px)';
+    setTimeout(() => toast.remove(), 300);
+  }, 4000);
+}
 
-  // ══════════════════════════════════════════════════════════
-  // TOAST NOTIFICATION
-  // ══════════════════════════════════════════════════════════
+// ── Toggle Share ──
+async function toggleShare(cvId, token, currentIsShared) {
+  const btn   = document.getElementById(`share-btn-${cvId}`);
+  const icon  = document.getElementById(`share-icon-${cvId}`);
+  const label = document.getElementById(`share-label-${cvId}`);
+  if (btn) btn.disabled = true;
 
-  function showToast(message, type = 'success') {
-    // Usuń poprzedni toast jeśli istnieje
-    const existing = document.getElementById('cv-toast');
-    if (existing) existing.remove();
-
-    const icons = {
-      success: 'check-circle',
-      error:   'alert-circle',
-      info:    'info',
-    };
-
-    const toast = document.createElement('div');
-    toast.id = 'cv-toast';
-    toast.innerHTML = `
-      <i data-lucide="${icons[type] || 'info'}" style="width:16px;height:16px;flex-shrink:0;"></i>
-      <span>${message}</span>
-    `;
-
-    Object.assign(toast.style, {
-      position:       'fixed',
-      bottom:         '28px',
-      right:          '28px',
-      zIndex:         '9999',
-      display:        'flex',
-      alignItems:     'center',
-      gap:            '10px',
-      padding:        '12px 20px',
-      borderRadius:   '12px',
-      background:     'var(--color-surface)',
-      border:         '1px solid var(--color-border)',
-      color:          'var(--color-text)',
-      fontSize:       '13px',
-      fontWeight:     '500',
-      boxShadow:      '0 8px 32px rgba(0,0,0,0.35)',
-      opacity:        '0',
-      transform:      'translateY(12px)',
-      transition:     'opacity 0.25s ease, transform 0.25s ease',
-      maxWidth:       '360px',
-      fontFamily:     'inherit',
+  try {
+    const response = await fetch(`/dashboard/cv/${cvId}/toggle-share/`, {
+      method: 'POST',
+      headers: { 'X-CSRFToken': getCsrfToken(), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ is_shared: !currentIsShared, expires: null }),
     });
+    const data = await response.json();
+    if (!response.ok || data.status !== 'ok') throw new Error(data.message);
 
-    // Kolorowy lewy border zależnie od typu
-    const borderColors = {
-      success: 'var(--color-accent)',
-      error:   '#ef4444',
-      info:    '#0ea5e9',
-    };
-    toast.style.borderLeft = `3px solid ${borderColors[type] || 'var(--color-accent)'}`;
+    if (icon) {
+      icon.setAttribute('data-lucide', data.is_shared ? 'link-2' : 'share-2');
+      if (window.lucide) lucide.createIcons({ nodes: [icon] });
+    }
+    if (label) label.textContent = data.is_shared ? 'Udostępnione' : 'Udostępnij';
+    if (btn) {
+      btn.title = data.is_shared ? 'Wyłącz udostępnianie' : 'Udostępnij CV';
+      btn.setAttribute('onclick', `toggleShare(${cvId}, '${token}', ${data.is_shared})`);
+    }
 
-    document.body.appendChild(toast);
-
-    // Inicjalizuj ikonę Lucide
-    if (window.lucide) lucide.createIcons({ nodes: [toast] });
-
-    // Animacja wejścia
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        toast.style.opacity   = '1';
-        toast.style.transform = 'translateY(0)';
-      });
-    });
-
-    // Animacja wyjścia po 3s
-    setTimeout(() => {
-      toast.style.opacity   = '0';
-      toast.style.transform = 'translateY(12px)';
-      setTimeout(() => toast.remove(), 300);
-    }, 3000);
-  }
-
-
-  // ══════════════════════════════════════════════════════════
-  // TOGGLE SHARE
-  // ══════════════════════════════════════════════════════════
-
-  async function toggleShare(cvId, token, currentIsShared) {
-    const btn   = document.getElementById(`share-btn-${cvId}`);
-    const icon  = document.getElementById(`share-icon-${cvId}`);
-    const label = document.getElementById(`share-label-${cvId}`);
-
-    if (btn) btn.disabled = true;
-
-    // Nowy stan to odwrotność obecnego
-    const newState = !currentIsShared;
-
-    try {
-      const response = await fetch(`/dashboard/cv/${cvId}/toggle-share/`, {
-        method:  'POST',
-        headers: {
-          'X-CSRFToken':  getCsrfToken(),
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          is_shared: newState,
-          expires:   null,        // dashboard nie ustawia daty wygaśnięcia
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok || data.status !== 'ok') {
-        throw new Error(data.message || `HTTP ${response.status}`);
-      }
-
-      // ── Aktualizuj ikonę ──
-      if (icon) {
-        icon.setAttribute('data-lucide', data.is_shared ? 'link-2' : 'share-2');
-        if (window.lucide) lucide.createIcons({ nodes: [icon] });
-      }
-
-      // ── Aktualizuj etykietę ──
-      if (label) {
-        label.textContent = data.is_shared ? 'Udostępnione' : 'Udostępnij';
-      }
-
-      // ── Zaktualizuj onclick z nowym stanem ──
-      if (btn) {
-        btn.title = data.is_shared ? 'Wyłącz udostępnianie' : 'Udostępnij CV';
-        btn.setAttribute('onclick',
-          `toggleShare(${cvId}, '${token}', ${data.is_shared})`
-        );
-      }
-
-      // ── Toast + clipboard ──
-      if (data.is_active) {
-        try {
-          await navigator.clipboard.writeText(data.share_url);
-          showToast('Link skopiowany do schowka!', 'success');
-        } catch {
-          showToast(`Udostępniono! Link: ${data.share_url}`, 'info');
+    // Aktualizuj badge statusu na karcie
+    const card = btn?.closest('.cv-card');
+    if (card) {
+      const badge = card.querySelector('.badge--success, .badge--inactive');
+      if (badge) {
+        if (data.is_shared) {
+          badge.className = 'badge badge--success';
+          badge.innerHTML = '<i data-lucide="link-2" style="width:10px;height:10px;"></i> Udostępnione';
+        } else {
+          badge.className = 'badge badge--inactive';
+          badge.textContent = 'Prywatne';
         }
-      } else {
-        showToast('Udostępnianie wyłączone.', 'info');
+        if (window.lucide) lucide.createIcons({ nodes: [badge] });
       }
-
-    } catch (err) {
-      console.error('toggleShare error:', err);
-      showToast('Wystąpił błąd. Spróbuj ponownie.', 'error');
-    } finally {
-      if (btn) btn.disabled = false;
     }
-  }
 
-
-
-  // ══════════════════════════════════════════════════════════
-  // HELPER — CSRF Token
-  // ══════════════════════════════════════════════════════════
-
-  function getCsrfToken() {
-    // Próbuj z meta taga, potem z cookie
-    const meta = document.querySelector('meta[name="csrf-token"]');
-    if (meta) return meta.getAttribute('content');
-
-    const cookies = document.cookie.split(';');
-    for (const cookie of cookies) {
-      const [name, value] = cookie.trim().split('=');
-      if (name === 'csrftoken') return decodeURIComponent(value);
+    if (data.is_active) {
+      try {
+        await navigator.clipboard.writeText(data.share_url);
+        showToast('Link skopiowany do schowka!', 'success');
+      } catch {
+        showToast(`Udostępniono! Link: ${data.share_url}`, 'info');
+      }
+    } else {
+      showToast('Udostępnianie wyłączone.', 'info');
     }
-    return '';
+  } catch (err) {
+    console.error('toggleShare error:', err);
+    showToast('Wystąpił błąd. Spróbuj ponownie.', 'error');
+  } finally {
+    if (btn) btn.disabled = false;
   }
+}
 
+function getCsrfToken() {
+  const meta = document.querySelector('meta[name="csrf-token"]');
+  if (meta) return meta.getAttribute('content');
+  const c = document.cookie.split(';').find(c => c.trim().startsWith('csrftoken='));
+  return c ? decodeURIComponent(c.split('=')[1]) : '';
+}
 </script>
 {% endblock %}
