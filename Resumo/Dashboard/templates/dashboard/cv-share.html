@@ -559,7 +559,7 @@
       <i data-lucide="eye"></i>
       {{ cv.view_count }} wyświetleń
     </div>
-    <a href="{% url 'dashboard:download_pdf' cv.id %}" class="btn-download">
+    <a href="{% url 'dashboard:download_pdf_public' cv.share_token %}" class="btn-download">
       <i data-lucide="download"></i>
       Pobierz PDF
     </a>
@@ -651,7 +651,7 @@
         <i data-lucide="copy"></i>
         Kopiuj link
       </button>
-      <a href="{% url 'dashboard:download_pdf' cv.id %}" class="btn-download">
+      <a href="{% url 'dashboard:download_pdf_public' cv.share_token %}" class="btn-download">
         <i data-lucide="download"></i>
         Pobierz PDF
       </a>

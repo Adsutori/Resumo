@@ -1,26 +1,11 @@
-📋 Lista "przed upublicznieniem"
-
-[ ] Zamień fikcyjne dane demo na neutralne nazwy firm
-[ ] Usuń lub zastąp loga marek w mockupach
-
-
-
-
-
-
 LANDING:
 
 - 
 
 
 
-
-
-
 DASHBOARD:
 
 - po dodaniu zdjecia profilowego nie ładuje się ono w sidebarze, naprawić to.
-- UDOSTEPNIJ CV:
-    - inne konta nie mogą pobrac CV - zrobic zeby cv bylo po udostepnieniu dostepne do pobrania nawet dla nie zalogowanych userow
 - USTAWIENIA:
     - po dodaniu swojego zdjęcia nie wyświetla się ono

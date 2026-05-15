@@ -389,6 +389,51 @@ def download_pdf(request, cv_id):
     return response
 
 
+def download_pdf_public(request, token):
+    """Pobieranie PDF dla niezalogowanych — tylko jeśli CV jest udostępnione."""
+    cv = get_object_or_404(CV, share_token=token)
+
+    if not cv.is_share_active():
+        raise Http404("Ten link wygasł lub CV nie jest udostępnione.")
+
+    from .models import DEFAULT_DESIGN
+    merged_design = {**DEFAULT_DESIGN, **(cv.design or {})}
+    cv.design = merged_design
+
+    accent    = merged_design.get('accent_color', '#6C63FF')
+    dark_base = darken_hex(accent, 0.18)
+    dark_mid  = darken_hex(accent, 0.25)
+    dark_deep = darken_hex(accent, 0.15)
+
+    template_map = {
+        'classic': 'dashboard/pdf/cv-classic.html',
+        'modern':  'dashboard/pdf/cv-modern.html',
+        'minimal': 'dashboard/pdf/cv-minimal.html',
+    }
+    template_name = template_map.get(cv.template, 'dashboard/pdf/cv-classic.html')
+
+    html = render_to_string(template_name, {
+        'cv':        cv,
+        'content':   cv.content or {},
+        'is_public': True,
+        'dark_base': dark_base,
+        'dark_mid':  dark_mid,
+        'dark_deep': dark_deep,
+    }, request=request)
+
+    pdf = HTML(
+        string=html,
+        base_url=request.build_absolute_uri('/')
+    ).write_pdf()
+
+    CV.objects.filter(pk=cv.pk).update(download_count=F('download_count') + 1)
+
+    safe_title = cv.title.replace(' ', '_').replace('/', '-')[:50]
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{safe_title}.pdf"'
+    return response
+
+
 # ──────────────────────────────────────────────
 # WIDOK — Duplikowanie CV
 # ──────────────────────────────────────────────
@@ -596,3 +641,4 @@ def share_cv(request, token):
 
 def templates(request):
     return render(request, 'dashboard/templates.html')
+
