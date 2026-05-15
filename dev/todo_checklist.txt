@@ -1,11 +1,3 @@
 LANDING:
 
 - 
-
-
-
-DASHBOARD:
-
-- po dodaniu zdjecia profilowego nie ładuje się ono w sidebarze, naprawić to.
-- USTAWIENIA:
-    - po dodaniu swojego zdjęcia wyswietla sie ono, ale po zapisaniu juz sie nie wyświetla
