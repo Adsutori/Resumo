@@ -330,6 +330,8 @@ def change_password(request):
 @require_POST
 def upload_avatar(request):
     from .forms import AvatarUploadForm
+    from django.urls import reverse
+    import time
 
     # Obsługa usunięcia avatara
     if request.POST.get('remove_avatar'):
@@ -342,11 +344,15 @@ def upload_avatar(request):
     if form.is_valid():
         form.save()
         messages.success(request, 'Avatar został zaktualizowany.')
+        return redirect(
+            reverse('users:settings') + f'?v={int(time.time())}'
+        )
     else:
         for field_errors in form.errors.values():
             for error in field_errors:
                 messages.error(request, error)
     return redirect('users:settings')
+
 
 
 

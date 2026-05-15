@@ -68,14 +68,21 @@
       <div class="avatar-upload-area">
         <div class="avatar-preview">
           {% if request.user.avatar %}
-            <img src="{{ request.user.avatar.url }}" alt="Avatar" id="avatarImg">
+            <img
+              src="{{ request.user.avatar.url }}?v={{ request.user.avatar.name|length }}"
+              alt="Avatar"
+              id="avatarImg"
+            >
+            <div class="avatar-placeholder" id="avatarPlaceholder" style="display:none;"></div>
           {% else %}
+            <img src="" alt="" id="avatarImg" style="display:none;">
             <div class="avatar-placeholder" id="avatarPlaceholder">
               <i data-lucide="user"></i>
             </div>
-            <img src="" alt="" id="avatarImg" style="display:none;">
           {% endif %}
         </div>
+
+
 
         <div class="avatar-dropzone" id="avatarDropzone"
              onclick="document.getElementById('avatarFileInput').click()">
@@ -469,15 +476,22 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
   }
 
   .avatar-preview img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
   }
 
   .avatar-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
     color: var(--color-text-muted);
     opacity: 0.5;
   }

@@ -36,5 +36,5 @@ urlpatterns = [
     path('linkedin/',  include('LinkedIn_import.urls', namespace='linkedin_import')),
     path('test-404/', views.test_404),
     path('test-500/', views.test_500),
-] + static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

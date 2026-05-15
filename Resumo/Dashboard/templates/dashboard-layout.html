@@ -257,6 +257,7 @@
       font-weight: 700;
       color: #fff;
       flex-shrink: 0;
+      overflow: hidden;
     }
 
     .sidebar__user-info {
@@ -1133,16 +1134,22 @@
     <!-- Profil użytkownika + wylogowanie -->
     <div class="sidebar__footer">
       <div class="sidebar__user">
+
         <div class="sidebar__avatar">
-          {{ user.nick|first|upper }}
+          {% if user.avatar %}
+            <img src="{{ user.avatar.url }}" alt="{{ user.nick }}"
+                style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;">
+          {% else %}
+            {{ user.nick|first|upper }}
+          {% endif %}
         </div>
+
         <div class="sidebar__user-info">
           <div class="sidebar__user-nick">{{ user.nick }}</div>
           <div class="sidebar__user-role">Plan darmowy</div>
         </div>
       </div>
 
-      <!-- Wylogowanie — POST (zabezpieczenie CSRF) -->
       <form method="POST" action="{% url 'users:logout' %}">
         {% csrf_token %}
         <button type="submit" class="sidebar__logout-btn">
@@ -1151,6 +1158,7 @@
         </button>
       </form>
     </div>
+
 
   </aside>
 
