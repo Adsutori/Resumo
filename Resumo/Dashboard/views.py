@@ -592,3 +592,7 @@ def share_cv(request, token):
         'cv':      cv,
         'cv_html': cv_html,
     })
+
+
+def templates(request):
+    return render(request, 'dashboard/templates.html')

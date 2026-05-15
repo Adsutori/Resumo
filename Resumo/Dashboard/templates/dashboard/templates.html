@@ -1,0 +1,796 @@
+{% extends 'dashboard-layout.html' %}
+{% load static %}
+
+{% block title %}Szablony CV — Resumo{% endblock %}
+{% block page_title %}Szablony{% endblock %}
+
+{% block content %}
+
+<!-- ── Nagłówek ── -->
+<div class="welcome">
+  <div class="welcome__text">
+    <h2 class="welcome__heading">Wybierz szablon CV</h2>
+    <p class="welcome__sub">Kliknij szablon który Ci się podoba, nadaj tytuł i zacznij tworzyć.</p>
+  </div>
+</div>
+
+<!-- ── Modal wyboru tytułu ── -->
+<div id="templateModal" role="dialog" aria-modal="true">
+  <div class="tmodal">
+    <div class="tmodal__icon" id="tmodalIcon">
+      <i data-lucide="layout-template"></i>
+    </div>
+    <h3 class="tmodal__title">Nadaj tytuł CV</h3>
+    <p class="tmodal__desc">Szablon: <strong id="tmodalTemplateName">—</strong></p>
+    <form method="POST" action="{% url 'dashboard:create_cv' %}" id="tmodalForm">
+      {% csrf_token %}
+      <input type="hidden" name="template" id="tmodalTemplateInput" value="">
+      <div class="tmodal__input-wrap">
+        <i data-lucide="file-text" class="tmodal__input-icon"></i>
+        <input
+          type="text"
+          name="title"
+          id="tmodalTitleInput"
+          class="tmodal__input"
+          placeholder="Moje CV"
+          maxlength="200"
+          autocomplete="off"
+        >
+      </div>
+      <div class="tmodal__actions">
+        <button type="button" class="btn btn--ghost" onclick="closeTemplateModal()">Anuluj</button>
+        <button type="submit" class="btn btn--accent" id="tmodalSubmitBtn">
+          <i data-lucide="arrow-right"></i>
+          Stwórz CV
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SIATKA SZABLONÓW
+══════════════════════════════════════ -->
+<div class="tgrid">
+
+  <!-- ── Klasyczny ── -->
+  <div class="tcard" data-template="classic" data-name="Klasyczny" tabindex="0" role="button">
+
+    <div class="tcard__preview tcard__preview--classic">
+      <div class="cv-mock">
+        <div class="cv-mock__header cv-mock__header--classic"></div>
+        <div class="cv-mock__body">
+          <div class="cv-mock__line cv-mock__line--long"></div>
+          <div class="cv-mock__line cv-mock__line--medium"></div>
+          <div class="cv-mock__divider"></div>
+          <div class="cv-mock__line cv-mock__line--short"></div>
+          <div class="cv-mock__line cv-mock__line--long"></div>
+          <div class="cv-mock__line cv-mock__line--medium"></div>
+          <div class="cv-mock__divider"></div>
+          <div class="cv-mock__line cv-mock__line--short"></div>
+          <div class="cv-mock__line cv-mock__line--long"></div>
+          <div class="cv-mock__line cv-mock__line--medium"></div>
+        </div>
+      </div>
+      <div class="tcard__overlay">
+        <span class="tcard__overlay-btn">
+          <i data-lucide="plus-circle"></i>
+          Użyj szablonu
+        </span>
+      </div>
+    </div>
+
+    <div class="tcard__info">
+      <div class="tcard__info-top">
+        <h4 class="tcard__name">Klasyczny</h4>
+        <div class="tcard__tags">
+          <span class="tcard__tag">Tradycyjny</span>
+          <span class="tcard__tag">Każda branża</span>
+        </div>
+      </div>
+      <p class="tcard__desc">Sprawdzony, czytelny układ który działa w każdej branży. Idealne dla osób szukających pracy po raz pierwszy lub zmieniających ścieżkę kariery.</p>
+      <div class="tcard__features">
+        <span class="tcard__feature"><i data-lucide="check"></i> Jedna kolumna</span>
+        <span class="tcard__feature"><i data-lucide="check"></i> Czytelna typografia</span>
+        <span class="tcard__feature"><i data-lucide="check"></i> ATS-friendly</span>
+      </div>
+      <button class="btn btn--accent tcard__btn" onclick="openTemplateModal('classic', 'Klasyczny', this)">
+        <i data-lucide="plus-circle"></i>
+        Użyj szablonu
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Minimalistyczny ── -->
+  <div class="tcard" data-template="minimal" data-name="Minimalistyczny" tabindex="0" role="button">
+
+    <div class="tcard__preview tcard__preview--minimal">
+      <div class="cv-mock">
+        <div class="cv-mock__header cv-mock__header--minimal"></div>
+        <div class="cv-mock__body">
+          <div class="cv-mock__line cv-mock__line--medium" style="background:rgba(16,185,129,0.5);"></div>
+          <div class="cv-mock__line cv-mock__line--long"></div>
+          <div class="cv-mock__line cv-mock__line--long"></div>
+          <div class="cv-mock__spacer"></div>
+          <div class="cv-mock__line cv-mock__line--medium" style="background:rgba(16,185,129,0.5);"></div>
+          <div class="cv-mock__line cv-mock__line--long"></div>
+          <div class="cv-mock__line cv-mock__line--short"></div>
+          <div class="cv-mock__spacer"></div>
+          <div class="cv-mock__line cv-mock__line--medium" style="background:rgba(16,185,129,0.5);"></div>
+          <div class="cv-mock__line cv-mock__line--long"></div>
+        </div>
+      </div>
+      <div class="tcard__overlay tcard__overlay--green">
+        <span class="tcard__overlay-btn">
+          <i data-lucide="plus-circle"></i>
+          Użyj szablonu
+        </span>
+      </div>
+    </div>
+
+    <div class="tcard__info">
+      <div class="tcard__info-top">
+        <h4 class="tcard__name">Minimalistyczny</h4>
+        <div class="tcard__tags">
+          <span class="tcard__tag">Nowoczesny</span>
+          <span class="tcard__tag">IT / Tech</span>
+        </div>
+      </div>
+      <p class="tcard__desc">Czysty design bez zbędnych ozdób. Skupia uwagę rekrutera na treści. Świetny wybór dla branży IT, designu i startupów.</p>
+      <div class="tcard__features">
+        <span class="tcard__feature"><i data-lucide="check"></i> Minimalistyczny układ</span>
+        <span class="tcard__feature"><i data-lucide="check"></i> Akcenty kolorystyczne</span>
+        <span class="tcard__feature"><i data-lucide="check"></i> Nowoczesna typografia</span>
+      </div>
+      <button class="btn tcard__btn tcard__btn--green" onclick="openTemplateModal('minimal', 'Minimalistyczny', this)">
+        <i data-lucide="plus-circle"></i>
+        Użyj szablonu
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Nowoczesny ── -->
+  <div class="tcard" data-template="modern" data-name="Nowoczesny" tabindex="0" role="button">
+
+    <div class="tcard__preview tcard__preview--modern">
+      <div class="cv-mock cv-mock--modern">
+        <div class="cv-mock__sidebar-col">
+          <div class="cv-mock__avatar"></div>
+          <div class="cv-mock__line cv-mock__line--short" style="background:rgba(245,158,11,0.5);margin:6px auto;width:60%;"></div>
+          <div class="cv-mock__line cv-mock__line--short" style="width:80%;margin:4px auto;"></div>
+          <div class="cv-mock__spacer"></div>
+          <div class="cv-mock__skill-bar"></div>
+          <div class="cv-mock__skill-bar cv-mock__skill-bar--short"></div>
+          <div class="cv-mock__skill-bar cv-mock__skill-bar--medium"></div>
+        </div>
+        <div class="cv-mock__main-col">
+          <div class="cv-mock__line cv-mock__line--long" style="background:rgba(245,158,11,0.5);"></div>
+          <div class="cv-mock__line cv-mock__line--medium"></div>
+          <div class="cv-mock__spacer"></div>
+          <div class="cv-mock__line cv-mock__line--short" style="background:rgba(245,158,11,0.3);"></div>
+          <div class="cv-mock__line cv-mock__line--long"></div>
+          <div class="cv-mock__line cv-mock__line--medium"></div>
+          <div class="cv-mock__spacer"></div>
+          <div class="cv-mock__line cv-mock__line--short" style="background:rgba(245,158,11,0.3);"></div>
+          <div class="cv-mock__line cv-mock__line--long"></div>
+        </div>
+      </div>
+      <div class="tcard__overlay tcard__overlay--yellow">
+        <span class="tcard__overlay-btn">
+          <i data-lucide="plus-circle"></i>
+          Użyj szablonu
+        </span>
+      </div>
+    </div>
+
+    <div class="tcard__info">
+      <div class="tcard__info-top">
+        <h4 class="tcard__name">Nowoczesny</h4>
+        <div class="tcard__tags">
+          <span class="tcard__tag">Dwukolumnowy</span>
+          <span class="tcard__tag">Kreatywny</span>
+        </div>
+      </div>
+      <p class="tcard__desc">Dwukolumnowy układ z miejscem na zdjęcie i pasek umiejętności. Wyróżnij się z tłumu aplikacji — idealny dla kreatywnych branż.</p>
+      <div class="tcard__features">
+        <span class="tcard__feature"><i data-lucide="check"></i> Dwie kolumny</span>
+        <span class="tcard__feature"><i data-lucide="check"></i> Miejsce na zdjęcie</span>
+        <span class="tcard__feature"><i data-lucide="check"></i> Paski umiejętności</span>
+      </div>
+      <button class="btn tcard__btn tcard__btn--yellow" onclick="openTemplateModal('modern', 'Nowoczesny', this)">
+        <i data-lucide="plus-circle"></i>
+        Użyj szablonu
+      </button>
+    </div>
+  </div>
+
+</div><!-- /.tgrid -->
+
+<!-- ══════════════════════════════════════
+     SEKCJA "WKRÓTCE"
+══════════════════════════════════════ -->
+<div class="tsoon">
+  <div class="tsoon__inner">
+    <div class="tsoon__icon">
+      <i data-lucide="hammer"></i>
+    </div>
+    <div class="tsoon__body">
+      <h3 class="tsoon__title">Więcej szablonów już wkrótce</h3>
+      <p class="tsoon__desc">
+        Pracujemy nad nowymi projektami.
+        Każdy będzie w pełni konfigurowalny i dostępny dla wszystkich użytkowników.
+      </p>
+      <div class="tsoon__previews">
+        <div class="tsoon__preview-card">
+          <div class="tsoon__preview-mock tsoon__preview-mock--elegant"></div>
+          <span>Elegancki</span>
+        </div>
+        <div class="tsoon__preview-card">
+          <div class="tsoon__preview-mock tsoon__preview-mock--creative"></div>
+          <span>Kreatywny</span>
+        </div>
+        <div class="tsoon__preview-card">
+          <div class="tsoon__preview-mock tsoon__preview-mock--academic"></div>
+          <span>Akademicki</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     STYLE
+══════════════════════════════════════ -->
+<style>
+
+  /* ── Siatka szablonów ── */
+  .tgrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 28px;
+  }
+
+  /* ── Karta szablonu ── */
+  .tcard {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    outline: none;
+  }
+
+  .tcard:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(108,99,255,0.2);
+  }
+
+  .tcard:focus-visible {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-accent-glow);
+  }
+
+  /* Badge ── */
+  .tcard__badge {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 3;
+  }
+
+  /* Wrapper dla pozycjonowania badge i overlay ── */
+  .tcard__preview {
+    position: relative;
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid var(--color-border);
+    flex-shrink: 0;
+  }
+
+  .tcard__preview--classic { background: linear-gradient(160deg, #1e1e2e 0%, #16162a 100%); }
+  .tcard__preview--minimal { background: linear-gradient(160deg, #1a2e26 0%, #162620 100%); }
+  .tcard__preview--modern  { background: linear-gradient(160deg, #2e2a1a 0%, #261e10 100%); }
+
+  /* Overlay na hover ── */
+  .tcard__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(108,99,255,0.82);
+    backdrop-filter: blur(3px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .tcard__overlay--green  { background: rgba(16,185,129,0.82); }
+  .tcard__overlay--yellow { background: rgba(245,158,11,0.82); }
+
+  .tcard:hover .tcard__overlay { opacity: 1; }
+
+  .tcard__overlay-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: var(--radius-lg);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    pointer-events: none;
+  }
+
+  .tcard__overlay-btn i { width: 16px; height: 16px; }
+
+  /* Info ── */
+  .tcard__info {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+  }
+
+  .tcard__info-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .tcard__name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .tcard__tags {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .tcard__tag {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    padding: 2px 8px;
+    white-space: nowrap;
+  }
+
+  .tcard__desc {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .tcard__features {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .tcard__feature {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--color-text-muted);
+  }
+
+  .tcard__feature i {
+    width: 12px;
+    height: 12px;
+    color: var(--color-accent);
+    flex-shrink: 0;
+  }
+
+  /* Przyciski ── */
+  .tcard__btn {
+    width: 100%;
+    justify-content: center;
+    margin-top: auto;
+  }
+
+  .tcard__btn--green {
+    background: rgba(16,185,129,0.15);
+    color: #10b981;
+    border: 1px solid rgba(16,185,129,0.3);
+  }
+  .tcard__btn--green:hover {
+    background: rgba(16,185,129,0.25);
+    border-color: #10b981;
+  }
+
+  .tcard__btn--yellow {
+    background: rgba(245,158,11,0.15);
+    color: #f59e0b;
+    border: 1px solid rgba(245,158,11,0.3);
+  }
+  .tcard__btn--yellow:hover {
+    background: rgba(245,158,11,0.25);
+    border-color: #f59e0b;
+  }
+
+  /* ── Mockup CV ── */
+  .cv-mock {
+    width: 120px;
+    height: 162px;
+    background: #fff;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+
+  .cv-mock__header          { height: 32px; flex-shrink: 0; }
+  .cv-mock__header--classic { background: var(--color-accent); }
+  .cv-mock__header--minimal { height: 12px; background: #10b981; }
+
+  .cv-mock__body {
+    padding: 6px 7px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+  }
+
+  .cv-mock__line         { height: 4px; border-radius: 2px; background: #e0e0e0; }
+  .cv-mock__line--long   { width: 100%; }
+  .cv-mock__line--medium { width: 70%; }
+  .cv-mock__line--short  { width: 45%; }
+  .cv-mock__divider      { height: 1px; background: #e8e8e8; margin: 2px 0; }
+  .cv-mock__spacer       { height: 4px; }
+
+  .cv-mock--modern { flex-direction: row; }
+
+  .cv-mock__sidebar-col {
+    width: 38px;
+    background: rgba(245,158,11,0.15);
+    padding: 6px 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    flex-shrink: 0;
+  }
+
+  .cv-mock__main-col {
+    flex: 1;
+    padding: 6px 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .cv-mock__avatar {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: rgba(245,158,11,0.6);
+    margin-bottom: 4px;
+    flex-shrink: 0;
+  }
+
+  .cv-mock__skill-bar        { height: 3px; border-radius: 2px; background: rgba(245,158,11,0.5); width: 80%; }
+  .cv-mock__skill-bar--short  { width: 55%; }
+  .cv-mock__skill-bar--medium { width: 70%; }
+
+  /* ══════════════════════════════════════
+     MODAL
+  ══════════════════════════════════════ */
+  #templateModal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  #templateModal.modal--open {
+    display: flex;
+  }
+
+  .tmodal {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-2xl);
+    padding: 32px;
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    text-align: center;
+    box-shadow: var(--shadow-xl);
+    animation: modalIn 0.2s ease;
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95) translateY(8px); }
+    to   { opacity: 1; transform: scale(1)    translateY(0);   }
+  }
+
+  .tmodal__icon {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: var(--color-accent-glow);
+    border: 1px solid rgba(108,99,255,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-accent);
+  }
+
+  .tmodal__icon i { width: 24px; height: 24px; }
+
+  .tmodal__title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0;
+  }
+
+  .tmodal__desc {
+    font-size: 13px;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .tmodal__input-wrap {
+    position: relative;
+    width: 100%;
+    margin-bottom: 15px;
+  }
+
+  .tmodal__input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 15px; height: 15px;
+    color: var(--color-text-muted);
+    pointer-events: none;
+  }
+
+  .tmodal__input {
+    width: 100%;
+    padding: 11px 16px 11px 40px;
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+    font-size: 14px;
+    font-family: var(--font);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    box-sizing: border-box;
+  }
+
+  .tmodal__input::placeholder { color: var(--color-text-muted); opacity: 0.6; }
+
+  .tmodal__input:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-accent-glow);
+  }
+
+  .tmodal__actions {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    flex-wrap: nowrap; 
+  }
+
+  .tmodal__actions .btn { flex: 1; justify-content: center; white-space: nowrap;}
+
+  /* ══════════════════════════════════════
+     SEKCJA "WKRÓTCE"
+  ══════════════════════════════════════ */
+  .tsoon {
+    margin-top: 48px;
+    border-radius: var(--radius-xl);
+    border: 1px dashed var(--color-border);
+    background: var(--color-surface);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .tsoon::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(108,99,255,0.07), transparent 70%);
+    pointer-events: none;
+  }
+
+  .tsoon__inner {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 28px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .tsoon__icon {
+    width: 48px; height: 48px;
+    border-radius: var(--radius-lg);
+    background: var(--color-accent-glow);
+    border: 1px solid rgba(108,99,255,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-accent);
+    flex-shrink: 0;
+  }
+
+  .tsoon__icon i { width: 22px; height: 22px; }
+
+  .tsoon__body { flex: 1; min-width: 0; }
+
+  .tsoon__title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 6px;
+  }
+
+  .tsoon__desc {
+    font-size: 13px;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin: 0 0 20px;
+  }
+
+  .tsoon__previews {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .tsoon__preview-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .tsoon__preview-card span {
+    font-size: 11px;
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+
+  .tsoon__preview-mock {
+    width: 56px;
+    height: 76px;
+    border-radius: 4px;
+    border: 1px solid var(--color-border);
+    position: relative;
+    overflow: hidden;
+    opacity: 0.45;
+  }
+
+  .tsoon__preview-mock::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 4px,
+      rgba(108,99,255,0.08) 4px,
+      rgba(108,99,255,0.08) 8px
+    );
+  }
+
+  .tsoon__preview-mock--elegant  { background: linear-gradient(160deg, #1e2a3a, #162030); }
+  .tsoon__preview-mock--creative { background: linear-gradient(160deg, #2a1e3a, #1e1630); }
+  .tsoon__preview-mock--academic { background: linear-gradient(160deg, #1a2a1e, #162016); }
+
+  /* ── Responsywność ── */
+  @media (max-width: 1024px) {
+    .tgrid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 640px) {
+    .tgrid { grid-template-columns: 1fr; }
+    .tsoon__inner { flex-direction: column; }
+  }
+
+</style>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+'use strict';
+
+// ── Kolory modala per szablon ──
+const TEMPLATE_COLORS = {
+  classic:  { bg: 'rgba(108,99,255,0.15)', border: 'rgba(108,99,255,0.3)', color: 'var(--color-accent)' },
+  minimal:  { bg: 'rgba(16,185,129,0.15)', border: 'rgba(16,185,129,0.3)', color: '#10b981' },
+  modern:   { bg: 'rgba(245,158,11,0.15)', border: 'rgba(245,158,11,0.3)', color: '#f59e0b' },
+};
+
+function openTemplateModal(templateKey, templateName, triggerBtn) {
+  // Ustaw wartości w modalu
+  document.getElementById('tmodalTemplateInput').value = templateKey;
+  document.getElementById('tmodalTemplateName').textContent = templateName;
+  document.getElementById('tmodalTitleInput').value = '';
+
+  // Ustaw kolor ikony modala
+  const colors = TEMPLATE_COLORS[templateKey] || TEMPLATE_COLORS.classic;
+  const icon = document.getElementById('tmodalIcon');
+  icon.style.background = colors.bg;
+  icon.style.borderColor = colors.border;
+  icon.style.color = colors.color;
+
+  // Otwórz modal
+  document.getElementById('templateModal').classList.add('modal--open');
+  document.body.style.overflow = 'hidden';
+
+  // Focus na input
+  setTimeout(() => {
+    document.getElementById('tmodalTitleInput').focus();
+  }, 150);
+}
+
+function closeTemplateModal() {
+  document.getElementById('templateModal').classList.remove('modal--open');
+  document.body.style.overflow = '';
+}
+
+// Zamknij klikając w overlay
+document.getElementById('templateModal').addEventListener('click', function(e) {
+  if (e.target === this) closeTemplateModal();
+});
+
+// Zamknij Escape
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeTemplateModal();
+});
+
+// Kliknięcie w kartę (nie w przycisk) też otwiera modal
+document.querySelectorAll('.tcard').forEach(card => {
+  card.addEventListener('click', function(e) {
+    if (e.target.closest('.tcard__btn')) return; // przycisk obsługuje sam
+    const key  = this.dataset.template;
+    const name = this.dataset.name;
+    openTemplateModal(key, name, null);
+  });
+
+  card.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      this.click();
+    }
+  });
+});
+
+// Reinicjalizuj Lucide po otwarciu modala
+const origOpen = openTemplateModal;
+</script>
+{% endblock %}

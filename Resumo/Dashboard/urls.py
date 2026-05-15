@@ -15,4 +15,5 @@ urlpatterns = [
     path('cv/<int:cv_id>/regenerate/',   views.regenerate_token, name='regenerate_token'),
     path('cv/<int:cv_id>/stats/',        views.share_stats,      name='share_stats'),
     path('share/',                       views.share_dashboard,  name='share_dashboard'),
+    path('templates/',                   views.templates,        name='templates'),
 ]
