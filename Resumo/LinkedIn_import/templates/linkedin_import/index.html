@@ -7,10 +7,13 @@
 {% block content %}
 <div class="coming-soon-wrap">
 
-  <!-- Hero -->
+  <!-- ── Hero ── -->
   <div class="coming-soon-hero card" style="border-color:rgba(0,119,181,0.25); background: linear-gradient(135deg, var(--color-surface) 0%, rgba(0,119,181,0.05) 100%);">
     <div class="coming-soon-hero__badge" style="background:rgba(0,119,181,0.1); border-color:rgba(0,119,181,0.3); color:#0077b5;">
-      <i data-lucide="linkedin"></i>
+      <!-- LinkedIn SVG -->
+      <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true">
+        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+      </svg>
       Wkrótce
     </div>
     <h1 class="coming-soon-hero__title">
@@ -28,7 +31,7 @@
     </div>
   </div>
 
-  <!-- Kroki -->
+  <!-- ── Kroki ── -->
   <div class="li-steps-grid">
 
     <div class="li-step card">
@@ -85,88 +88,136 @@
 
   </div>
 
-  <!-- Mockup parsowania -->
-  <div class="card li-parse-demo">
-    <div class="li-parse-demo__header">
-      <i data-lucide="sparkles"></i>
-      <h3>Podgląd parsowania danych</h3>
+  <!-- ══════════════════════════════════════
+       AI PARSER — przeprojektowany
+  ══════════════════════════════════════ -->
+  <div class="card ai-parser">
+
+    <!-- Nagłówek sekcji -->
+    <div class="ai-parser__header">
+      <div class="ai-parser__header-left">
+        <div class="ai-parser__header-icon">
+          <i data-lucide="cpu"></i>
+        </div>
+        <div>
+          <h3 class="ai-parser__title">Podgląd parsowania danych</h3>
+          <p class="ai-parser__subtitle">Tak AI przetwarza Twój profil LinkedIn na pola CV</p>
+        </div>
+      </div>
       <span class="badge badge--accent">Demo</span>
     </div>
 
-    <div class="li-parse-grid">
-      <!-- Lewa — surowy PDF -->
-      <div class="li-parse-side">
-        <div class="li-parse-side__label">
-          <i data-lucide="file-text"></i> Dane z LinkedIn PDF
+    <!-- Główna siatka parsera -->
+    <div class="ai-parser__body">
+
+      <!-- LEWA — surowy PDF -->
+      <div class="ai-parser__col">
+        <div class="ai-parser__col-header">
+          <div class="ai-parser__col-icon ai-parser__col-icon--li">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
+          </div>
+          <span>Dane z LinkedIn PDF</span>
         </div>
-        <div class="li-parse-raw">
-          <div class="li-parse-raw__line li-parse-raw__line--name">Jan Kowalski</div>
-          <div class="li-parse-raw__line">Frontend Developer at Google</div>
-          <div class="li-parse-raw__line li-parse-raw__line--muted">Warsaw, Poland</div>
-          <div class="li-parse-raw__line li-parse-raw__line--muted">──────────────────</div>
-          <div class="li-parse-raw__line li-parse-raw__line--section">Experience</div>
-          <div class="li-parse-raw__line">Google · Frontend Developer</div>
-          <div class="li-parse-raw__line li-parse-raw__line--muted">Jan 2023 – Present</div>
-          <div class="li-parse-raw__line li-parse-raw__line--muted">──────────────────</div>
-          <div class="li-parse-raw__line li-parse-raw__line--section">Education</div>
-          <div class="li-parse-raw__line">Politechnika Warszawska</div>
-          <div class="li-parse-raw__line li-parse-raw__line--muted">Computer Science · 2018–2022</div>
+        <div class="ai-parser__raw">
+          <div class="ai-parser__raw-line ai-parser__raw-line--name">Jan Kowalski</div>
+          <div class="ai-parser__raw-line">Frontend Developer at Google</div>
+          <div class="ai-parser__raw-line ai-parser__raw-line--muted">Warsaw, Poland</div>
+          <div class="ai-parser__raw-divider"></div>
+          <div class="ai-parser__raw-line ai-parser__raw-line--section">Experience</div>
+          <div class="ai-parser__raw-line">Google · Frontend Developer</div>
+          <div class="ai-parser__raw-line ai-parser__raw-line--muted">Jan 2023 – Present</div>
+          <div class="ai-parser__raw-divider"></div>
+          <div class="ai-parser__raw-line ai-parser__raw-line--section">Education</div>
+          <div class="ai-parser__raw-line">Politechnika Warszawska</div>
+          <div class="ai-parser__raw-line ai-parser__raw-line--muted">Computer Science · 2018–2022</div>
         </div>
       </div>
 
-      <!-- Środek — strzałka -->
-      <div class="li-parse-arrow">
-        <div class="li-parse-arrow__wrap">
-          <i data-lucide="cpu"></i>
-          <span>AI Parser</span>
+      <!-- ŚRODEK — AI badge + strzałka -->
+      <div class="ai-parser__middle">
+        <div class="ai-parser__arrow">
+          <div class="ai-parser__arrow-line"></div>
+          <div class="ai-parser__arrow-head"></div>
         </div>
-        <i data-lucide="arrow-right" class="li-parse-arrow__icon"></i>
       </div>
 
-      <!-- Prawa — sparsowane pola -->
-      <div class="li-parse-side">
-        <div class="li-parse-side__label">
-          <i data-lucide="check-circle" style="color:#10b981;"></i> Wypełnione pola CV
+      <!-- PRAWA — sparsowane pola -->
+      <div class="ai-parser__col">
+        <div class="ai-parser__col-header">
+          <div class="ai-parser__col-icon ai-parser__col-icon--success">
+            <i data-lucide="check" style="width:14px;height:14px;"></i>
+          </div>
+          <span>Wypełnione pola CV</span>
         </div>
-        <div class="li-parse-fields">
-          <div class="li-parse-field">
-            <span class="li-parse-field__key">Imię i nazwisko</span>
-            <span class="li-parse-field__val">Jan Kowalski</span>
+        <div class="ai-parser__fields">
+
+          <div class="ai-parser__field">
+            <span class="ai-parser__field-key">
+              <i data-lucide="user"></i>
+              Imię i nazwisko
+            </span>
+            <span class="ai-parser__field-val">Jan Kowalski</span>
           </div>
-          <div class="li-parse-field">
-            <span class="li-parse-field__key">Stanowisko</span>
-            <span class="li-parse-field__val">Frontend Developer</span>
+
+          <div class="ai-parser__field">
+            <span class="ai-parser__field-key">
+              <i data-lucide="briefcase"></i>
+              Stanowisko
+            </span>
+            <span class="ai-parser__field-val">Frontend Developer</span>
           </div>
-          <div class="li-parse-field">
-            <span class="li-parse-field__key">Lokalizacja</span>
-            <span class="li-parse-field__val">Warszawa, Polska</span>
+
+          <div class="ai-parser__field">
+            <span class="ai-parser__field-key">
+              <i data-lucide="map-pin"></i>
+              Lokalizacja
+            </span>
+            <span class="ai-parser__field-val">Warszawa, Polska</span>
           </div>
-          <div class="li-parse-field">
-            <span class="li-parse-field__key">Doświadczenie</span>
-            <span class="li-parse-field__val li-parse-field__val--success">1 pozycja ✓</span>
+
+          <div class="ai-parser__field">
+            <span class="ai-parser__field-key">
+              <i data-lucide="building-2"></i>
+              Doświadczenie
+            </span>
+            <span class="ai-parser__field-val ai-parser__field-val--success">
+              <i data-lucide="check-circle"></i>
+              1 pozycja
+            </span>
           </div>
-          <div class="li-parse-field">
-            <span class="li-parse-field__key">Wykształcenie</span>
-            <span class="li-parse-field__val li-parse-field__val--success">1 pozycja ✓</span>
+
+          <div class="ai-parser__field">
+            <span class="ai-parser__field-key">
+              <i data-lucide="graduation-cap"></i>
+              Wykształcenie
+            </span>
+            <span class="ai-parser__field-val ai-parser__field-val--success">
+              <i data-lucide="check-circle"></i>
+              1 pozycja
+            </span>
           </div>
+
         </div>
+      </div>
+
+    </div><!-- /.ai-parser__body -->
+
+    <!-- Upload zone -->
+    <div class="ai-parser__upload">
+      <div class="ai-parser__upload-icon">
+        <i data-lucide="upload-cloud"></i>
+      </div>
+      <div class="ai-parser__upload-text">
+        <p class="ai-parser__upload-title">Funkcja dostępna wkrótce</p>
+        <p class="ai-parser__upload-sub">Zostaniesz powiadomiony gdy import LinkedIn będzie gotowy</p>
       </div>
     </div>
 
-    <!-- Upload strefa (disabled) -->
-    <div class="li-upload-zone">
-      <i data-lucide="upload-cloud"></i>
-      <div>
-        <p class="li-upload-zone__title">Funkcja dostępna wkrótce</p>
-        <p class="li-upload-zone__sub">Zostaniesz powiadomiony gdy import LinkedIn będzie gotowy</p>
-      </div>
-      {% comment %} <button class="btn btn--ghost btn--sm" disabled>
-        <i data-lucide="bell"></i> Powiadom mnie
-      </button> {% endcomment %}
-    </div>
-  </div>
+  </div><!-- /.ai-parser -->
 
-</div>
+</div><!-- /.coming-soon-wrap -->
 
 <style>
   .coming-soon-wrap {
@@ -178,303 +229,290 @@
     width: 100%;
   }
 
-  .coming-soon-hero {
-    text-align: center;
-    padding: 48px 40px;
-  }
+  /* ── Hero ── */
+  .coming-soon-hero { text-align: center; padding: 48px 40px; }
 
   .coming-soon-hero__badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 20px;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border-radius: 20px;
+    font-size: 12px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 20px; border: 1px solid transparent;
   }
 
-  .coming-soon-hero__badge i { width: 13px; height: 13px; }
-
   .coming-soon-hero__title {
-    font-size: 32px;
-    font-weight: 800;
-    color: var(--color-text);
-    letter-spacing: -0.5px;
-    line-height: 1.2;
-    margin-bottom: 16px;
+    font-size: 32px; font-weight: 800;
+    color: var(--color-text); letter-spacing: -0.5px;
+    line-height: 1.2; margin-bottom: 16px;
   }
 
   .coming-soon-hero__desc {
-    font-size: 15px;
-    color: var(--color-text-muted);
-    line-height: 1.7;
-    max-width: 560px;
+    font-size: 15px; color: var(--color-text-muted);
+    line-height: 1.7; max-width: 560px;
     margin: 0 auto 24px;
   }
 
   .coming-soon-hero__tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    justify-content: center;
+    display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
   }
 
   .cs-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
+    display: inline-flex; align-items: center; gap: 5px;
     padding: 5px 12px;
-    background: var(--color-surface-2);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    font-size: 12px;
-    font-weight: 500;
+    background: var(--color-surface-2); border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); font-size: 12px; font-weight: 500;
     color: var(--color-text-muted);
   }
-
   .cs-tag i { width: 12px; height: 12px; }
 
-  /* Kroki */
+  /* ── Kroki ── */
   .li-steps-grid {
     display: grid;
     grid-template-columns: 1fr auto 1fr auto 1fr;
-    gap: 12px;
-    align-items: center;
+    gap: 12px; align-items: center;
   }
 
   .li-step {
-    padding: 20px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    padding: 20px; position: relative;
+    display: flex; flex-direction: column; gap: 10px;
   }
 
   .li-step__num {
-    position: absolute;
-    top: -10px;
-    left: 20px;
-    width: 22px;
-    height: 22px;
-    background: var(--color-accent);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    font-weight: 800;
-    color: #fff;
+    position: absolute; top: -10px; left: 20px;
+    width: 22px; height: 22px;
+    background: var(--color-accent); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800; color: #fff;
   }
 
   .li-step__icon {
-    width: 40px;
-    height: 40px;
-    border-radius: var(--radius-lg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 4px;
+    width: 40px; height: 40px; border-radius: var(--radius-lg);
+    display: flex; align-items: center; justify-content: center; margin-top: 4px;
   }
-
   .li-step__icon i { width: 18px; height: 18px; }
 
-  .li-step__title {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--color-text);
-  }
-
-  .li-step__desc {
-    font-size: 12px;
-    color: var(--color-text-muted);
-    line-height: 1.6;
-    margin: 0;
-  }
+  .li-step__title { font-size: 14px; font-weight: 700; color: var(--color-text); }
+  .li-step__desc  { font-size: 12px; color: var(--color-text-muted); line-height: 1.6; margin: 0; }
 
   .li-step__hint {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 11px;
-    color: var(--color-text-muted);
-    background: var(--color-surface-2);
-    padding: 5px 10px;
-    border-radius: var(--radius-md);
-    margin-top: 4px;
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11px; color: var(--color-text-muted);
+    background: var(--color-surface-2); padding: 5px 10px;
+    border-radius: var(--radius-md); margin-top: 4px;
   }
-
   .li-step__hint i { width: 12px; height: 12px; }
 
   .li-step-arrow {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-text-muted);
-    opacity: 0.3;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--color-text-muted); opacity: 0.3;
   }
-
   .li-step-arrow i { width: 20px; height: 20px; }
 
-  /* Parse demo */
-  .li-parse-demo { padding: 24px; }
+  /* ══════════════════════════════════════
+     AI PARSER
+  ══════════════════════════════════════ */
+  .ai-parser { padding: 24px; }
 
-  .li-parse-demo__header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
-    padding-bottom: 14px;
+  /* Nagłówek */
+  .ai-parser__header {
+    display: flex; align-items: center;
+    justify-content: space-between; gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
     border-bottom: 1px solid var(--color-border);
   }
 
-  .li-parse-demo__header i { width: 18px; height: 18px; color: #0077b5; }
-  .li-parse-demo__header h3 { font-size: 14px; font-weight: 700; color: var(--color-text); flex: 1; }
+  .ai-parser__header-left {
+    display: flex; align-items: center; gap: 14px;
+  }
 
-  .li-parse-grid {
+  .ai-parser__header-icon {
+    width: 40px; height: 40px;
+    border-radius: var(--radius-lg);
+    background: rgba(108,99,255,0.12);
+    border: 1px solid rgba(108,99,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--color-accent); flex-shrink: 0;
+  }
+  .ai-parser__header-icon i { width: 18px; height: 18px; }
+
+  .ai-parser__title {
+    font-size: 15px; font-weight: 700;
+    color: var(--color-text); margin: 0 0 2px;
+  }
+
+  .ai-parser__subtitle {
+    font-size: 12px; color: var(--color-text-muted); margin: 0;
+  }
+
+  /* Główna siatka */
+  .ai-parser__body {
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    gap: 16px;
+    grid-template-columns: 1fr 80px 1fr;
+    gap: 0;
     align-items: start;
     margin-bottom: 20px;
   }
 
-  .li-parse-side__label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 10px;
-  }
-
-  .li-parse-side__label i { width: 13px; height: 13px; }
-
-  .li-parse-raw {
+  /* Kolumny */
+  .ai-parser__col {
     background: var(--color-surface-2);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
-    padding: 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    font-family: monospace;
-    font-size: 11px;
-    opacity: 0.7;
+    overflow: hidden;
   }
 
-  .li-parse-raw__line { color: var(--color-text); }
-  .li-parse-raw__line--muted { color: var(--color-text-muted); }
-  .li-parse-raw__line--name { font-weight: 700; font-size: 13px; }
-  .li-parse-raw__line--section { color: #0077b5; font-weight: 700; margin-top: 4px; }
-
-  .li-parse-arrow {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    padding-top: 24px;
-  }
-
-  .li-parse-arrow__wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    font-size: 10px;
-    font-weight: 600;
-    color: var(--color-accent);
-    background: var(--color-accent-glow);
-    border: 1px solid rgba(108,99,255,0.2);
-    border-radius: var(--radius-md);
-    padding: 8px 10px;
-  }
-
-  .li-parse-arrow__wrap i { width: 16px; height: 16px; }
-  .li-parse-arrow__icon { width: 18px; height: 18px; color: var(--color-text-muted); opacity: 0.3; }
-
-  .li-parse-fields {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .li-parse-field {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 12px;
-    background: var(--color-surface-2);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    gap: 12px;
-  }
-
-  .li-parse-field__key {
-    font-size: 11px;
+  .ai-parser__col-header {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px;
+    background: var(--color-surface-3);
+    border-bottom: 1px solid var(--color-border);
+    font-size: 11px; font-weight: 600;
     color: var(--color-text-muted);
-    font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  .ai-parser__col-icon {
+    width: 22px; height: 22px; border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .ai-parser__col-icon--li      { background: rgba(0,119,181,0.15); color: #0077b5; }
+  .ai-parser__col-icon--success  { background: rgba(16,185,129,0.15); color: #10b981; }
+
+  /* Surowy tekst */
+  .ai-parser__raw {
+    padding: 14px;
+    display: flex; flex-direction: column; gap: 4px;
+    font-family: 'Courier New', monospace; font-size: 11px;
+  }
+
+  .ai-parser__raw-line         { color: var(--color-text); line-height: 1.5; }
+  .ai-parser__raw-line--muted  { color: var(--color-text-muted); }
+  .ai-parser__raw-line--name   { font-weight: 700; font-size: 13px; }
+  .ai-parser__raw-line--section { color: #0077b5; font-weight: 700; margin-top: 4px; }
+  .ai-parser__raw-divider      { height: 1px; background: var(--color-border); margin: 6px 0; }
+
+  /* Środkowa kolumna — AI badge + strzałka */
+  .ai-parser__middle {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 10px; padding: 20px 0; min-height: 120px;
+  }
+
+  .ai-parser__ai-badge {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 4px;
+    padding: 10px 12px;
+    background: var(--color-accent-glow);
+    border: 1px solid rgba(108,99,255,0.25);
+    border-radius: var(--radius-lg);
+    color: var(--color-accent);
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.5px;
     white-space: nowrap;
   }
+  .ai-parser__ai-badge i { width: 18px; height: 18px; }
 
-  .li-parse-field__val {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--color-text);
-    text-align: right;
+  /* CSS strzałka */
+  .ai-parser__arrow {
+    display: flex; align-items: center; gap: 0;
+  }
+  .ai-parser__arrow-line {
+    width: 20px; height: 2px;
+    background: var(--color-border);
+  }
+  .ai-parser__arrow-head {
+    width: 0; height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 7px solid var(--color-border);
   }
 
-  .li-parse-field__val--success { color: #10b981; }
+  /* Pola CV */
+  .ai-parser__fields {
+    padding: 10px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+
+  .ai-parser__field {
+    display: flex; align-items: center;
+    justify-content: space-between; gap: 10px;
+    padding: 8px 10px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    transition: border-color 0.15s;
+  }
+
+  .ai-parser__field:hover { border-color: var(--color-accent); }
+
+  .ai-parser__field-key {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; color: var(--color-text-muted); font-weight: 500;
+    white-space: nowrap;
+  }
+  .ai-parser__field-key i { width: 12px; height: 12px; flex-shrink: 0; }
+
+  .ai-parser__field-val {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 12px; font-weight: 600;
+    color: var(--color-text); text-align: right;
+  }
+  .ai-parser__field-val i { width: 12px; height: 12px; }
+
+  .ai-parser__field-val--success { color: #10b981; }
 
   /* Upload zone */
-  .li-upload-zone {
-    display: flex;
-    align-items: center;
-    gap: 16px;
+  .ai-parser__upload {
+    display: flex; align-items: center; gap: 16px;
     padding: 16px 20px;
     background: var(--color-surface-2);
     border: 2px dashed var(--color-border);
     border-radius: var(--radius-lg);
-    margin-top: 8px;
-    opacity: 0.6;
+    opacity: 0.65;
   }
 
-  .li-upload-zone > i { width: 28px; height: 28px; color: var(--color-text-muted); flex-shrink: 0; }
-
-  .li-upload-zone__title {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--color-text);
-    margin-bottom: 2px;
-  }
-
-  .li-upload-zone__sub {
-    font-size: 11px;
+  .ai-parser__upload-icon {
+    width: 40px; height: 40px; flex-shrink: 0;
+    border-radius: var(--radius-lg);
+    background: var(--color-surface-3);
+    display: flex; align-items: center; justify-content: center;
     color: var(--color-text-muted);
   }
+  .ai-parser__upload-icon i { width: 20px; height: 20px; }
 
-  .li-upload-zone .btn { margin-left: auto; flex-shrink: 0; }
+  .ai-parser__upload-title {
+    font-size: 13px; font-weight: 600;
+    color: var(--color-text); margin-bottom: 2px;
+  }
+  .ai-parser__upload-sub {
+    font-size: 11px; color: var(--color-text-muted);
+  }
 
+  /* ── Responsywność ── */
   @media (max-width: 900px) {
-    .li-steps-grid {
-      grid-template-columns: 1fr;
-    }
+    .li-steps-grid { grid-template-columns: 1fr; }
     .li-step-arrow { transform: rotate(90deg); }
-    .li-parse-grid { grid-template-columns: 1fr; }
-    .li-parse-arrow { flex-direction: row; padding-top: 0; }
-    .li-parse-arrow__icon { transform: rotate(90deg); }
+
+    .ai-parser__body {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .ai-parser__middle {
+      flex-direction: row;
+      justify-content: center;
+      min-height: auto;
+      padding: 0;
+    }
+    .ai-parser__arrow { transform: none; }
   }
 
   @media (max-width: 768px) {
     .coming-soon-hero { padding: 32px 20px; }
     .coming-soon-hero__title { font-size: 24px; }
-    .li-upload-zone { flex-direction: column; align-items: flex-start; }
-    .li-upload-zone .btn { margin-left: 0; }
+    .ai-parser__upload { flex-direction: column; align-items: flex-start; }
   }
 </style>
 {% endblock %}
