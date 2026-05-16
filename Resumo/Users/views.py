@@ -200,7 +200,7 @@ def verify_email_view(request):
             # Log user in immediately
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
 
-            return redirect('landing_page')
+            return redirect('dashboard:dashboard')
 
     return render(request, 'users/verify_email.html', {
         'form':  form,
