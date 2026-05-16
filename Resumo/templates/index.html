@@ -185,10 +185,12 @@
     <ul class="templates-grid" role="list">
 
       <li class="template-card reveal reveal--delay-1">
-        <div class="img-placeholder img-placeholder--template" role="img" aria-label="Klasyczny szablon CV">
-          <i data-lucide="file-text" aria-hidden="true"></i>
-          <span>Klasyczny</span>
-          <small>300 × 420 px</small>
+        <div class="template-card__img">
+          <img
+            src="{% static 'media/templates/classic.png' %}"
+            alt="Klasyczny szablon CV"
+            loading="lazy"
+          >
         </div>
         <div class="template-card__label">
           <span class="template-name">Klasyczny</span>
@@ -200,10 +202,12 @@
       </li>
 
       <li class="template-card reveal reveal--delay-2">
-        <div class="img-placeholder img-placeholder--template" role="img" aria-label="Nowoczesny szablon CV">
-          <i data-lucide="layout" aria-hidden="true"></i>
-          <span>Nowoczesny</span>
-          <small>300 × 420 px</small>
+        <div class="template-card__img">
+          <img
+            src="{% static 'media/templates/modern.png' %}"
+            alt="Nowoczesny szablon CV"
+            loading="lazy"
+          >
         </div>
         <div class="template-card__label">
           <span class="template-name">Nowoczesny</span>
@@ -215,10 +219,12 @@
       </li>
 
       <li class="template-card reveal reveal--delay-3">
-        <div class="img-placeholder img-placeholder--template" role="img" aria-label="Minimalistyczny szablon CV">
-          <i data-lucide="minus-square" aria-hidden="true"></i>
-          <span>Minimalistyczny</span>
-          <small>300 × 420 px</small>
+        <div class="template-card__img">
+          <img
+            src="{% static 'media/templates/minimal.png' %}"
+            alt="Minimalistyczny szablon CV"
+            loading="lazy"
+          >
         </div>
         <div class="template-card__label">
           <span class="template-name">Minimalistyczny</span>
@@ -230,6 +236,7 @@
       </li>
 
     </ul>
+
 
   </div>
 </section>

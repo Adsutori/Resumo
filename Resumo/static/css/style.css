@@ -3268,3 +3268,18 @@ html.dark .hero__orb {
   scrollbar-width: thin;
   scrollbar-color: var(--color-accent) var(--color-bg-muted);
 }
+
+.template-card__img {
+  width: 100%;
+  aspect-ratio: 3 / 4;   /* proporcje A4 */
+  overflow: hidden;
+  border-radius: 8px 8px 0 0;
+}
+
+.template-card__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;  /* pokazuje górę CV, nie środek */
+  display: block;
+}
