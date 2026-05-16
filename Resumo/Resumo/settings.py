@@ -158,7 +158,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 # DEFAULT_FROM_EMAIL  = f'Resumo <{config("EMAIL_HOST_USER")}>'
 
-RESEND_API_KEY = config('RESEND_API_KEY', default='')
+# RESEND_API_KEY = config('RESEND_API_KEY', default='')
+
+BREVO_API_KEY = config('BREVO_API_KEY')
 
 # ==============================================================
 # AUTH REDIRECTS
