@@ -158,7 +158,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 # DEFAULT_FROM_EMAIL  = f'Resumo <{config("EMAIL_HOST_USER")}>'
 
-RESEND_API_KEY = config('RESEND_API_KEY')
+RESEND_API_KEY = config('RESEND_API_KEY', default='')
 
 # ==============================================================
 # AUTH REDIRECTS
@@ -199,3 +199,18 @@ CSRF_TRUSTED_ORIGINS = [
     'https://resumo.com.pl',
     'https://www.resumo.com.pl',
 ]
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'ERROR',
+    },
+}
