@@ -91,7 +91,7 @@
         <h3 class="legal-subsection-title">Dane podawane przy rejestracji</h3>
         <ul class="legal-tag-list">
           <li><i data-lucide="at-sign" aria-hidden="true"></i> Adres e-mail</li>
-          <li><i data-lucide="user" aria-hidden="true"></i> Nick (pseudonim)</li>
+          <li><i data-lucide="user" aria-hidden="true"></i> Imię, nazwisko oraz nick (pseudonim)</li>
           <li><i data-lucide="lock" aria-hidden="true"></i> Hasło (przechowywane wyłącznie jako hash — bcrypt / Argon2)</li>
         </ul>
 
@@ -205,7 +205,7 @@
             </thead>
             <tbody>
               <tr>
-                <td><strong>PythonAnywhere</strong></td>
+                <td><strong>Render.com</strong></td>
                 <td>Hosting serwera</td>
                 <td>Umowa powierzenia przetwarzania</td>
               </tr>
@@ -214,7 +214,7 @@
                 <td>Baza danych PostgreSQL</td>
                 <td>Umowa powierzenia przetwarzania</td>
               </tr>
-              <tr>
+              {% comment %} <tr>
                 <td><strong>Cloudinary / AWS S3</strong> <em>(jeśli używane)</em></td>
                 <td>Przechowywanie avatarów</td>
                 <td>Umowa powierzenia przetwarzania</td>
@@ -223,7 +223,7 @@
                 <td><strong>OpenAI</strong> <em>(jeśli funkcja AI aktywna)</em></td>
                 <td>Analiza treści CV</td>
                 <td>Umowa powierzenia + zgoda użytkownika</td>
-              </tr>
+              </tr> {% endcomment %}
             </tbody>
           </table>
         </div>
