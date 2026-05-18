@@ -10,3 +10,4 @@ DASHBOARD:
 
 - dalej przychodza powiadomienia "Witaj w Resumo, Adsutori! 🎉
 Cieszymy się, że jesteś z nami. Zacznij od stworzenia swojego pierwszego CV."
+- w widoku tworzenia cv ogarnac css
