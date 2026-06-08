@@ -216,3 +216,5 @@ LOGGING = {
         'level': 'ERROR',
     },
 }
+
+X_FRAME_OPTIONS = 'ALLOWALL'
